@@ -8,6 +8,8 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  bool darkMode = false;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -18,6 +20,19 @@ class _SettingsPageState extends State<SettingsPage> {
             children: [
               const Text("There will be settings here"),
               const Text("We will need to change things..."),
+              Row(
+                children: [
+                  const Text("Enable Dark Mode?"),
+                  Switch(
+                    value: darkMode,
+                    onChanged: ((bool value) {
+                      setState(() {
+                        darkMode = value;
+                      });
+                    }),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
