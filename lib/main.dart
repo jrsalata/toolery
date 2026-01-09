@@ -1,4 +1,8 @@
+// System imports
 import 'package:flutter/material.dart';
+import 'package:dynamic_color/dynamic_color.dart';
+
+// Page imports
 import 'package:toolery/settings.dart';
 import 'package:toolery/welcomepage.dart';
 
@@ -12,12 +16,35 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MainPage(),
+    return DynamicColorBuilder(
+      builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
+
+
+        ColorScheme lightColorScheme;
+        ColorScheme darkColorScheme;
+
+        if(lightDynamic != null && darkDynamic != null){
+          lightColorScheme = lightDynamic.harmonized();
+          darkColorScheme = darkDynamic.harmonized();
+        } else {
+          lightColorScheme = ColorScheme.fromSeed(seedColor: Colors.deepPurple);
+          darkColorScheme = ColorScheme.fromSeed(seedColor: Colors.deepPurple, brightness: Brightness.dark);
+        }
+
+        return MaterialApp(
+          title: 'Toolery',
+          theme: ThemeData(
+            useMaterial3: true,
+            colorScheme: lightColorScheme
+          ),
+          darkTheme: ThemeData(
+            useMaterial3: true,
+            colorScheme: darkColorScheme
+          ),
+          themeMode: ThemeMode.system,
+          home: const MainPage(),
+        );
+      }
     );
   }
 }
