@@ -22,6 +22,9 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// MainPage is essentially a Widget + NavigationBar
+// This makes it easier and less repetitive to add the bar to needed pages
+// It also controls navigation between widgets
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
 
@@ -35,6 +38,8 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
+      // NOTE: body and destinations must be in the same order to navigate
       body: [WelcomePage(), SettingsPage()][currentDestination],
       bottomNavigationBar: NavigationBar(
         destinations: [
