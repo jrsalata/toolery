@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:toolery/navigationbar.dart' show TooleryNavigationBar;
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -10,6 +9,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage>{
 
+  @override
   Widget build(BuildContext context){
     return MaterialApp(
       home: Scaffold(
@@ -22,7 +22,6 @@ class _SettingsPageState extends State<SettingsPage>{
             ],
           ),
         ),
-        bottomNavigationBar: TooleryNavigationBar(),
       ),
     );
   }

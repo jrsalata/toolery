@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:toolery/navigationbar.dart';
 import 'package:toolery/settings.dart';
+import 'package:toolery/welcomepage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,30 +17,37 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const WelcomePage(),
+      home: const MainPage(),
     );
   }
 }
 
-class WelcomePage extends StatelessWidget {
-  const WelcomePage({super.key});
+class MainPage extends StatefulWidget {
+  const MainPage({super.key});
+
+  @override
+  State<MainPage> createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  int currentDestination = 0;
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Welcome to Toolery!')),
-        body: Center(
-          child: Column(
-            children: [
-              const Text("This is a welcome page for Toolery!"),
-              const Text("We will see how this works!"),
-            ],
-          ),
-        ),
-        bottomNavigationBar: TooleryNavigationBar(),
+    return Scaffold(
+      body: [WelcomePage(), SettingsPage()][currentDestination],
+      bottomNavigationBar: NavigationBar(
+        destinations: [
+          NavigationDestination(icon: Icon(Icons.home), label: "Menu 1"),
+          NavigationDestination(icon: Icon(Icons.settings), label: "Settings"),
+        ],
+        onDestinationSelected: (int index) {
+          setState(() {
+            currentDestination = index;
+          });
+        },
+        selectedIndex: currentDestination,
       ),
     );
   }
 }
-
