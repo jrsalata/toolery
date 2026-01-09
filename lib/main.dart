@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:toolery/navigationbar.dart';
+import 'package:toolery/settings.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,11 +30,13 @@ class WelcomePage extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('Welcome to Toolery!')),
-        body: Column(
-          children: [
-            const Text("This is a welcome page in"),
-            const Text("We will see how this works!"),
-          ],
+        body: Center(
+          child: Column(
+            children: [
+              const Text("This is a welcome page for Toolery!"),
+              const Text("We will see how this works!"),
+            ],
+          ),
         ),
         bottomNavigationBar: TooleryNavigationBar(),
       ),
@@ -40,29 +44,3 @@ class WelcomePage extends StatelessWidget {
   }
 }
 
-class TooleryNavigationBar extends StatefulWidget {
-  const TooleryNavigationBar({super.key});
-
-  @override
-  State<TooleryNavigationBar> createState() => _TooleryNavigationBarState();
-}
-
-class _TooleryNavigationBarState extends State<TooleryNavigationBar> {
-  int currentDestination = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    return NavigationBar(
-      destinations: [
-        NavigationDestination(icon: Icon(Icons.home), label: "Menu 1"),
-        NavigationDestination(icon: Icon(Icons.settings), label: "Settings")
-      ],
-      onDestinationSelected: (int index){
-        setState((){
-          currentDestination = index;
-        });
-      },
-      selectedIndex: currentDestination,
-    );
-  }
-}
