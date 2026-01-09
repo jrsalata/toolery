@@ -1,5 +1,3 @@
-import 'dart:nativewrappers/_internal/vm/lib/ffi_patch.dart';
-
 import 'package:flutter/material.dart';
 
 void main() {
@@ -18,7 +16,6 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       home: const WelcomePage(),
-
     );
   }
 }
@@ -27,30 +24,45 @@ class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Welcome to Toolery!')
-        ),
-        body: Column(children: 
-          [
-            const Text("This is a demonstration"),
+        appBar: AppBar(title: const Text('Welcome to Toolery!')),
+        body: Column(
+          children: [
+            const Text("This is a welcome page in"),
             const Text("We will see how this works!"),
           ],
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.access_time_filled, semanticLabel: "Test Icon"), 
-              label: "Test Label"),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.twenty_two_mp_sharp, semanticLabel: "Test2 Icon"),
-              label: "Test 2 Label"),
-            
-          ],
-        ),
-      )
+        bottomNavigationBar: TooleryNavigationBar(),
+      ),
+    );
+  }
+}
+
+class TooleryNavigationBar extends StatefulWidget {
+  const TooleryNavigationBar({super.key});
+
+  @override
+  State<TooleryNavigationBar> createState() => _TooleryNavigationBarState();
+}
+
+class _TooleryNavigationBarState extends State<TooleryNavigationBar> {
+  int currentDestination = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return NavigationBar(
+      destinations: [
+        NavigationDestination(icon: Icon(Icons.home), label: "Menu 1"),
+        NavigationDestination(icon: Icon(Icons.settings), label: "Settings")
+      ],
+      onDestinationSelected: (int index){
+        setState((){
+          currentDestination = index;
+        });
+      },
+      selectedIndex: currentDestination,
     );
   }
 }
