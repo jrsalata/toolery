@@ -1,21 +1,44 @@
 // System imports
 import 'package:flutter/material.dart';
 import 'package:dynamic_color/dynamic_color.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // Page imports
 import 'package:toolery/settings.dart';
 import 'package:toolery/welcomepage.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const Main());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class Main extends StatefulWidget {
+  const Main({super.key});
+
+  @override
+  State<Main> createState() => _MainState();
+}
+
+class _MainState extends State<Main>{
+
+  bool _enableDarkMode = true;
+
+  @override
+  void initState(){
+    super.initState();
+    _loadPrefs();
+  }
+
+  Future<void> _loadPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState((){
+      _enableDarkMode = prefs.getBool('enableDarkMode') ?? true;
+    });
+  }
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    
     return DynamicColorBuilder(
       builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
 
@@ -41,12 +64,13 @@ class MyApp extends StatelessWidget {
             useMaterial3: true,
             colorScheme: darkColorScheme
           ),
-          themeMode: ThemeMode.system,
+          themeMode: _enableDarkMode ? ThemeMode.dark : ThemeMode.light,
           home: const MainPage(),
         );
       }
     );
   }
+
 }
 
 // MainPage is essentially a Widget + NavigationBar
