@@ -24,7 +24,6 @@ class Main extends StatefulWidget {
 }
 
 class _MainState extends State<Main> {
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -47,7 +46,9 @@ class _MainState extends State<Main> {
         return Consumer<SettingsNotifier>(
           builder: (context, settings, child) => MaterialApp(
             title: 'Toolery',
-            theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
+            theme: ThemeData(
+              useMaterial3: true, 
+              colorScheme: lightColorScheme),
             darkTheme: ThemeData(
               useMaterial3: true,
               colorScheme: darkColorScheme,
@@ -58,8 +59,6 @@ class _MainState extends State<Main> {
           child: const MainPage(),
         );
       },
-      
-
     );
   }
 }
