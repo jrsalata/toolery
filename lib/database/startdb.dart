@@ -8,7 +8,7 @@ Future<Database> getDatabase() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   return openDatabase(
-    join(await getDatabasesPath(), 'doggie_database.db'),
+    join(await getDatabasesPath(), 'toolery.db'),
     onCreate: (db, version) {
       return db.execute(
         'CREATE TABLE task (id INTEGER PRIMARY KEY, name TEXT, description TEXT, task TEXT )',

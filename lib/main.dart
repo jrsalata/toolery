@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 // Page imports
 import 'package:toolery/settings.dart';
 import 'package:toolery/welcomepage.dart';
+import 'package:toolery/tasks.dart';
 
 void main() {
   runApp(
@@ -78,20 +79,23 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // NOTE: body and destinations must be in the same order to navigate
-      body: [WelcomePage(), SettingsPage()][currentDestination],
-      bottomNavigationBar: NavigationBar(
-        destinations: [
-          NavigationDestination(icon: Icon(Icons.home), label: "Menu 1"),
-          NavigationDestination(icon: Icon(Icons.settings), label: "Settings"),
-        ],
-        onDestinationSelected: (int index) {
-          setState(() {
-            currentDestination = index;
-          });
-        },
-        selectedIndex: currentDestination,
+    return SafeArea(
+      child: Scaffold(
+        // NOTE: body and destinations must be in the same order to navigate
+        body: [WelcomePage(), SettingsPage(), TaskPage()][currentDestination],
+        bottomNavigationBar: NavigationBar(
+          destinations: [
+            NavigationDestination(icon: Icon(Icons.home), label: "Menu 1"),
+            NavigationDestination(icon: Icon(Icons.settings), label: "Settings"),
+            NavigationDestination(icon: Icon(Icons.task), label: "Tasks"),
+          ],
+          onDestinationSelected: (int index) {
+            setState(() {
+              currentDestination = index;
+            });
+          },
+          selectedIndex: currentDestination,
+        ),
       ),
     );
   }
