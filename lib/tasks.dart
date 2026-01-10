@@ -24,7 +24,7 @@ class TaskPage extends StatelessWidget {
                 return Text('Error: ${snapshot.error}');
               }
               final tasks = snapshot.data ?? [];
-              return tasks.length > 0 ? ListView(
+              return tasks.isNotEmpty ? ListView(
                 children: [
                   for (Task task in tasks)
                     ListTile(
