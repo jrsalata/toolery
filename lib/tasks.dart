@@ -12,6 +12,7 @@ class TaskPage extends StatelessWidget {
       home: Scaffold(
         appBar: AppBar(title: const Text('Tasks')),
         body: TaskList(),
+        floatingActionButton: FloatingActionButton.extended(onPressed: ((){}), label: Text("Task"), icon: Icon(Icons.add)),
       ),
     );
   }
