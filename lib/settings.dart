@@ -1,5 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+class SettingsNotifier with ChangeNotifier {
+  bool darkMode = false;
+
+  SettingsNotifier() {
+    _loadPrefs();
+  }
+
+  Future<void> _loadPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    darkMode = prefs.getBool('enableDarkMode') ?? true;
+    notifyListeners();
+  }
+
+  void changeDarkMode(bool value){
+    darkMode = value;
+    notifyListeners();
+  }
+}
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -8,7 +28,7 @@ class SettingsPage extends StatefulWidget {
   State<SettingsPage> createState() => _SettingsPageState();
 }
 
-class _SettingsPageState extends State<SettingsPage> {
+class _SettingsPageState extends State<SettingsPage>{
   bool darkMode = false;
 
   @override
@@ -52,10 +72,10 @@ class _SettingsPageState extends State<SettingsPage> {
                 children: [
                   const Text("Enable Dark Mode?"),
                   Switch(
-                    value: darkMode,
+                    value: context.read<SettingsNotifier>().darkMode,
                     onChanged: ((bool value) {
                       setState(() {
-                        darkMode = value;
+                        context.read<SettingsNotifier>().changeDarkMode(value);
                         _changeBoolSetting("enableDarkMode", value);
                       });
                     }),

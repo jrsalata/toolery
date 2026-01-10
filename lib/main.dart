@@ -1,14 +1,19 @@
 // System imports
 import 'package:flutter/material.dart';
 import 'package:dynamic_color/dynamic_color.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 
 // Page imports
 import 'package:toolery/settings.dart';
 import 'package:toolery/welcomepage.dart';
 
 void main() {
-  runApp(const Main());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => SettingsNotifier(),
+      child: const Main(),
+    ),
+  );
 }
 
 class Main extends StatefulWidget {
@@ -18,59 +23,45 @@ class Main extends StatefulWidget {
   State<Main> createState() => _MainState();
 }
 
-class _MainState extends State<Main>{
-
-  bool _enableDarkMode = true;
-
-  @override
-  void initState(){
-    super.initState();
-    _loadPrefs();
-  }
-
-  Future<void> _loadPrefs() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState((){
-      _enableDarkMode = prefs.getBool('enableDarkMode') ?? true;
-    });
-  }
+class _MainState extends State<Main> {
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    
     return DynamicColorBuilder(
       builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
-
-
         ColorScheme lightColorScheme;
         ColorScheme darkColorScheme;
 
-        if(lightDynamic != null && darkDynamic != null){
+        if (lightDynamic != null && darkDynamic != null) {
           lightColorScheme = lightDynamic.harmonized();
           darkColorScheme = darkDynamic.harmonized();
         } else {
           lightColorScheme = ColorScheme.fromSeed(seedColor: Colors.deepPurple);
-          darkColorScheme = ColorScheme.fromSeed(seedColor: Colors.deepPurple, brightness: Brightness.dark);
+          darkColorScheme = ColorScheme.fromSeed(
+            seedColor: Colors.deepPurple,
+            brightness: Brightness.dark,
+          );
         }
 
-        return MaterialApp(
-          title: 'Toolery',
-          theme: ThemeData(
-            useMaterial3: true,
-            colorScheme: lightColorScheme
+        return Consumer<SettingsNotifier>(
+          builder: (context, settings, child) => MaterialApp(
+            title: 'Toolery',
+            theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
+            darkTheme: ThemeData(
+              useMaterial3: true,
+              colorScheme: darkColorScheme,
+            ),
+            themeMode: settings.darkMode ? ThemeMode.dark : ThemeMode.light,
+            home: child,
           ),
-          darkTheme: ThemeData(
-            useMaterial3: true,
-            colorScheme: darkColorScheme
-          ),
-          themeMode: _enableDarkMode ? ThemeMode.dark : ThemeMode.light,
-          home: const MainPage(),
+          child: const MainPage(),
         );
-      }
+      },
+      
+
     );
   }
-
 }
 
 // MainPage is essentially a Widget + NavigationBar
@@ -89,7 +80,6 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       // NOTE: body and destinations must be in the same order to navigate
       body: [WelcomePage(), SettingsPage()][currentDestination],
       bottomNavigationBar: NavigationBar(
