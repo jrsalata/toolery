@@ -8,13 +8,20 @@ class TaskPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(title: const Text('Tasks')),
         body: TaskList(),
         floatingActionButton: FloatingActionButton.extended(onPressed: ((){}), label: Text("Task"), icon: Icon(Icons.add)),
-      ),
     );
+  }
+}
+
+class CreateTask extends StatelessWidget {
+  const CreateTask({super.key});
+
+  @override
+  Widget build(BuildContext context){
+    return Text("HERE");
   }
 }
 

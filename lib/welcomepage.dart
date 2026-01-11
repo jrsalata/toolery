@@ -5,8 +5,7 @@ class WelcomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(title: const Text('Welcome to Toolery!')),
         body: Center(
           child: Column(
@@ -16,7 +15,7 @@ class WelcomePage extends StatelessWidget {
             ],
           ),
         ),
-      ),
+      
     );
   }
 }

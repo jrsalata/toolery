@@ -60,8 +60,7 @@ class _SettingsPageState extends State<SettingsPage>{
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(title: const Text('Settings page')),
         body: Center(
           child: Column(
@@ -85,7 +84,7 @@ class _SettingsPageState extends State<SettingsPage>{
             ],
           ),
         ),
-      ),
+      
     );
   }
 }
