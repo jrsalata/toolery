@@ -3,21 +3,20 @@ import 'package:toolery/models/task.dart';
 
 class TaskPage extends StatelessWidget {
   const TaskPage({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Tasks')),
       body: TaskList(),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: (() {
-          Navigator.push(
+        onPressed: () async {
+          await Navigator.push<bool>(
             context,
-            MaterialPageRoute<void>(builder: (context) => const CreateTask()),
+            MaterialPageRoute<bool>(builder: (context) => const CreateTask()),
           );
-        }),
-        label: Text("Task"),
-        icon: Icon(Icons.add),
+        },
+        label: const Text("Task"),
+        icon: const Icon(Icons.add),
       ),
     );
   }
@@ -254,32 +253,49 @@ class _UpdateTaskState extends State<UpdateTask> {
 }
 
 class TaskInfo extends StatelessWidget {
-  const TaskInfo({super.key, required this.task});
+  const TaskInfo({super.key, required this.taskID});
 
   // single task to view
-  final Task task;
+  final int taskID;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(task.name)),
-      body: Column(
-        children: [
-          Text("Description", style: Theme.of(context).textTheme.bodyLarge),
-          Text(task.description, style: Theme.of(context).textTheme.bodyMedium),
-          Text("Activity", style: Theme.of(context).textTheme.bodyLarge),
-          Text(task.task, style: Theme.of(context).textTheme.bodyMedium),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (() {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => UpdateTask(task: task)),
-          );
-        }),
-        child: Icon(Icons.edit),
-      ),
+    return FutureBuilder<Task>(
+      future: getTask(taskID),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return const CircularProgressIndicator();
+        }
+        if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        }
+        final Task? task = snapshot.data;
+        return Scaffold(
+          appBar: AppBar(title: Text(task!.name)),
+          body: Column(
+            children: [
+              Text("Description", style: Theme.of(context).textTheme.bodyLarge),
+              Text(
+                task.description,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              Text("Activity", style: Theme.of(context).textTheme.bodyLarge),
+              Text(task.task, style: Theme.of(context).textTheme.bodyMedium),
+            ],
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () async {
+              await Navigator.push<bool>(
+                context,
+                MaterialPageRoute<bool>(
+                  builder: (context) => UpdateTask(task: task),
+                ),
+              );
+            },
+            child: const Icon(Icons.edit),
+          ),
+        );
+      },
     );
   }
 }
@@ -308,11 +324,11 @@ class TaskList extends StatelessWidget {
                       ListTile(
                         title: Text(task.name),
                         subtitle: Text(task.description),
-                        onTap: () {
-                          Navigator.push(
+                        onTap: () async {
+                          await Navigator.push<bool>(
                             context,
-                            MaterialPageRoute(
-                              builder: (context) => TaskInfo(task: task),
+                            MaterialPageRoute<bool>(
+                              builder: (context) => TaskInfo(taskID: task.id),
                             ),
                           );
                         },
