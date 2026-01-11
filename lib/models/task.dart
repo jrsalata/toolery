@@ -25,11 +25,18 @@ class Task {
 }
 
 Future<void> insertTask(Task task) async {
+
+  // note that we are removing the ID field
+  // so we can let SQLite autoincrement
+  // https://sqlite.org/autoinc.html
+  Map<String, Object?> taskMap = task.toMap();
+  taskMap.remove('id');
+
   final db = await getDatabase();
 
   await db.insert(
     'task',
-    task.toMap(),
+    taskMap,
     conflictAlgorithm: ConflictAlgorithm.fail,
   );
 }
