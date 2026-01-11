@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toolery/models/task.dart';
 
+// main task page that calls task list
 class TaskPage extends StatelessWidget {
   const TaskPage({super.key});
   @override
@@ -23,6 +24,7 @@ class TaskPage extends StatelessWidget {
   }
 }
 
+// reusable form to edit the task
 class TaskForm extends StatefulWidget {
   const TaskForm({
     super.key,
@@ -120,6 +122,7 @@ class _TaskFormState extends State<TaskForm> {
   }
 }
 
+// page to create the task
 class CreateTask extends StatefulWidget {
   const CreateTask({super.key, this.task});
 
@@ -182,6 +185,7 @@ class _CreateTaskState extends State<CreateTask> {
   }
 }
 
+// page to update the task
 class UpdateTask extends StatefulWidget {
   const UpdateTask({super.key, required this.task});
 
@@ -221,40 +225,88 @@ class _UpdateTaskState extends State<UpdateTask> {
     final taskNotifier = context.watch<TaskChangeNotifier>();
     return Scaffold(
       appBar: AppBar(title: Text('Edit ${_task.name}')),
-      body: Form(
-        key: _formKey,
-        child: TaskForm(
-          nameController: nameController,
-          descriptionController: descriptionController,
-          activityController: activityController,
-          task: _task,
-          formButton: FilledButton(
-            onPressed: (() async {
-              if (_formKey.currentState!.validate()) {
-                final Task updatedTask = Task(
-                  id: _task.id,
-                  name: nameController.text,
-                  description: descriptionController.text,
-                  task: activityController.text,
-                );
-                await taskNotifier.updateTask(updatedTask);
+      body: Column(
+        children: [
+          Form(
+            key: _formKey,
+            child: TaskForm(
+              nameController: nameController,
+              descriptionController: descriptionController,
+              activityController: activityController,
+              task: _task,
+              formButton: FilledButton(
+                onPressed: (() async {
+                  if (_formKey.currentState!.validate()) {
+                    final Task updatedTask = Task(
+                      id: _task.id,
+                      name: nameController.text,
+                      description: descriptionController.text,
+                      task: activityController.text,
+                    );
+                    await taskNotifier.updateTask(updatedTask);
+                    if (context.mounted) {
+                      Navigator.pop(context, true);
+                    }
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Failed to validate!')),
+                    );
+                  }
+                }),
+                child: const Text('Save Changes'),
+              ),
+            ),
+          ),
+          FilledButton.tonal(
+            style: ButtonStyle(
+              backgroundColor: WidgetStatePropertyAll(
+                Theme.of(context).colorScheme.errorContainer,
+              ),
+              foregroundColor: WidgetStatePropertyAll(
+                Theme.of(context).colorScheme.onErrorContainer,
+              ),
+            ),
+            onPressed: () async {
+              final bool? confirm = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Delete task?'),
+                  content: const Text(
+                    'This action cannot be undone. Are you sure you want to delete this task?',
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: const Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      style: ButtonStyle(
+                        foregroundColor: WidgetStatePropertyAll(
+                          Theme.of(context).colorScheme.error,
+                        ),
+                      ),
+                      child: const Text('Delete'),
+                    ),
+                  ],
+                ),
+              );
+              if (confirm == true) {
+                await taskNotifier.deleteTask(_task.id);
                 if (context.mounted) {
                   Navigator.pop(context, true);
                 }
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Failed to validate!')),
-                );
               }
-            }),
-            child: const Text('Save Changes'),
+            },
+            child: const Text('Delete'),
           ),
-        ),
+        ],
       ),
     );
   }
 }
 
+// single-page to show all of the info on one task
 class TaskInfo extends StatelessWidget {
   const TaskInfo({super.key, required this.taskID});
 

@@ -106,10 +106,10 @@ class TaskChangeNotifier with ChangeNotifier {
     _loadTasks();
   }
 
-  Future<void> deleteTask(Task task) async {
+  Future<void> deleteTask(int id) async {
     final db = await getDatabase();
 
-    await db.delete('task', where: 'id=?', whereArgs: [task.id]);
+    await db.delete('task', where: 'id=?', whereArgs: [id]);
     _loadTasks();
   }
 }
