@@ -73,7 +73,7 @@ class _TaskFormState extends State<TaskForm> {
           autofocus: true,
           controller: nameController,
           decoration: InputDecoration(
-            label: Text("Task Name"),
+            labelText: "Task Name",
             hintText: "Enter the name of a task",
             border: OutlineInputBorder(),
           ),
@@ -88,7 +88,7 @@ class _TaskFormState extends State<TaskForm> {
           autofocus: false,
           controller: descriptionController,
           decoration: InputDecoration(
-            label: Text("Description"),
+            labelText: "Description",
             hintText: "Provide a brief description of the task",
             border: OutlineInputBorder(),
           ),
@@ -103,7 +103,7 @@ class _TaskFormState extends State<TaskForm> {
           autofocus: false,
           controller: activityController,
           decoration: InputDecoration(
-            label: Text("Activity"),
+            labelText: "Activity2",
             hintText: "Provide step-by-step instructions",
             border: OutlineInputBorder(),
           ),
