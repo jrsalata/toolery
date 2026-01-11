@@ -294,6 +294,10 @@ class _UpdateTaskState extends State<UpdateTask> {
               if (confirm == true) {
                 await taskNotifier.deleteTask(_task.id);
                 if (context.mounted) {
+
+                  // we need to pop out of the edit page
+                  // and the task info page
+                  Navigator.pop(context, true);
                   Navigator.pop(context, true);
                 }
               }
