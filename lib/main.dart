@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:provider/provider.dart';
+import 'package:toolery/models/task.dart';
 
 // Page imports
 import 'package:toolery/settings.dart';
@@ -10,8 +11,11 @@ import 'package:toolery/tasks.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => SettingsNotifier(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => SettingsNotifier()),
+        ChangeNotifierProvider(create: (_) => TaskChangeNotifier()),
+      ],
       child: const Main(),
     ),
   );
@@ -47,9 +51,7 @@ class _MainState extends State<Main> {
         return Consumer<SettingsNotifier>(
           builder: (context, settings, child) => MaterialApp(
             title: 'Toolery',
-            theme: ThemeData(
-              useMaterial3: true, 
-              colorScheme: lightColorScheme),
+            theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
             darkTheme: ThemeData(
               useMaterial3: true,
               colorScheme: darkColorScheme,
@@ -86,7 +88,10 @@ class _MainPageState extends State<MainPage> {
         bottomNavigationBar: NavigationBar(
           destinations: [
             NavigationDestination(icon: Icon(Icons.home), label: "Menu 1"),
-            NavigationDestination(icon: Icon(Icons.settings), label: "Settings"),
+            NavigationDestination(
+              icon: Icon(Icons.settings),
+              label: "Settings",
+            ),
             NavigationDestination(icon: Icon(Icons.task), label: "Tasks"),
           ],
           onDestinationSelected: (int index) {

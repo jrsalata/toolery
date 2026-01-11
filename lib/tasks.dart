@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:toolery/models/task.dart';
 
 class TaskPage extends StatelessWidget {
@@ -145,6 +146,7 @@ class _CreateTaskState extends State<CreateTask> {
 
   @override
   Widget build(BuildContext context) {
+    final taskNotifier = context.watch<TaskChangeNotifier>();
     return Scaffold(
       appBar: AppBar(title: const Text('Create New Task')),
       body: Form(
@@ -162,7 +164,7 @@ class _CreateTaskState extends State<CreateTask> {
                   description: descriptionController.text,
                   task: activityController.text,
                 );
-                await insertTask(newTask);
+                await taskNotifier.insertTask(newTask);
                 if (context.mounted) {
                   Navigator.pop(context, true);
                 }
@@ -216,6 +218,7 @@ class _UpdateTaskState extends State<UpdateTask> {
 
   @override
   Widget build(BuildContext context) {
+    final taskNotifier = context.watch<TaskChangeNotifier>();
     return Scaffold(
       appBar: AppBar(title: Text('Edit ${_task.name}')),
       body: Form(
@@ -234,7 +237,7 @@ class _UpdateTaskState extends State<UpdateTask> {
                   description: descriptionController.text,
                   task: activityController.text,
                 );
-                await updateTask(updatedTask);
+                await taskNotifier.updateTask(updatedTask);
                 if (context.mounted) {
                   Navigator.pop(context, true);
                 }
@@ -260,8 +263,9 @@ class TaskInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final taskNotifier = context.watch<TaskChangeNotifier>();
     return FutureBuilder<Task>(
-      future: getTask(taskID),
+      future: taskNotifier.getTask(taskID),
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return const CircularProgressIndicator();
@@ -307,20 +311,12 @@ class TaskList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: FutureBuilder<List<Task>>(
-        future: allTasks(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return const CircularProgressIndicator();
-          }
-          if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          }
-          final tasks = snapshot.data ?? [];
-          return tasks.isNotEmpty
+      child: Consumer<TaskChangeNotifier>(
+        builder: (context, tasks, child) {
+          return tasks.tasks.isNotEmpty
               ? ListView(
                   children: [
-                    for (Task task in tasks)
+                    for (Task task in tasks.tasks)
                       ListTile(
                         title: Text(task.name),
                         subtitle: Text(task.description),
