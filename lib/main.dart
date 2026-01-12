@@ -84,15 +84,15 @@ class _MainPageState extends State<MainPage> {
     return SafeArea(
       child: Scaffold(
         // NOTE: body and destinations must be in the same order to navigate
-        body: [WelcomePage(), SettingsPage(), TaskPage()][currentDestination],
+        body: [WelcomePage(), TaskPage(), SettingsPage()][currentDestination],
         bottomNavigationBar: NavigationBar(
           destinations: [
             NavigationDestination(icon: Icon(Icons.home), label: "Menu 1"),
+            NavigationDestination(icon: Icon(Icons.task), label: "Tasks"),
             NavigationDestination(
               icon: Icon(Icons.settings),
               label: "Settings",
             ),
-            NavigationDestination(icon: Icon(Icons.task), label: "Tasks"),
           ],
           onDestinationSelected: (int index) {
             setState(() {
