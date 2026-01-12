@@ -15,7 +15,7 @@ class SettingsNotifier with ChangeNotifier {
     notifyListeners();
   }
 
-  void changeDarkMode(bool value){
+  void changeDarkMode(bool value) {
     darkMode = value;
     notifyListeners();
   }
@@ -28,11 +28,11 @@ class SettingsPage extends StatefulWidget {
   State<SettingsPage> createState() => _SettingsPageState();
 }
 
-class _SettingsPageState extends State<SettingsPage>{
+class _SettingsPageState extends State<SettingsPage> {
   bool darkMode = false;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _loadPrefs();
   }
@@ -43,7 +43,7 @@ class _SettingsPageState extends State<SettingsPage>{
   // with a default value
   Future<void> _loadPrefs() async {
     final prefs = await SharedPreferences.getInstance();
-    setState((){
+    setState(() {
       darkMode = prefs.getBool('enableDarkMode') ?? true;
     });
   }
@@ -53,7 +53,7 @@ class _SettingsPageState extends State<SettingsPage>{
   // will need to be changed as well in the onChanged method
   Future<void> _changeBoolSetting(String setting, bool value) async {
     final prefs = await SharedPreferences.getInstance();
-    setState((){  
+    setState(() {
       prefs.setBool(setting, value);
     });
   }
@@ -61,30 +61,33 @@ class _SettingsPageState extends State<SettingsPage>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text('Settings page')),
-        body: Center(
-          child: Column(
-            children: [
-              const Text("There will be settings here"),
-              const Text("We will need to change things..."),
-              Row(
-                children: [
-                  const Text("Enable Dark Mode?"),
-                  Switch(
-                    value: context.read<SettingsNotifier>().darkMode,
-                    onChanged: ((bool value) {
-                      setState(() {
-                        context.read<SettingsNotifier>().changeDarkMode(value);
-                        _changeBoolSetting("enableDarkMode", value);
-                      });
-                    }),
-                  ),
-                ],
+      appBar: AppBar(title: const Text('Settings page')),
+      body: Center(
+        child: ListView(
+          children: [
+            Card(
+              child: ListTile(
+                title: Text("Enable Dark mode?"),
+                trailing: Switch(
+                  value: context.read<SettingsNotifier>().darkMode,
+                  onChanged: ((bool value) {
+                    setState(() {
+                      context.read<SettingsNotifier>().changeDarkMode(value);
+                      _changeBoolSetting("enableDarkMode", value);
+                    });
+                  }),
+                ),
               ),
-            ],
-          ),
+            ),
+            Card(
+              child: ListTile(
+                title: Text("Configure Tags"),
+                trailing: Icon(Icons.more_vert),
+              )
+            )
+          ],
         ),
-      
+      ),
     );
   }
 }

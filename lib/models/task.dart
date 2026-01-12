@@ -1,18 +1,21 @@
 import 'package:flutter/widgets.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:toolery/database/startdb.dart';
+import 'package:toolery/models/tag.dart';
 
 class Task {
   final int id;
   final String name;
   final String description;
   final String task;
+  final List<Tag>? tags;
 
   const Task({
     required this.id,
     required this.name,
     required this.description,
     required this.task,
+    this.tags
   });
 
   Map<String, Object?> toMap() {

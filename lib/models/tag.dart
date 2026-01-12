@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+// tags are used to provide some other type of context
+// or detail to a task
 class Tag {
   final int id;
   final String name;
