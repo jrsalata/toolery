@@ -1,4 +1,4 @@
-package com.example.toolery
+package software.salata.toolery
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -10,10 +10,18 @@ Future<Database> getDatabase() async {
   return openDatabase(
     join(await getDatabasesPath(), 'toolery.db'),
     onCreate: (db, version) {
-      return db.execute(
+      db.execute(
         'CREATE TABLE task (id INTEGER PRIMARY KEY, name TEXT, description TEXT, task TEXT )',
       );
+      db.execute('CREATE TABLE tag (id INTEGER PRIMARY KEY, name TEXT, color TEXT)',);
+      db.execute('CREATE TABLE tasktag (taskID INTEGER PRIMARY KEY, tagID INTEGER, FOREIGN KEY(tagID) REFERENCES tag(id), FOREIGN KEY(taskID) REFERENCES task(id))');
     },
-    version: 1,
+    onUpgrade: (db, prevVersion, curVersion){
+      if(prevVersion == 1){
+        db.execute('CREATE TABLE tag (id INTEGER PRIMARY KEY, name TEXT, color TEXT)',);
+        db.execute('CREATE TABLE tasktag (taskID INTEGER PRIMARY KEY, tagID INTEGER, FOREIGN KEY(tagID) REFERENCES tag(id), FOREIGN KEY(taskID) REFERENCES task(id))');
+      }
+    },
+    version: 2,
   );
 }
