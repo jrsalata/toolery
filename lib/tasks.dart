@@ -94,6 +94,8 @@ class _TaskFormState extends State<TaskForm> {
             hintText: "Provide a brief description of the task",
             border: OutlineInputBorder(),
           ),
+          maxLines: 2,
+          minLines: 1,
           validator: (value) {
             if (value == null || value.isEmpty) {
               return 'Please put a description';
@@ -105,10 +107,12 @@ class _TaskFormState extends State<TaskForm> {
           autofocus: false,
           controller: activityController,
           decoration: InputDecoration(
-            labelText: "Activity2",
+            labelText: "Activity",
             hintText: "Provide step-by-step instructions",
             border: OutlineInputBorder(),
           ),
+          keyboardType: TextInputType.multiline,
+          maxLines: null,
           validator: (value) {
             if (value == null || value.isEmpty) {
               return 'Please enter some instructions';
