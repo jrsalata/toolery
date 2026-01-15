@@ -34,27 +34,13 @@ class _MainState extends State<Main> {
   Widget build(BuildContext context) {
     return DynamicColorBuilder(
       builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
-        ColorScheme lightColorScheme;
-        ColorScheme darkColorScheme;
-
-        if (lightDynamic != null && darkDynamic != null) {
-          lightColorScheme = lightDynamic.harmonized();
-          darkColorScheme = darkDynamic.harmonized();
-        } else {
-          lightColorScheme = ColorScheme.fromSeed(seedColor: Colors.deepPurple);
-          darkColorScheme = ColorScheme.fromSeed(
-            seedColor: Colors.deepPurple,
-            brightness: Brightness.dark,
-          );
-        }
-
         return Consumer<SettingsNotifier>(
           builder: (context, settings, child) => MaterialApp(
             title: 'Toolery',
-            theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
+            theme: ThemeData(useMaterial3: true, colorScheme: settings.materialTheme ? lightDynamic?.harmonized() : ColorScheme.fromSeed(seedColor: Colors.deepPurple)),
             darkTheme: ThemeData(
               useMaterial3: true,
-              colorScheme: darkColorScheme,
+              colorScheme: settings.materialTheme ? darkDynamic?.harmonized() : ColorScheme.fromSeed(seedColor: Colors.deepPurple, brightness: Brightness.dark),
             ),
             themeMode: settings.darkMode ? ThemeMode.dark : ThemeMode.light,
             home: child,
