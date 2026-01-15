@@ -1,16 +1,19 @@
 # toolery
 
-A new Flutter project.
+Toolery is meant to be a mental health toolbox created by you, for you. You know what your brain needs in different situations and we want to make it easier for you to remember those needs.
 
-## Getting Started
+Create tasks that you know help you when experiencing different situations. Tag them so you can find only the ones you need when you need them.
 
-This project is a starting point for a Flutter application.
+All of the content is created by you so you have control.
 
-A few resources to get you started if this is your first Flutter project:
+Never any ads, monetization, or generative-AI* for the contents.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+*Gen-AI may be used for small parts of development. However, it will be kept minimal as this is a learning project.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Goals
+
+- notifications for daily tasks/activities
+- guided meditation sessions
+- personal journal with promps
+- list of personal mantras that help with focus
+- custom themes
