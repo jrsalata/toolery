@@ -42,7 +42,7 @@ class _MainState extends State<Main> {
               colorScheme: settings.materialTheme
                   ? lightDynamic?.harmonized()
                   : ColorScheme.fromSeed(
-                      seedColor: Color.fromRGBO(150, 10, 143, 1),
+                      seedColor: Color(settings.customTheme),
                     ),
             ),
             darkTheme: ThemeData(
@@ -50,7 +50,7 @@ class _MainState extends State<Main> {
               colorScheme: settings.materialTheme
                   ? darkDynamic?.harmonized()
                   : ColorScheme.fromSeed(
-                      seedColor: Colors.deepPurple,
+                      seedColor: Color(settings.customTheme),
                       brightness: Brightness.dark,
                     ),
             ),

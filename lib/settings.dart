@@ -1,11 +1,14 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 class SettingsNotifier with ChangeNotifier {
   bool darkMode = false;
   bool materialTheme = true;
-  String? customTheme;
+  int customTheme = 0xFFFFFF00;
 
   SettingsNotifier() {
     _loadPrefs();
@@ -15,13 +18,19 @@ class SettingsNotifier with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     darkMode = prefs.getBool('enableDarkMode') ?? true;
     materialTheme = prefs.getBool('useMaterialTheme') ?? true;
-    customTheme = prefs.getString('customThemeColor');
+    customTheme = prefs.getInt('customThemeColor') ?? 0xFFFFFF00;
     notifyListeners();
   }
 
   Future<void> _setBoolPrefs(String setting, bool value) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool(setting, value);
+    notifyListeners();
+  }
+
+  Future<void> _setIntPrefs(String setting, int value) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setInt(setting, value);
     notifyListeners();
   }
 
@@ -33,6 +42,11 @@ class SettingsNotifier with ChangeNotifier {
   void changeMaterialTheme(bool value) {
     materialTheme = value;
     _setBoolPrefs("useMaterialTheme", value);
+  }
+
+  void changeCustomTheme(int value) {
+    customTheme = value;
+    _setIntPrefs("customThemeColor", value);
   }
 }
 
@@ -69,6 +83,23 @@ class SettingsPage extends StatelessWidget {
                       );
                     }),
                   ),
+                ),
+              ),
+              if (!context.read<SettingsNotifier>().materialTheme)
+                Card(
+                  child: BlockPicker(
+                    pickerColor: Color(
+                      context.read<SettingsNotifier>().customTheme,
+                    ),
+                    onColorChanged: (changeColor) => context
+                        .read<SettingsNotifier>()
+                        .changeCustomTheme(changeColor.toARGB32()),
+                  ),
+                ),
+              Card(
+                child: ListTile(
+                  title: Text("Set Custom Theme Color"),
+                  onTap: () {},
                 ),
               ),
               Card(
