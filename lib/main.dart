@@ -37,10 +37,22 @@ class _MainState extends State<Main> {
         return Consumer<SettingsNotifier>(
           builder: (context, settings, child) => MaterialApp(
             title: 'Toolery',
-            theme: ThemeData(useMaterial3: true, colorScheme: settings.materialTheme ? lightDynamic?.harmonized() : ColorScheme.fromSeed(seedColor: Colors.deepPurple)),
+            theme: ThemeData(
+              useMaterial3: true,
+              colorScheme: settings.materialTheme
+                  ? lightDynamic?.harmonized()
+                  : ColorScheme.fromSeed(
+                      seedColor: Color.fromRGBO(150, 10, 143, 1),
+                    ),
+            ),
             darkTheme: ThemeData(
               useMaterial3: true,
-              colorScheme: settings.materialTheme ? darkDynamic?.harmonized() : ColorScheme.fromSeed(seedColor: Colors.deepPurple, brightness: Brightness.dark),
+              colorScheme: settings.materialTheme
+                  ? darkDynamic?.harmonized()
+                  : ColorScheme.fromSeed(
+                      seedColor: Colors.deepPurple,
+                      brightness: Brightness.dark,
+                    ),
             ),
             themeMode: settings.darkMode ? ThemeMode.dark : ThemeMode.light,
             home: child,
