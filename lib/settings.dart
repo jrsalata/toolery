@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 class SettingsNotifier with ChangeNotifier {
-  static const int defaultCustomThemeColor = 0xFFFFFF00;
+  static const int defaultCustomThemeColor = 0xFF673AB7;
   
   bool darkMode = false;
   bool materialTheme = true;
@@ -65,9 +65,9 @@ class SettingsPage extends StatelessWidget {
                 child: ListTile(
                   title: Text("Enable Dark mode?"),
                   trailing: Switch(
-                    value: context.read<SettingsNotifier>().darkMode,
+                    value: settings.darkMode,
                     onChanged: ((bool value) {
-                      context.read<SettingsNotifier>().changeDarkMode(value);
+                      settings.changeDarkMode(value);
                     }),
                   ),
                 ),
@@ -76,16 +76,16 @@ class SettingsPage extends StatelessWidget {
                 child: ListTile(
                   title: Text("Use System Theme Color?"),
                   trailing: Switch(
-                    value: context.read<SettingsNotifier>().materialTheme,
+                    value: settings.materialTheme,
                     onChanged: ((bool value) {
-                      context.read<SettingsNotifier>().changeMaterialTheme(
+                      settings.changeMaterialTheme(
                         value,
                       );
                     }),
                   ),
                 ),
               ),
-              if (!context.read<SettingsNotifier>().materialTheme)
+              if (!settings.materialTheme)
                 Card(
                   child: ListTile(
                     title: Text("Set Custom Theme Color"),
@@ -96,11 +96,9 @@ class SettingsPage extends StatelessWidget {
                         title: const Text("Select Color"),
                         content: BlockPicker(
                           pickerColor: Color(
-                            context.read<SettingsNotifier>().customTheme,
+                            settings.customTheme,
                           ),
-                          onColorChanged: (changeColor) => context
-                              .read<SettingsNotifier>()
-                              .changeCustomTheme(changeColor.toARGB32()),
+                          onColorChanged: (changeColor) => settings.changeCustomTheme(changeColor.toARGB32()),
                         ),
                         actions: [
                           TextButton(
