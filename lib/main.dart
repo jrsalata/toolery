@@ -40,7 +40,8 @@ class _MainState extends State<Main> {
             theme: ThemeData(
               useMaterial3: true,
               colorScheme: settings.materialTheme
-                  ? lightDynamic?.harmonized()
+                  ? (lightDynamic?.harmonized() ?? 
+                      ColorScheme.fromSeed(seedColor: Colors.deepPurple))
                   : ColorScheme.fromSeed(
                       seedColor: Color(settings.customTheme),
                     ),
@@ -48,7 +49,11 @@ class _MainState extends State<Main> {
             darkTheme: ThemeData(
               useMaterial3: true,
               colorScheme: settings.materialTheme
-                  ? darkDynamic?.harmonized()
+                  ? (darkDynamic?.harmonized() ??
+                      ColorScheme.fromSeed(
+                        seedColor: Colors.deepPurple,
+                        brightness: Brightness.dark,
+                      ))
                   : ColorScheme.fromSeed(
                       seedColor: Color(settings.customTheme),
                       brightness: Brightness.dark,
