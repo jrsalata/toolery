@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 class SettingsNotifier with ChangeNotifier {
+  static const int defaultCustomThemeColor = 0xFF673AB7;
+  
   bool darkMode = false;
+  bool materialTheme = true;
+  int customTheme = defaultCustomThemeColor;
 
   SettingsNotifier() {
     _loadPrefs();
@@ -12,80 +17,107 @@ class SettingsNotifier with ChangeNotifier {
   Future<void> _loadPrefs() async {
     final prefs = await SharedPreferences.getInstance();
     darkMode = prefs.getBool('enableDarkMode') ?? true;
+    materialTheme = prefs.getBool('useMaterialTheme') ?? true;
+    customTheme = prefs.getInt('customThemeColor') ?? defaultCustomThemeColor;
+    notifyListeners();
+  }
+
+  Future<void> _setBoolPrefs(String setting, bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool(setting, value);
+    notifyListeners();
+  }
+
+  Future<void> _setIntPrefs(String setting, int value) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setInt(setting, value);
     notifyListeners();
   }
 
   void changeDarkMode(bool value) {
     darkMode = value;
-    notifyListeners();
+    _setBoolPrefs("enableDarkMode", value);
+  }
+
+  void changeMaterialTheme(bool value) {
+    materialTheme = value;
+    _setBoolPrefs("useMaterialTheme", value);
+  }
+
+  void changeCustomTheme(int value) {
+    customTheme = value;
+    _setIntPrefs("customThemeColor", value);
   }
 }
 
-class SettingsPage extends StatefulWidget {
+class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
-
-  @override
-  State<SettingsPage> createState() => _SettingsPageState();
-}
-
-class _SettingsPageState extends State<SettingsPage> {
-  bool darkMode = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadPrefs();
-  }
-
-  // all future persistent settings will be loaded
-  // in through here
-  // so every new option needs another line in the setState function
-  // with a default value
-  Future<void> _loadPrefs() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      darkMode = prefs.getBool('enableDarkMode') ?? true;
-    });
-  }
-
-  // helper function to just change a single bool setting
-  // note that for the change to reflect, the local value (like darkMode)
-  // will need to be changed as well in the onChanged method
-  Future<void> _changeBoolSetting(String setting, bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      prefs.setBool(setting, value);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Settings page')),
       body: Center(
-        child: ListView(
-          children: [
-            Card(
-              child: ListTile(
-                title: Text("Enable Dark mode?"),
-                trailing: Switch(
-                  value: context.read<SettingsNotifier>().darkMode,
-                  onChanged: ((bool value) {
-                    setState(() {
-                      context.read<SettingsNotifier>().changeDarkMode(value);
-                      _changeBoolSetting("enableDarkMode", value);
-                    });
-                  }),
+        child: Consumer<SettingsNotifier>(
+          builder: (context, settings, child) => ListView(
+            children: [
+              Card(
+                child: ListTile(
+                  title: Text("Enable Dark mode?"),
+                  trailing: Switch(
+                    value: settings.darkMode,
+                    onChanged: ((bool value) {
+                      settings.changeDarkMode(value);
+                    }),
+                  ),
                 ),
               ),
-            ),
-            Card(
-              child: ListTile(
-                title: Text("Configure Tags"),
-                trailing: Icon(Icons.more_vert),
-              )
-            )
-          ],
+              Card(
+                child: ListTile(
+                  title: Text("Use System Theme Color?"),
+                  trailing: Switch(
+                    value: settings.materialTheme,
+                    onChanged: ((bool value) {
+                      settings.changeMaterialTheme(
+                        value,
+                      );
+                    }),
+                  ),
+                ),
+              ),
+              if (!settings.materialTheme)
+                Card(
+                  child: ListTile(
+                    title: Text("Set Custom Theme Color"),
+                    onTap: () async => showDialog<void>(
+                      context: context,
+                      barrierDismissible: true,
+                      builder: (BuildContext builder) => AlertDialog(
+                        title: const Text("Select Color"),
+                        content: BlockPicker(
+                          pickerColor: Color(
+                            settings.customTheme,
+                          ),
+                          onColorChanged: (changeColor) => settings.changeCustomTheme(changeColor.toARGB32()),
+                        ),
+                        actions: [
+                          TextButton(
+                            child: const Text("Done!"),
+                            onPressed: () => Navigator.of(context).pop(),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              Card(
+                child: ListTile(
+                  title: Text("Configure Tags"),
+                  trailing: Icon(Icons.more_vert),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
