@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -87,21 +85,31 @@ class SettingsPage extends StatelessWidget {
               ),
               if (!context.read<SettingsNotifier>().materialTheme)
                 Card(
-                  child: BlockPicker(
-                    pickerColor: Color(
-                      context.read<SettingsNotifier>().customTheme,
+                  child: ListTile(
+                    title: Text("Set Custom Theme Color"),
+                    onTap: () async => showDialog<void>(
+                      context: context,
+                      barrierDismissible: true,
+                      builder: (BuildContext builder) => AlertDialog(
+                        title: const Text("Select Color"),
+                        content: BlockPicker(
+                          pickerColor: Color(
+                            context.read<SettingsNotifier>().customTheme,
+                          ),
+                          onColorChanged: (changeColor) => context
+                              .read<SettingsNotifier>()
+                              .changeCustomTheme(changeColor.toARGB32()),
+                        ),
+                        actions: [
+                          TextButton(
+                            child: const Text("Done!"),
+                            onPressed: () => Navigator.of(context).pop(),
+                          ),
+                        ],
+                      ),
                     ),
-                    onColorChanged: (changeColor) => context
-                        .read<SettingsNotifier>()
-                        .changeCustomTheme(changeColor.toARGB32()),
                   ),
                 ),
-              Card(
-                child: ListTile(
-                  title: Text("Set Custom Theme Color"),
-                  onTap: () {},
-                ),
-              ),
               Card(
                 child: ListTile(
                   title: Text("Configure Tags"),
