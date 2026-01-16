@@ -4,9 +4,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 class SettingsNotifier with ChangeNotifier {
+  static const int defaultCustomThemeColor = 0xFF673AB7;
+  
   bool darkMode = false;
   bool materialTheme = true;
-  int customTheme = 0xFF673AB7;
+  int customTheme = defaultCustomThemeColor;
 
   SettingsNotifier() {
     _loadPrefs();
@@ -16,7 +18,7 @@ class SettingsNotifier with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     darkMode = prefs.getBool('enableDarkMode') ?? true;
     materialTheme = prefs.getBool('useMaterialTheme') ?? true;
-    customTheme = prefs.getInt('customThemeColor') ?? 0xFF673AB7;
+    customTheme = prefs.getInt('customThemeColor') ?? defaultCustomThemeColor;
     notifyListeners();
   }
 
