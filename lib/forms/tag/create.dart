@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:toolery/forms/tag/form.dart';
 import 'package:toolery/models/tag.dart';
 
-// page to create the task
+// page to create a tag
 class CreateTag extends StatefulWidget {
   const CreateTag({super.key, this.tag});
 
@@ -32,7 +32,7 @@ class _CreateTagState extends State<CreateTag> {
   Widget build(BuildContext context) {
     final tagNotifier = context.watch<TagChangeNotifier>();
     return Scaffold(
-      appBar: AppBar(title: const Text('Create New Task')),
+      appBar: AppBar(title: const Text('Create New Tag')),
       body: Form(
         key: _formKey,
         child: TagForm(

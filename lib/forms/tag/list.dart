@@ -28,6 +28,7 @@ class TagList extends StatelessWidget {
                         color: tag.color,
                         child: InkWell(
                           onTap: () async {
+                            tag.toMap();
                             await Navigator.push<bool>(
                               context,
                               MaterialPageRoute<bool>(
