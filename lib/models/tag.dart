@@ -98,10 +98,10 @@ class TagChangeNotifier with ChangeNotifier {
       for (final {
             'id': id as int,
             'name': name as String,
-            'description': description as int,
+            'color': color as int,
           }
           in tagMaps)
-        Tag(id: id, name: name, color: Color(description)),
+        Tag(id: id, name: name, color: Color(color)),
     ];
   }
 

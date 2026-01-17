@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:toolery/forms/tag/main.dart';
 
 class SettingsNotifier with ChangeNotifier {
   static const int defaultCustomThemeColor = 0xFF673AB7;
@@ -114,6 +115,7 @@ class SettingsPage extends StatelessWidget {
                 child: ListTile(
                   title: Text("Configure Tags"),
                   trailing: Icon(Icons.more_vert),
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const TagPage())),
                 ),
               ),
             ],
