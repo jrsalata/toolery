@@ -49,7 +49,9 @@ class TagList extends StatelessWidget {
                               child: Text(
                                 tag.name,
                                 style: TextStyle(
-                                  color: Theme.of(context).colorScheme.onSurface,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface,
                                 ),
                               ),
                             ),
