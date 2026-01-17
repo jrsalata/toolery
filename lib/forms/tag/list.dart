@@ -18,7 +18,13 @@ class TagList extends StatelessWidget {
                     for (Tag tag in tags.tags)
                       ListTile(
                         title: Text(tag.name),
-                        tileColor: tag.color,
+                        leading: SizedBox(
+                          width: 24,
+                          height: double.infinity,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(color: tag.color),
+                          ),
+                        ),
                         trailing: Icon(Icons.edit),
                         onTap: () async {
                           await Navigator.push<bool>(

@@ -61,10 +61,13 @@ class _TagFormState extends State<TagForm> {
         ),
         ListTile(
           title: Text("Set Tag Color"),
-          trailing: ValueListenableBuilder<Color>(
+          leading: ValueListenableBuilder<Color>(
             valueListenable: colorController,
-            builder: (context, value, _) =>
-                CircleAvatar(backgroundColor: value),
+            builder: (context, value, _) => SizedBox(
+              width: 24,
+              height: double.infinity,
+              child: DecoratedBox(decoration: BoxDecoration(color: value)),
+            ),
           ),
           onTap: () async => showDialog<void>(
             context: context,

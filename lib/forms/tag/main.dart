@@ -7,7 +7,7 @@ class TagPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Tags')),
+      appBar: AppBar(title: const Text('Configure Tags')),
       body: TagList(),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
