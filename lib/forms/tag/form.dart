@@ -42,54 +42,57 @@ class _TagFormState extends State<TagForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TextFormField(
-          autofocus: true,
-          controller: nameController,
-          decoration: InputDecoration(
-            labelText: "Tag Name",
-            hintText: "Give your tag a name",
-            border: OutlineInputBorder(),
-          ),
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Please give a name';
-            }
-            return null;
-          },
-        ),
-        ListTile(
-          title: Text("Set Tag Color"),
-          leading: ValueListenableBuilder<Color>(
-            valueListenable: colorController,
-            builder: (context, value, _) => SizedBox(
-              width: 24,
-              height: double.infinity,
-              child: DecoratedBox(decoration: BoxDecoration(color: value)),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          TextFormField(
+            autofocus: true,
+            controller: nameController,
+            decoration: InputDecoration(
+              labelText: "Tag Name",
+              hintText: "Give your tag a name",
+              border: OutlineInputBorder(),
             ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please give a name';
+              }
+              return null;
+            },
           ),
-          onTap: () async => showDialog<void>(
-            context: context,
-            barrierDismissible: true,
-            builder: (BuildContext builder) => AlertDialog(
-              title: const Text("Select Color"),
-              content: BlockPicker(
-                pickerColor: colorController.value,
-                onColorChanged: (changeColor) =>
-                    colorController.value = changeColor,
+          ListTile(
+            title: Text("Set Tag Color"),
+            leading: ValueListenableBuilder<Color>(
+              valueListenable: colorController,
+              builder: (context, value, _) => SizedBox(
+                width: 24,
+                height: double.infinity,
+                child: DecoratedBox(decoration: BoxDecoration(color: value)),
               ),
-              actions: [
-                TextButton(
-                  child: const Text("Done!"),
-                  onPressed: () => Navigator.of(context).pop(),
+            ),
+            onTap: () async => showDialog<void>(
+              context: context,
+              barrierDismissible: true,
+              builder: (BuildContext builder) => AlertDialog(
+                title: const Text("Select Color"),
+                content: BlockPicker(
+                  pickerColor: colorController.value,
+                  onColorChanged: (changeColor) =>
+                      colorController.value = changeColor,
                 ),
-              ],
+                actions: [
+                  TextButton(
+                    child: const Text("Done!"),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-        _formButton,
-      ],
+          _formButton,
+        ],
+      ),
     );
   }
 }

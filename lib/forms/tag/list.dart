@@ -9,31 +9,49 @@ class TagList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Align(
+      alignment: Alignment.topLeft,
       child: Consumer<TagChangeNotifier>(
         builder: (context, tags, child) {
           return tags.tags.isNotEmpty
-              ? ListView(
+              ? GridView.count(
+                  crossAxisCount: 3,
+                  childAspectRatio: 1.0, // square tiles
+                  crossAxisSpacing: 6,
+                  mainAxisSpacing: 6,
+                  padding: const EdgeInsets.all(8),
+                  shrinkWrap: true,
                   children: [
                     for (Tag tag in tags.tags)
-                      ListTile(
-                        title: Text(tag.name),
-                        leading: SizedBox(
-                          width: 24,
-                          height: double.infinity,
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(color: tag.color),
+                      Material(
+                        borderRadius: BorderRadius.circular(12),
+                        color: tag.color,
+                        child: InkWell(
+                          onTap: () async {
+                            await Navigator.push<bool>(
+                              context,
+                              MaterialPageRoute<bool>(
+                                builder: (context) => UpdateTag(tag: tag),
+                              ),
+                            );
+                          },
+                          child: Center(
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Text(
+                                tag.name,
+                                style: const TextStyle(color: Colors.black),
+                              ),
+                            ),
                           ),
                         ),
-                        trailing: Icon(Icons.edit),
-                        onTap: () async {
-                          await Navigator.push<bool>(
-                            context,
-                            MaterialPageRoute<bool>(
-                              builder: (context) => UpdateTag(tag: tag),
-                            ),
-                          );
-                        },
                       ),
                   ],
                 )
