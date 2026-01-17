@@ -13,7 +13,7 @@ Future<Database> getDatabase() async {
       db.execute(
         'CREATE TABLE task (id INTEGER PRIMARY KEY, name TEXT, description TEXT, task TEXT )',
       );
-      db.execute('CREATE TABLE tag (id INTEGER PRIMARY KEY, name TEXT, color TEXT)',);
+      db.execute('CREATE TABLE tag (id INTEGER PRIMARY KEY, name TEXT, color INTEGER)',);
       db.execute('CREATE TABLE tasktag (taskID INTEGER PRIMARY KEY, tagID INTEGER, FOREIGN KEY(tagID) REFERENCES tag(id), FOREIGN KEY(taskID) REFERENCES task(id))');
     },
     onUpgrade: (db, prevVersion, curVersion){
