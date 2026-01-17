@@ -32,7 +32,6 @@ class _UpdateTagState extends State<UpdateTag> {
     // Clean up the controller when the widget is disposed.
     nameController.dispose();
     colorController.dispose();
-
     super.dispose();
   }
 

@@ -16,8 +16,9 @@ class CreateTag extends StatefulWidget {
 class _CreateTagState extends State<CreateTag> {
   final _formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
-  final ValueNotifier<Color> colorController = ValueNotifier<Color>(Colors.blue);
-
+  final ValueNotifier<Color> colorController = ValueNotifier<Color>(
+    Colors.blue,
+  );
 
   @override
   void dispose() {

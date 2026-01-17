@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:toolery/forms/tag/view.dart';
+import 'package:toolery/forms/tag/update.dart';
 import 'package:toolery/models/tag.dart';
 
 // dedicated Widget to list all of the tags
@@ -23,7 +23,7 @@ class TagList extends StatelessWidget {
                           await Navigator.push<bool>(
                             context,
                             MaterialPageRoute<bool>(
-                              builder: (context) => TagInfo(tagID: tag.id),
+                              builder: (context) => UpdateTag(tag: tag),
                             ),
                           );
                         },
