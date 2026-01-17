@@ -90,10 +90,10 @@ class TagChangeNotifier with ChangeNotifier {
     // open up the db
     final db = await getDatabase();
 
-    // get all of the tasks
+    // get all of the tags
     final List<Map<String, Object?>> tagMaps = await db.query('tag');
 
-    // convert the map to tasks
+    // convert the map to tags
     return [
       for (final {
             'id': id as int,
