@@ -2,12 +2,12 @@
 import 'package:flutter/material.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:provider/provider.dart';
+import 'package:toolery/forms/task/main.dart';
 import 'package:toolery/models/task.dart';
 
 // Page imports
 import 'package:toolery/settings.dart';
 import 'package:toolery/welcomepage.dart';
-import 'package:toolery/tasks.dart';
 
 void main() {
   runApp(
