@@ -19,6 +19,7 @@ class TagList extends StatelessWidget {
                       ListTile(
                         title: Text(tag.name),
                         tileColor: tag.color,
+                        trailing: Icon(Icons.edit),
                         onTap: () async {
                           await Navigator.push<bool>(
                             context,
