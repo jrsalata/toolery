@@ -52,19 +52,7 @@ class Task {
     );
   }
 
-  factory Task.fromMap(Map<String, dynamic> map) {
-    return Task(
-      id: map['id'] as int,
-      name: map['name'] as String,
-      description: map['description'] as String,
-      task: map['task'] as String,
-      tags: map['tags'] != null ? List<Tag>.from((map['tags'] as List<int>).map<Tag?>((x) => Tag.fromMap(x as Map<String,dynamic>),),) : null,
-    );
-  }
-
   String toJson() => json.encode(toMap());
-
-  factory Task.fromJson(String source) => Task.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   bool operator ==(covariant Task other) {
