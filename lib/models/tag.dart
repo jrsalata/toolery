@@ -145,6 +145,7 @@ class TagChangeNotifier with ChangeNotifier {
     final db = await getDatabase();
 
     await db.delete('tag', where: 'id=?', whereArgs: [id]);
+    await db.delete('tasktag', where: 'tagID=?', whereArgs: [id]);
     _loadTags();
   }
 }
