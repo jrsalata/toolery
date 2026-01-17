@@ -1,5 +1,9 @@
-import 'package:flutter/widgets.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
+
 import 'package:toolery/database/startdb.dart';
 import 'package:toolery/models/tag.dart';
 
@@ -18,13 +22,57 @@ class Task {
     this.tags
   });
 
-  Map<String, Object?> toMap() {
-    return {'id': id, 'name': name, 'description': description, 'task': task};
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'id': id,
+      'name': name,
+      'description': description,
+      'task': task,
+    };
   }
 
   @override
   String toString() {
-    return "Task: {'id': $id, 'name': $name, 'description': $description, 'task': $task}";
+    return 'Task(id: $id, name: $name, description: $description, task: $task, tags: $tags)';
+  }
+
+  Task copyWith({
+    int? id,
+    String? name,
+    String? description,
+    String? task,
+    List<Tag>? tags,
+  }) {
+    return Task(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      task: task ?? this.task,
+      tags: tags ?? this.tags,
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  @override
+  bool operator ==(covariant Task other) {
+    if (identical(this, other)) return true;
+  
+    return 
+      other.id == id &&
+      other.name == name &&
+      other.description == description &&
+      other.task == task &&
+      listEquals(other.tags, tags);
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+      name.hashCode ^
+      description.hashCode ^
+      task.hashCode ^
+      tags.hashCode;
   }
 }
 
@@ -76,7 +124,7 @@ class TaskChangeNotifier with ChangeNotifier {
     // https://sqlite.org/autoinc.html
     Map<String, Object?> taskMap = task.toMap();
     taskMap.remove('id');
-
+    taskMap.remove('tags');
     final db = await getDatabase();
 
     await db.insert('task', taskMap, conflictAlgorithm: ConflictAlgorithm.fail);
