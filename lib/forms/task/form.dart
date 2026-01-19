@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:toolery/models/tag.dart';
 import 'package:toolery/models/task.dart';
+import 'package:toolery/notifiers/tag.dart';
 
 class TaskForm extends StatefulWidget {
   const TaskForm({
@@ -95,6 +98,26 @@ class _TaskFormState extends State<TaskForm> {
             }
             return null;
           },
+        ),
+        Wrap(
+          children: [
+            for (Tag tag in context.read<TagNotifier>().tags)
+              FilterChip(
+                backgroundColor: tag.color,
+                label: Text(tag.name),
+                labelStyle: TextStyle(
+                  color: tag.color.computeLuminance() > 0.5
+                      ? Colors.black
+                      : Colors.white,
+                ),
+                checkmarkColor: tag.color.computeLuminance() > 0.5
+                    ? Colors.black
+                    : Colors.white,
+                onSelected: ((bool selected) {
+                  setState(() {});
+                }),
+              ),
+          ],
         ),
         _formButton,
       ],
