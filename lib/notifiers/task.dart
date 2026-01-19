@@ -6,7 +6,14 @@ class TaskNotifier extends ChangeNotifier {
   final TaskRepository repository;
   List<Task> tasks = [];
 
-  TaskNotifier({required this.repository});
+  TaskNotifier({required this.repository}) {
+    _init();
+  }
+
+  Future<void> _init() async {
+    await repository.ready;
+    await loadAll();
+  }
 
   Future<void> loadAll() async {
     tasks = await repository.allTasks();

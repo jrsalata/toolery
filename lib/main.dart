@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:provider/provider.dart';
 import 'package:toolery/forms/task/main.dart';
-import 'package:toolery/models/tag.dart';
 import 'package:toolery/notifiers/task.dart';
+import 'package:toolery/notifiers/tag.dart';
 import 'package:toolery/repositories/task.dart';
+import 'package:toolery/repositories/tag.dart';
 
 // Page imports
 import 'package:toolery/settings.dart';
@@ -19,7 +20,9 @@ void main() {
         ChangeNotifierProvider(
           create: (_) => TaskNotifier(repository: SqliteTaskRepository()),
         ),
-        ChangeNotifierProvider(create: (_) => TagChangeNotifier()),
+        ChangeNotifierProvider(
+          create: (_) => TagNotifier(repository: SqliteTagRepository()),
+        ),
       ],
       child: const Main(),
     ),

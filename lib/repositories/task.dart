@@ -1,6 +1,7 @@
 import 'package:toolery/models/task.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:toolery/database/startdb.dart';
+import 'dart:async';
 
 abstract class TaskRepository {
   Future<List<Task>> allTasks();
@@ -8,11 +9,15 @@ abstract class TaskRepository {
   Future<Task> getTask(int id);
   Future<void> updateTask(Task task);
   Future<void> deleteTask(int id);
+
+  // flag if the repository is ready
+  Future<void> get ready;
 }
 
 class SqliteTaskRepository implements TaskRepository {
   late Database db;
   final String table = 'task';
+  final Completer<void> _ready = Completer<void>();
 
   SqliteTaskRepository() {
     _initDB();
@@ -20,7 +25,14 @@ class SqliteTaskRepository implements TaskRepository {
 
   Future<void> _initDB() async {
     db = await getDatabase();
+
+    // mark the repository as ready to be used
+    if (!_ready.isCompleted) _ready.complete();
   }
+
+  // return the status of the completer
+  @override
+  Future<void> get ready => _ready.future;
 
   Task _fromMap(Map<String, Object?> m) => Task.fromMap(m);
 

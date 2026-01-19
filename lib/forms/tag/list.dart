@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toolery/forms/tag/update.dart';
 import 'package:toolery/models/tag.dart';
+import 'package:toolery/notifiers/tag.dart';
 
 // dedicated Widget to list all of the tags
 class TagList extends StatelessWidget {
@@ -11,7 +12,7 @@ class TagList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Align(
       alignment: Alignment.topLeft,
-      child: Consumer<TagChangeNotifier>(
+      child: Consumer<TagNotifier>(
         builder: (context, tags, child) {
           return tags.tags.isNotEmpty
               ? GridView.count(
