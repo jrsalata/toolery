@@ -1,6 +1,7 @@
 import 'package:toolery/models/task.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:toolery/database/startdb.dart';
+import 'package:toolery/models/tag.dart';
 import 'dart:async';
 
 abstract class TaskRepository {
@@ -9,6 +10,9 @@ abstract class TaskRepository {
   Future<Task> getTask(int id);
   Future<void> updateTask(Task task);
   Future<void> deleteTask(int id);
+  Future<List<Tag>> tagsForTask(int taskID);
+  Future<void> addTag(int taskID, int tagID);
+  Future<void> removeTag(int taskID, int tagID);
 
   // flag if the repository is ready
   Future<void> get ready;
@@ -83,5 +87,28 @@ class SqliteTaskRepository implements TaskRepository {
     final id = map['id'];
     if (id == null) return;
     await db.update(table, map, where: 'id = ?', whereArgs: [id]);
+  }
+
+  @override
+  Future<List<Tag>> tagsForTask(int taskID) async {
+    final rows = await db.rawQuery(
+      'SELECT id, name, color FROM tag JOIN tasktag on tag.id = tasktag.tagID WHERE tasktag.taskID = ?',
+      [taskID],
+    );
+    return rows.map((row) => Tag.fromMap(row)).toList();
+  }
+
+  @override
+  Future<void> addTag(int taskID, int tagID) async {
+    await db.insert(joinTable, {'taskID': taskID, 'tagID': tagID});
+  }
+
+  @override
+  Future<void> removeTag(int taskID, int tagID) async {
+    await db.delete(
+      joinTable,
+      where: "taskID = ? AND tagID = ?",
+      whereArgs: [taskID, tagID],
+    );
   }
 }
