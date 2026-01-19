@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toolery/forms/task/view.dart';
 import 'package:toolery/models/task.dart';
+import 'package:toolery/notifiers/task.dart';
 
 // dedicated Widget to list all of the tasks
 class TaskList extends StatelessWidget {
@@ -10,7 +11,7 @@ class TaskList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Consumer<TaskChangeNotifier>(
+      child: Consumer<TaskNotifier>(
         builder: (context, tasks, child) {
           return tasks.tasks.isNotEmpty
               ? ListView(

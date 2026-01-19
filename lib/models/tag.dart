@@ -12,28 +12,16 @@ class Tag {
   final String name;
   final Color color;
 
-  const Tag({
-    required this.id,
-    required this.name,
-    required this.color,
-  });
+  const Tag({required this.id, required this.name, required this.color});
 
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'id': id,
-      'name': name,
-      'color': color.toARGB32(),
-    };
+    return <String, dynamic>{'id': id, 'name': name, 'color': color.toARGB32()};
   }
 
   @override
   String toString() => 'Tag(id: $id, name: $name, color: $color)';
 
-  Tag copyWith({
-    int? id,
-    String? name,
-    Color? color,
-  }) {
+  Tag copyWith({int? id, String? name, Color? color}) {
     return Tag(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -51,16 +39,14 @@ class Tag {
 
   String toJson() => json.encode(toMap());
 
-  factory Tag.fromJson(String source) => Tag.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory Tag.fromJson(String source) =>
+      Tag.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   bool operator ==(covariant Tag other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.id == id &&
-      other.name == name &&
-      other.color == color;
+
+    return other.id == id && other.name == name && other.color == color;
   }
 
   @override
@@ -68,7 +54,6 @@ class Tag {
 }
 
 class TagChangeNotifier with ChangeNotifier {
-
   // create a list with a getter
   List<Tag> _tags = [];
   List<Tag> get tags => _tags;
@@ -86,7 +71,6 @@ class TagChangeNotifier with ChangeNotifier {
   }
 
   Future<List<Tag>> allTags() async {
-    
     // open up the db
     final db = await getDatabase();
 
@@ -130,7 +114,7 @@ class TagChangeNotifier with ChangeNotifier {
     return Tag(
       id: rawTag["id"] as int,
       name: rawTag["name"] as String,
-      color: convertedColor
+      color: convertedColor,
     );
   }
 

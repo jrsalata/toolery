@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toolery/forms/task/form.dart';
 import 'package:toolery/models/task.dart';
+import 'package:toolery/notifiers/task.dart';
 
 // page to create the task
 class CreateTask extends StatefulWidget {
@@ -30,7 +31,7 @@ class _CreateTaskState extends State<CreateTask> {
 
   @override
   Widget build(BuildContext context) {
-    final taskNotifier = context.watch<TaskChangeNotifier>();
+    final taskNotifier = context.watch<TaskNotifier>();
     return Scaffold(
       appBar: AppBar(title: const Text('Create New Task')),
       body: Form(
@@ -48,7 +49,7 @@ class _CreateTaskState extends State<CreateTask> {
                   description: descriptionController.text,
                   task: activityController.text,
                 );
-                await taskNotifier.insertTask(newTask);
+                await taskNotifier.create(newTask);
                 if (context.mounted) {
                   Navigator.pop(context, true);
                 }

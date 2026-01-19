@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toolery/forms/task/form.dart';
 import 'package:toolery/models/task.dart';
+import 'package:toolery/notifiers/task.dart';
 
 // page to update the task
 class UpdateTask extends StatefulWidget {
@@ -40,7 +41,7 @@ class _UpdateTaskState extends State<UpdateTask> {
 
   @override
   Widget build(BuildContext context) {
-    final taskNotifier = context.watch<TaskChangeNotifier>();
+    final taskNotifier = context.watch<TaskNotifier>();
     return Scaffold(
       appBar: AppBar(title: Text('Edit ${_task.name}')),
       body: Column(
@@ -61,7 +62,7 @@ class _UpdateTaskState extends State<UpdateTask> {
                       description: descriptionController.text,
                       task: activityController.text,
                     );
-                    await taskNotifier.updateTask(updatedTask);
+                    await taskNotifier.update(updatedTask);
                     if (context.mounted) {
                       Navigator.pop(context, true);
                     }
@@ -110,7 +111,7 @@ class _UpdateTaskState extends State<UpdateTask> {
                 ),
               );
               if (confirm == true) {
-                await taskNotifier.deleteTask(_task.id);
+                await taskNotifier.delete(_task.id);
                 if (context.mounted) {
                   // we need to pop out of the edit page
                   // and the task info page

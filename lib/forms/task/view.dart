@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toolery/forms/task/update.dart';
 import 'package:toolery/models/task.dart';
+import 'package:toolery/notifiers/task.dart';
 
 // single-page to show all of the info on one task
 class TaskInfo extends StatelessWidget {
@@ -12,9 +13,9 @@ class TaskInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final taskNotifier = context.watch<TaskChangeNotifier>();
+    final taskNotifier = context.watch<TaskNotifier>();
     return FutureBuilder<Task>(
-      future: taskNotifier.getTask(taskID),
+      future: taskNotifier.getById(taskID),
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return const CircularProgressIndicator();

@@ -3,20 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:provider/provider.dart';
 import 'package:toolery/forms/task/main.dart';
-import 'package:toolery/models/task.dart';
 import 'package:toolery/models/tag.dart';
-
+import 'package:toolery/notifiers/task.dart';
+import 'package:toolery/repositories/task.dart';
 
 // Page imports
 import 'package:toolery/settings.dart';
-import 'package:toolery/welcomepage.dart';
+import 'package:toolery/welcome_page.dart';
 
 void main() {
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => SettingsNotifier()),
-        ChangeNotifierProvider(create: (_) => TaskChangeNotifier()),
+        ChangeNotifierProvider(
+          create: (_) => TaskNotifier(repository: SqliteTaskRepository()),
+        ),
         ChangeNotifierProvider(create: (_) => TagChangeNotifier()),
       ],
       child: const Main(),
@@ -44,9 +46,9 @@ class _MainState extends State<Main> {
               useMaterial3: true,
               colorScheme: settings.materialTheme
                   ? (lightDynamic?.harmonized() ??
-                      ColorScheme.fromSeed(
-                        seedColor: Color(settings.customTheme),
-                      ))
+                        ColorScheme.fromSeed(
+                          seedColor: Color(settings.customTheme),
+                        ))
                   : ColorScheme.fromSeed(
                       seedColor: Color(settings.customTheme),
                     ),
@@ -55,10 +57,10 @@ class _MainState extends State<Main> {
               useMaterial3: true,
               colorScheme: settings.materialTheme
                   ? (darkDynamic?.harmonized() ??
-                      ColorScheme.fromSeed(
-                        seedColor: Color(settings.customTheme),
-                        brightness: Brightness.dark,
-                      ))
+                        ColorScheme.fromSeed(
+                          seedColor: Color(settings.customTheme),
+                          brightness: Brightness.dark,
+                        ))
                   : ColorScheme.fromSeed(
                       seedColor: Color(settings.customTheme),
                       brightness: Brightness.dark,
