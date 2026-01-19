@@ -100,7 +100,10 @@ class SqliteTaskRepository implements TaskRepository {
 
   @override
   Future<void> addTag(int taskID, int tagID) async {
-    await db.insert(joinTable, {'taskID': taskID, 'tagID': tagID});
+    await db.insert(joinTable, {
+      'taskID': taskID,
+      'tagID': tagID,
+    }, conflictAlgorithm: ConflictAlgorithm.ignore);
   }
 
   @override
