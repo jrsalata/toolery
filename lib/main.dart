@@ -13,16 +13,16 @@ import 'package:toolery/settings.dart';
 import 'package:toolery/welcome_page.dart';
 
 void main() {
+  TaskRepository taskRepo = SqliteTaskRepository();
+  TagRepository tagRepo = SqliteTagRepository();
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => SettingsNotifier()),
         ChangeNotifierProvider(
-          create: (_) => TaskNotifier(repository: SqliteTaskRepository()),
+          create: (_) => TaskNotifier(repository: taskRepo),
         ),
-        ChangeNotifierProvider(
-          create: (_) => TagNotifier(repository: SqliteTagRepository()),
-        ),
+        ChangeNotifierProvider(create: (_) => TagNotifier(repository: tagRepo)),
       ],
       child: const Main(),
     ),

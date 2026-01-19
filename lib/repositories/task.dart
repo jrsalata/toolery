@@ -17,6 +17,7 @@ abstract class TaskRepository {
 class SqliteTaskRepository implements TaskRepository {
   late Database db;
   final String table = 'task';
+  final String joinTable = 'tasktag';
   final Completer<void> _ready = Completer<void>();
 
   SqliteTaskRepository() {
@@ -41,6 +42,7 @@ class SqliteTaskRepository implements TaskRepository {
   @override
   Future<void> deleteTask(int id) async {
     await db.delete(table, where: 'id = ?', whereArgs: [id]);
+    await db.delete(joinTable, where: 'taskID = ?', whereArgs: [id]);
   }
 
   @override
