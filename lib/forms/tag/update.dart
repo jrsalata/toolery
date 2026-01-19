@@ -111,7 +111,6 @@ class _UpdateTagState extends State<UpdateTag> {
                   // we need to pop out of the edit page
                   // and the tag info page
                   Navigator.pop(context, true);
-                  Navigator.pop(context, true);
                 }
               }
             },

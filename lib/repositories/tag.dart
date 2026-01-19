@@ -18,6 +18,7 @@ class SqliteTagRepository implements TagRepository {
   late Database db;
   final String table = 'tag';
   final String joinTable = 'tasktag';
+  final Completer<void> _ready = Completer<void>();
 
   SqliteTagRepository() {
     _initDB();
@@ -28,8 +29,6 @@ class SqliteTagRepository implements TagRepository {
     // mark repository as ready
     if (!_ready.isCompleted) _ready.complete();
   }
-
-  final Completer<void> _ready = Completer<void>();
 
   @override
   Future<void> get ready => _ready.future;
