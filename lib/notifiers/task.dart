@@ -57,9 +57,12 @@ class TaskNotifier extends ChangeNotifier {
     List<int> currentTags = await getTags(task);
     final Set<int> currentTagSet = currentTags.toSet();
     final Set<int> tagIdSet = tagIDs.toSet();
+
+    // note we are calling the repository version
+    // so we avoid constantly calling loadAll()
     for (int tagID in currentTags) {
       if (!tagIdSet.contains(tagID)) {
-        await removeTag(task.id, tagID);
+        await repository.removeTag(task.id, tagID);
       }
     }
     for (int tagID in tagIDs) {
