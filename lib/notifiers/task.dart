@@ -55,16 +55,19 @@ class TaskNotifier extends ChangeNotifier {
 
   Future<void> setTags(Task task, List<int> tagIDs) async {
     List<int> currentTags = await getTags(task);
+    final Set<int> currentTagSet = currentTags.toSet();
+    final Set<int> tagIdSet = tagIDs.toSet();
     for (int tagID in currentTags) {
-      if (!tagIDs.contains(tagID)) {
+      if (!tagIdSet.contains(tagID)) {
         await removeTag(task.id, tagID);
       }
     }
     for (int tagID in tagIDs) {
-      if (!currentTags.contains(tagID)) {
-        await addTag(task.id, tagID);
+      if (!currentTagSet.contains(tagID)) {
+        await repository.addTag(task.id, tagID);
       }
     }
+    await loadAll();
   }
 
   Future<Task> getById(int id) async => repository.getTask(id);
