@@ -15,6 +15,7 @@ class UpdateTask extends StatefulWidget {
 }
 
 class _UpdateTaskState extends State<UpdateTask> {
+  List<int> tagIDs = [];
   late Task _task;
   final _formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
@@ -53,6 +54,7 @@ class _UpdateTaskState extends State<UpdateTask> {
               descriptionController: descriptionController,
               activityController: activityController,
               task: _task,
+              onTagsChanged: ((List<int> tagIDList) => tagIDs = tagIDList),
               formButton: FilledButton(
                 onPressed: (() async {
                   if (_formKey.currentState!.validate()) {
@@ -63,6 +65,7 @@ class _UpdateTaskState extends State<UpdateTask> {
                       task: activityController.text,
                     );
                     await taskNotifier.update(updatedTask);
+                    await taskNotifier.setTags(_task, tagIDs);
                     if (context.mounted) {
                       Navigator.pop(context, true);
                     }
