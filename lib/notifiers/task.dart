@@ -1,12 +1,11 @@
 import 'package:flutter/foundation.dart';
-import 'package:toolery/models/tag.dart';
 import 'package:toolery/models/task.dart';
 import 'package:toolery/repositories/task.dart';
 
 class TaskNotifier extends ChangeNotifier {
   final TaskRepository repository;
   List<Task> tasks = [];
-  final Map<int, List<Tag>> _tagCache = {};
+  final Map<int, List<int>> _tagCache = {};
 
   TaskNotifier({required this.repository}) {
     _init();
@@ -48,6 +47,24 @@ class TaskNotifier extends ChangeNotifier {
   Future<void> removeTag(int taskID, int tagID) async {
     await repository.removeTag(taskID, tagID);
     await loadAll();
+  }
+
+  Future<List<int>> getTags(Task task) async {
+    return _tagCache[task.id] ?? [];
+  }
+
+  Future<void> setTags(Task task, List<int> tagIDs) async {
+    List<int> currentTags = await getTags(task);
+    for (int tagID in currentTags) {
+      if (!tagIDs.contains(tagID)) {
+        await removeTag(task.id, tagID);
+      }
+    }
+    for (int tagID in tagIDs) {
+      if (!currentTags.contains(tagID)) {
+        await addTag(task.id, tagID);
+      }
+    }
   }
 
   Future<Task> getById(int id) async => repository.getTask(id);

@@ -10,7 +10,7 @@ abstract class TaskRepository {
   Future<Task> getTask(int id);
   Future<void> updateTask(Task task);
   Future<void> deleteTask(int id);
-  Future<List<Tag>> tagsForTask(int taskID);
+  Future<List<int>> tagsForTask(int taskID);
   Future<void> addTag(int taskID, int tagID);
   Future<void> removeTag(int taskID, int tagID);
 
@@ -90,12 +90,12 @@ class SqliteTaskRepository implements TaskRepository {
   }
 
   @override
-  Future<List<Tag>> tagsForTask(int taskID) async {
+  Future<List<int>> tagsForTask(int taskID) async {
     final rows = await db.rawQuery(
       'SELECT id, name, color FROM tag JOIN tasktag on tag.id = tasktag.tagID WHERE tasktag.taskID = ?',
       [taskID],
     );
-    return rows.map((row) => Tag.fromMap(row)).toList();
+    return rows.map((row) => Tag.fromMap(row).id).toList();
   }
 
   @override
