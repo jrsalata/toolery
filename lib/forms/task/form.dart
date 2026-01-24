@@ -30,6 +30,7 @@ class _TaskFormState extends State<TaskForm> {
   late TextEditingController nameController;
   late TextEditingController descriptionController;
   late TextEditingController activityController;
+  List<int> tagIDs = [];
 
   @override
   void initState() {
@@ -103,19 +104,28 @@ class _TaskFormState extends State<TaskForm> {
           children: [
             for (Tag tag in context.read<TagNotifier>().tags)
               FilterChip(
+                selected: tagIDs.contains(tag.id),
                 backgroundColor: tag.color,
+                selectedColor: tag.color,
                 label: Text(tag.name),
                 labelStyle: TextStyle(
                   color: tag.color.computeLuminance() > 0.5
                       ? Colors.black
                       : Colors.white,
                 ),
+                showCheckmark: true,
                 checkmarkColor: tag.color.computeLuminance() > 0.5
                     ? Colors.black
                     : Colors.white,
-                onSelected: ((bool selected) {
-                  setState(() {});
-                }),
+                onSelected: (bool selected) {
+                  setState(() {
+                    if (selected) {
+                      tagIDs.add(tag.id);
+                    } else {
+                      tagIDs.remove(tag.id);
+                    }
+                  });
+                },
               ),
           ],
         ),
