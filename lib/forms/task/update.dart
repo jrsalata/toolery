@@ -20,6 +20,7 @@ class _UpdateTaskState extends State<UpdateTask> {
   final nameController = TextEditingController();
   final descriptionController = TextEditingController();
   final activityController = TextEditingController();
+  late Future<List<int>> _tagsFuture;
 
   @override
   void initState() {
@@ -28,6 +29,7 @@ class _UpdateTaskState extends State<UpdateTask> {
     nameController.text = _task.name;
     descriptionController.text = _task.description;
     activityController.text = _task.task;
+    _tagsFuture = Provider.of<TaskNotifier>(context, listen: false).getTags(_task);
   }
 
   @override
@@ -47,10 +49,7 @@ class _UpdateTaskState extends State<UpdateTask> {
       body: Column(
         children: [
           FutureBuilder<List<int>>(
-            future: Provider.of<TaskNotifier>(
-              context,
-              listen: false,
-            ).getTags(_task),
+            future: _tagsFuture,
             builder: (context, snapshot) {
               List<int> tagIDs = snapshot.data ?? <int>[];
               if (snapshot.connectionState == ConnectionState.waiting) {
