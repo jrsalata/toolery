@@ -55,7 +55,7 @@ class TaskNotifier extends ChangeNotifier {
   }
 
   Future<void> setTags(Task task, List<int> tagIDs) async {
-    List<int> currentTags = await getTags(task);
+    List<int> currentTags = getTags(task);
     final Set<int> currentTagSet = currentTags.toSet();
     final Set<int> tagIdSet = tagIDs.toSet();
 
