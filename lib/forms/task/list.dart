@@ -88,7 +88,7 @@ class _TaskListState extends State<TaskList> {
               ],
             );
           } else {
-            return Text("No tasks yet :(");
+            return const Text('No tasks yet :(');
           }
         },
       ),
