@@ -21,43 +21,44 @@ class _TaskListState extends State<TaskList> {
   Widget build(BuildContext context) {
     return Consumer<TagNotifier>(
       builder: (context, tags, child) {
-        if (tags.tags.isEmpty) return Text("No tags to sort by :(");
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Divider(),
-            Wrap(
-              children: [
-                for (Tag tag in tags.tags)
-                  FilterChip(
-                    selected: filterTags.contains(tag.id),
-                    backgroundColor: tag.color,
-                    selectedColor: tag.color,
-                    label: Text(tag.name),
-                    labelStyle: TextStyle(
-                      color: tag.color.computeLuminance() > 0.5
+            if (tags.tags.isNotEmpty) ...[
+              Divider(),
+              Wrap(
+                children: [
+                  for (Tag tag in tags.tags)
+                    FilterChip(
+                      selected: filterTags.contains(tag.id),
+                      backgroundColor: tag.color,
+                      selectedColor: tag.color,
+                      label: Text(tag.name),
+                      labelStyle: TextStyle(
+                        color: tag.color.computeLuminance() > 0.5
+                            ? Colors.black
+                            : Colors.white,
+                      ),
+                      showCheckmark: true,
+                      checkmarkColor: tag.color.computeLuminance() > 0.5
                           ? Colors.black
                           : Colors.white,
-                    ),
-                    showCheckmark: true,
-                    checkmarkColor: tag.color.computeLuminance() > 0.5
-                        ? Colors.black
-                        : Colors.white,
-                    onSelected: (bool selected) {
-                      setState(() {
-                        if (selected) {
-                          if (!filterTags.contains(tag.id)) {
-                            filterTags.add(tag.id);
+                      onSelected: (bool selected) {
+                        setState(() {
+                          if (selected) {
+                            if (!filterTags.contains(tag.id)) {
+                              filterTags.add(tag.id);
+                            }
+                          } else {
+                            filterTags.remove(tag.id);
                           }
-                        } else {
-                          filterTags.remove(tag.id);
-                        }
-                      });
-                    },
-                  ),
-              ],
-            ),
-            Divider(),
+                        });
+                      },
+                    ),
+                ],
+              ),
+              Divider(),
+            ],
             Expanded(child: child ?? SizedBox.shrink()),
           ],
         );
