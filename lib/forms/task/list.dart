@@ -24,42 +24,40 @@ class _TaskListState extends State<TaskList> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (tags.tags.isNotEmpty) ...[
-              Divider(),
-              Wrap(
-                children: [
-                  for (Tag tag in tags.tags)
-                    FilterChip(
-                      selected: filterTags.contains(tag.id),
-                      backgroundColor: tag.color,
-                      selectedColor: tag.color,
-                      label: Text(tag.name),
-                      labelStyle: TextStyle(
-                        color: tag.color.computeLuminance() > 0.5
-                            ? Colors.black
-                            : Colors.white,
-                      ),
-                      showCheckmark: true,
-                      checkmarkColor: tag.color.computeLuminance() > 0.5
+            if (tags.tags.isNotEmpty) Divider(),
+            Wrap(
+              children: [
+                for (Tag tag in tags.tags)
+                  FilterChip(
+                    selected: filterTags.contains(tag.id),
+                    backgroundColor: tag.color,
+                    selectedColor: tag.color,
+                    label: Text(tag.name),
+                    labelStyle: TextStyle(
+                      color: tag.color.computeLuminance() > 0.5
                           ? Colors.black
                           : Colors.white,
-                      onSelected: (bool selected) {
-                        setState(() {
-                          if (selected) {
-                            if (!filterTags.contains(tag.id)) {
-                              filterTags.add(tag.id);
-                            }
-                          } else {
-                            filterTags.remove(tag.id);
-                          }
-                        });
-                      },
                     ),
-                ],
-              ),
-              Divider(),
-            ],
-            Expanded(child: child ?? SizedBox.shrink()),
+                    showCheckmark: true,
+                    checkmarkColor: tag.color.computeLuminance() > 0.5
+                        ? Colors.black
+                        : Colors.white,
+                    onSelected: (bool selected) {
+                      setState(() {
+                        if (selected) {
+                          if (!filterTags.contains(tag.id)) {
+                            filterTags.add(tag.id);
+                          }
+                        } else {
+                          filterTags.remove(tag.id);
+                        }
+                      });
+                    },
+                  ),
+              ],
+            ),
+            if (tags.tags.isNotEmpty) Divider(),
+            Expanded(child: child ?? const SizedBox.shrink()),
           ],
         );
       },
