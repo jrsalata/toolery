@@ -65,31 +65,38 @@ class _TaskListState extends State<TaskList> {
       },
       child: Consumer<TaskNotifier>(
         builder: (context, tasks, child) {
-          if (tasks.tasks.isNotEmpty) {
-            return ListView(
-              children: [
-                for (Task task in tasks.tasks)
-                  if (filterTags.isEmpty ||
-                      filterTags.every(
-                        (tagID) => tasks.getTags(task).contains(tagID),
-                      ))
-                    ListTile(
-                      title: Text(task.name),
-                      subtitle: Text(task.description),
-                      onTap: () async {
-                        await Navigator.push<bool>(
-                          context,
-                          MaterialPageRoute<bool>(
-                            builder: (context) => TaskInfo(taskID: task.id),
-                          ),
-                        );
-                      },
-                    ),
-              ],
-            );
-          } else {
-            return const Text('No tasks yet :(');
+          if (tasks.tasks.isEmpty) {
+            return Text("No tasks yet :(");
           }
+
+          final List<Task> filteredTasks = tasks.tasks.where((task) {
+            return filterTags.isEmpty ||
+                filterTags.every(
+                  (tagID) => tasks.getTags(task).contains(tagID),
+                );
+          }).toList();
+
+          if (filteredTasks.isEmpty) {
+            return Text("No tasks match the selected filters");
+          }
+
+          return ListView(
+            children: [
+              for (Task task in filteredTasks)
+                ListTile(
+                  title: Text(task.name),
+                  subtitle: Text(task.description),
+                  onTap: () async {
+                    await Navigator.push<bool>(
+                      context,
+                      MaterialPageRoute<bool>(
+                        builder: (context) => TaskInfo(taskID: task.id),
+                      ),
+                    );
+                  },
+                ),
+            ],
+          );
         },
       ),
     );
