@@ -27,87 +27,70 @@ class TaskInfo extends StatelessWidget {
         }
         final Task? task = snapshot.data;
         final tagNotifier = context.watch<TagNotifier>();
-        return FutureBuilder<List<int>>(
-          future: taskNotifier.getTags(task!),
-          builder: (context, tagSnap) {
-            if (tagSnap.connectionState != ConnectionState.done) {
-              return Scaffold(
-                appBar: AppBar(title: Text(task.name)),
-                body: const Center(child: CircularProgressIndicator()),
-              );
-            }
-            if (tagSnap.hasError) {
-              return Scaffold(
-                appBar: AppBar(title: Text(task.name)),
-                body: Text('Error loading tags: ${tagSnap.error}'),
-              );
-            }
+        if (task == null) {
+          return Scaffold(
+            appBar: AppBar(title: const Text('Task')),
+            body: const Center(child: Text('Task not found')),
+          );
+        }
 
-            final List<int> tagIds = tagSnap.data ?? <int>[];
-            final tags = tagNotifier.tags
-                .where((t) => tagIds.contains(t.id))
-                .toList();
+        final List<int> tagIds = taskNotifier.getTags(task);
+        final tags = tagNotifier.tags
+            .where((t) => tagIds.contains(t.id))
+            .toList();
 
-            return Scaffold(
-              appBar: AppBar(title: Text(task.name)),
-              body: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        return Scaffold(
+          appBar: AppBar(title: Text(task.name)),
+          body: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Description",
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                Text(
+                  task.description,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                const SizedBox(height: 12),
+                Text("Activity", style: Theme.of(context).textTheme.bodyLarge),
+                Text(task.task, style: Theme.of(context).textTheme.bodyMedium),
+                const SizedBox(height: 12),
+                Text("Tags", style: Theme.of(context).textTheme.bodyLarge),
+                const SizedBox(height: 6),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
                   children: [
-                    Text(
-                      "Description",
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                    Text(
-                      task.description,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      "Activity",
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                    Text(
-                      task.task,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    const SizedBox(height: 12),
-                    Text("Tags", style: Theme.of(context).textTheme.bodyLarge),
-                    const SizedBox(height: 6),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        for (Tag tag in tags)
-                          Chip(
-                            label: Text(tag.name),
-                            labelStyle: TextStyle(
-                              color: tag.color.computeLuminance() > 0.5
-                                  ? Colors.black
-                                  : Colors.white,
-                            ),
-                            backgroundColor: tag.color,
-                          ),
-                        if (tags.isEmpty) const Text('No tags'),
-                      ],
-                    ),
+                    for (Tag tag in tags)
+                      Chip(
+                        label: Text(tag.name),
+                        labelStyle: TextStyle(
+                          color: tag.color.computeLuminance() > 0.5
+                              ? Colors.black
+                              : Colors.white,
+                        ),
+                        backgroundColor: tag.color,
+                      ),
+                    if (tags.isEmpty) const Text('No tags'),
                   ],
                 ),
-              ),
-              floatingActionButton: FloatingActionButton(
-                onPressed: () async {
-                  await Navigator.push<bool>(
-                    context,
-                    MaterialPageRoute<bool>(
-                      builder: (context) => UpdateTask(task: task),
-                    ),
-                  );
-                },
-                child: const Icon(Icons.edit),
-              ),
-            );
-          },
+              ],
+            ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () async {
+              await Navigator.push<bool>(
+                context,
+                MaterialPageRoute<bool>(
+                  builder: (context) => UpdateTask(task: task),
+                ),
+              );
+            },
+            child: const Icon(Icons.edit),
+          ),
         );
       },
     );

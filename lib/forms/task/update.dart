@@ -15,6 +15,7 @@ class UpdateTask extends StatefulWidget {
 }
 
 class _UpdateTaskState extends State<UpdateTask> {
+  List<int> tagIDs = [];
   late Task _task;
   final _formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
@@ -42,54 +43,43 @@ class _UpdateTaskState extends State<UpdateTask> {
   @override
   Widget build(BuildContext context) {
     final taskNotifier = context.watch<TaskNotifier>();
+    tagIDs = taskNotifier.getTags(_task);
     return Scaffold(
       appBar: AppBar(title: Text('Edit ${_task.name}')),
       body: Column(
         children: [
-          FutureBuilder<List<int>>(
-            future: Provider.of<TaskNotifier>(
-              context,
-              listen: false,
-            ).getTags(_task),
-            builder: (context, snapshot) {
-              List<int> tagIDs = snapshot.data ?? <int>[];
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              return Form(
-                key: _formKey,
-                child: TaskForm(
-                  nameController: nameController,
-                  descriptionController: descriptionController,
-                  activityController: activityController,
-                  task: _task,
-                  initialTagIDs: tagIDs,
-                  onTagIDsChanged: (List<int> tagIDList) => tagIDs = tagIDList,
-                  formButton: FilledButton(
-                    onPressed: (() async {
-                      if (_formKey.currentState!.validate()) {
-                        final Task updatedTask = Task(
-                          id: _task.id,
-                          name: nameController.text,
-                          description: descriptionController.text,
-                          task: activityController.text,
-                        );
-                        await taskNotifier.update(updatedTask);
-                        await taskNotifier.setTags(_task, tagIDs);
-                        if (context.mounted) {
-                          Navigator.pop(context, true);
-                        }
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Failed to validate!')),
-                        );
-                      }
-                    }),
-                    child: const Text('Save Changes'),
-                  ),
-                ),
-              );
-            },
+          Form(
+            key: _formKey,
+            child: TaskForm(
+              nameController: nameController,
+              descriptionController: descriptionController,
+              activityController: activityController,
+              task: _task,
+              initialTagIDs: tagIDs,
+              onTagIDsChanged: ((List<int> tagIDList) => tagIDs = tagIDList),
+              formButton: FilledButton(
+                onPressed: (() async {
+                  if (_formKey.currentState!.validate()) {
+                    final Task updatedTask = Task(
+                      id: _task.id,
+                      name: nameController.text,
+                      description: descriptionController.text,
+                      task: activityController.text,
+                    );
+                    await taskNotifier.update(updatedTask);
+                    await taskNotifier.setTags(_task, tagIDs);
+                    if (context.mounted) {
+                      Navigator.pop(context, true);
+                    }
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Failed to validate!')),
+                    );
+                  }
+                }),
+                child: const Text('Save Changes'),
+              ),
+            ),
           ),
           FilledButton.tonal(
             style: ButtonStyle(

@@ -111,7 +111,7 @@ class _TaskFormState extends State<TaskForm> {
         ),
         Wrap(
           children: [
-            for (Tag tag in context.read<TagNotifier>().tags)
+            for (Tag tag in context.watch<TagNotifier>().tags)
               FilterChip(
                 selected: tagIDs.contains(tag.id),
                 backgroundColor: tag.color,

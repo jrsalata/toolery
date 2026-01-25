@@ -50,7 +50,7 @@ class TaskNotifier extends ChangeNotifier {
     await loadAll();
   }
 
-  Future<List<int>> getTags(Task task) async {
+  List<int> getTags(Task task) {
     return _tagCache[task.id] ?? [];
   }
 
