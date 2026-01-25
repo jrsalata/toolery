@@ -19,6 +19,7 @@ class _CreateTaskState extends State<CreateTask> {
   final nameController = TextEditingController();
   final descriptionController = TextEditingController();
   final activityController = TextEditingController();
+  List<int> tagIDs = [];
 
   @override
   void dispose() {
@@ -40,6 +41,8 @@ class _CreateTaskState extends State<CreateTask> {
           nameController: nameController,
           descriptionController: descriptionController,
           activityController: activityController,
+          initialTagIDs: const [],
+          onTagIDsChanged: (List<int> ids) => tagIDs = ids,
           formButton: FilledButton(
             onPressed: (() async {
               if (_formKey.currentState!.validate()) {
@@ -49,7 +52,10 @@ class _CreateTaskState extends State<CreateTask> {
                   description: descriptionController.text,
                   task: activityController.text,
                 );
-                await taskNotifier.create(newTask);
+                final created = await taskNotifier.create(newTask);
+                if (tagIDs.isNotEmpty) {
+                  await taskNotifier.setTags(created, tagIDs);
+                }
                 if (context.mounted) {
                   Navigator.pop(context, true);
                 }

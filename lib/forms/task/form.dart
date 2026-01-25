@@ -12,6 +12,8 @@ class TaskForm extends StatefulWidget {
     required this.descriptionController,
     required this.activityController,
     this.task,
+    this.initialTagIDs,
+    this.onTagIDsChanged,
   });
 
   final ButtonStyleButton formButton;
@@ -19,18 +21,20 @@ class TaskForm extends StatefulWidget {
   final TextEditingController descriptionController;
   final TextEditingController activityController;
   final Task? task;
+  final List<int>? initialTagIDs;
+  final ValueChanged<List<int>>? onTagIDsChanged;
 
   @override
   State<TaskForm> createState() => _TaskFormState();
 }
 
 class _TaskFormState extends State<TaskForm> {
-  late ButtonStyleButton _formButton;
   Task? task;
+  List<int> tagIDs = [];
+  late ButtonStyleButton _formButton;
   late TextEditingController nameController;
   late TextEditingController descriptionController;
   late TextEditingController activityController;
-  List<int> tagIDs = [];
 
   @override
   void initState() {
@@ -40,6 +44,11 @@ class _TaskFormState extends State<TaskForm> {
     descriptionController = widget.descriptionController;
     activityController = widget.activityController;
     _formButton = widget.formButton;
+    // initialize selected tag IDs from provided initialTagIDs
+    if (widget.initialTagIDs != null) {
+      tagIDs = List<int>.from(widget.initialTagIDs!);
+    }
+
     if (task != null) {
       nameController.text = task!.name;
       descriptionController.text = task!.description;
@@ -120,11 +129,12 @@ class _TaskFormState extends State<TaskForm> {
                 onSelected: (bool selected) {
                   setState(() {
                     if (selected) {
-                      tagIDs.add(tag.id);
+                      if (!tagIDs.contains(tag.id)) tagIDs.add(tag.id);
                     } else {
                       tagIDs.remove(tag.id);
                     }
                   });
+                  widget.onTagIDsChanged?.call(List<int>.from(tagIDs));
                 },
               ),
           ],
