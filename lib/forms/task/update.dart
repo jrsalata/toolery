@@ -54,7 +54,7 @@ class _UpdateTaskState extends State<UpdateTask> {
               descriptionController: descriptionController,
               activityController: activityController,
               task: _task,
-              onTagsChanged: ((List<int> tagIDList) => tagIDs = tagIDList),
+              onTagIDsChanged: ((List<int> tagIDList) => tagIDs = tagIDList),
               formButton: FilledButton(
                 onPressed: (() async {
                   if (_formKey.currentState!.validate()) {
