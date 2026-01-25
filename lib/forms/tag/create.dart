@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toolery/forms/tag/form.dart';
 import 'package:toolery/models/tag.dart';
+import 'package:toolery/notifiers/tag.dart';
 
 // page to create a tag
 class CreateTag extends StatefulWidget {
@@ -30,7 +31,7 @@ class _CreateTagState extends State<CreateTag> {
 
   @override
   Widget build(BuildContext context) {
-    final tagNotifier = context.watch<TagChangeNotifier>();
+    final tagNotifier = context.watch<TagNotifier>();
     return Scaffold(
       appBar: AppBar(title: const Text('Create New Tag')),
       body: Form(
@@ -46,7 +47,7 @@ class _CreateTagState extends State<CreateTag> {
                   name: nameController.text,
                   color: colorController.value,
                 );
-                await tagNotifier.insertTag(newTag);
+                await tagNotifier.create(newTag);
                 if (context.mounted) {
                   Navigator.pop(context, true);
                 }

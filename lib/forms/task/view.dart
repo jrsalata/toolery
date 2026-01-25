@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toolery/forms/task/update.dart';
 import 'package:toolery/models/task.dart';
+import 'package:toolery/models/tag.dart';
+import 'package:toolery/notifiers/task.dart';
+import 'package:toolery/notifiers/tag.dart';
 
 // single-page to show all of the info on one task
 class TaskInfo extends StatelessWidget {
@@ -12,9 +15,9 @@ class TaskInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final taskNotifier = context.watch<TaskChangeNotifier>();
+    final taskNotifier = context.watch<TaskNotifier>();
     return FutureBuilder<Task>(
-      future: taskNotifier.getTask(taskID),
+      future: taskNotifier.getById(taskID),
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return const CircularProgressIndicator();
@@ -23,18 +26,59 @@ class TaskInfo extends StatelessWidget {
           return Text('Error: ${snapshot.error}');
         }
         final Task? task = snapshot.data;
+        final tagNotifier = context.watch<TagNotifier>();
+        if (task == null) {
+          return Scaffold(
+            appBar: AppBar(title: const Text('Task')),
+            body: const Center(child: Text('Task not found')),
+          );
+        }
+
+        final List<int> tagIds = taskNotifier.getTags(task);
+        final tags = tagNotifier.tags
+            .where((t) => tagIds.contains(t.id))
+            .toList();
+
         return Scaffold(
-          appBar: AppBar(title: Text(task!.name)),
-          body: Column(
-            children: [
-              Text("Description", style: Theme.of(context).textTheme.bodyLarge),
-              Text(
-                task.description,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              Text("Activity", style: Theme.of(context).textTheme.bodyLarge),
-              Text(task.task, style: Theme.of(context).textTheme.bodyMedium),
-            ],
+          appBar: AppBar(title: Text(task.name)),
+          body: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Description",
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                Text(
+                  task.description,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                const SizedBox(height: 12),
+                Text("Activity", style: Theme.of(context).textTheme.bodyLarge),
+                Text(task.task, style: Theme.of(context).textTheme.bodyMedium),
+                const SizedBox(height: 12),
+                Text("Tags", style: Theme.of(context).textTheme.bodyLarge),
+                const SizedBox(height: 6),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (Tag tag in tags)
+                      Chip(
+                        label: Text(tag.name),
+                        labelStyle: TextStyle(
+                          color: tag.color.computeLuminance() > 0.5
+                              ? Colors.black
+                              : Colors.white,
+                        ),
+                        backgroundColor: tag.color,
+                      ),
+                    if (tags.isEmpty) const Text('No tags'),
+                  ],
+                ),
+              ],
+            ),
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () async {

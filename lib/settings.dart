@@ -6,7 +6,7 @@ import 'package:toolery/forms/tag/main.dart';
 
 class SettingsNotifier with ChangeNotifier {
   static const int defaultCustomThemeColor = 0xFF673AB7;
-  
+
   bool darkMode = false;
   bool materialTheme = true;
   int customTheme = defaultCustomThemeColor;
@@ -79,9 +79,7 @@ class SettingsPage extends StatelessWidget {
                   trailing: Switch(
                     value: settings.materialTheme,
                     onChanged: ((bool value) {
-                      settings.changeMaterialTheme(
-                        value,
-                      );
+                      settings.changeMaterialTheme(value);
                     }),
                   ),
                 ),
@@ -96,10 +94,9 @@ class SettingsPage extends StatelessWidget {
                       builder: (BuildContext builder) => AlertDialog(
                         title: const Text("Select Color"),
                         content: BlockPicker(
-                          pickerColor: Color(
-                            settings.customTheme,
-                          ),
-                          onColorChanged: (changeColor) => settings.changeCustomTheme(changeColor.toARGB32()),
+                          pickerColor: Color(settings.customTheme),
+                          onColorChanged: (changeColor) => settings
+                              .changeCustomTheme(changeColor.toARGB32()),
                         ),
                         actions: [
                           TextButton(
@@ -115,7 +112,10 @@ class SettingsPage extends StatelessWidget {
                 child: ListTile(
                   title: Text("Configure Tags"),
                   trailing: Icon(Icons.more_vert),
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const TagPage())),
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const TagPage()),
+                  ),
                 ),
               ),
             ],

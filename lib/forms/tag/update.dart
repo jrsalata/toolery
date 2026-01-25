@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toolery/forms/tag/form.dart';
 import 'package:toolery/models/tag.dart';
+import 'package:toolery/notifiers/tag.dart';
 
 // page to update the tag
 class UpdateTag extends StatefulWidget {
@@ -37,7 +38,7 @@ class _UpdateTagState extends State<UpdateTag> {
 
   @override
   Widget build(BuildContext context) {
-    final tagNotifier = context.watch<TagChangeNotifier>();
+    final tagNotifier = context.watch<TagNotifier>();
     return Scaffold(
       appBar: AppBar(title: Text('Edit ${_tag.name}')),
       body: Column(
@@ -56,7 +57,7 @@ class _UpdateTagState extends State<UpdateTag> {
                       name: nameController.text,
                       color: colorController.value,
                     );
-                    await tagNotifier.updateTag(updatedTag);
+                    await tagNotifier.update(updatedTag);
                     if (context.mounted) {
                       Navigator.pop(context, true);
                     }
@@ -105,11 +106,10 @@ class _UpdateTagState extends State<UpdateTag> {
                 ),
               );
               if (confirm == true) {
-                await tagNotifier.deleteTag(_tag.id);
+                await tagNotifier.delete(_tag.id);
                 if (context.mounted) {
                   // we need to pop out of the edit page
                   // and the tag info page
-                  Navigator.pop(context, true);
                   Navigator.pop(context, true);
                 }
               }

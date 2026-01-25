@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toolery/forms/task/form.dart';
 import 'package:toolery/models/task.dart';
+import 'package:toolery/notifiers/task.dart';
 
 // page to create the task
 class CreateTask extends StatefulWidget {
@@ -18,6 +19,7 @@ class _CreateTaskState extends State<CreateTask> {
   final nameController = TextEditingController();
   final descriptionController = TextEditingController();
   final activityController = TextEditingController();
+  List<int> tagIDs = [];
 
   @override
   void dispose() {
@@ -30,7 +32,7 @@ class _CreateTaskState extends State<CreateTask> {
 
   @override
   Widget build(BuildContext context) {
-    final taskNotifier = context.watch<TaskChangeNotifier>();
+    final taskNotifier = context.watch<TaskNotifier>();
     return Scaffold(
       appBar: AppBar(title: const Text('Create New Task')),
       body: Form(
@@ -39,6 +41,8 @@ class _CreateTaskState extends State<CreateTask> {
           nameController: nameController,
           descriptionController: descriptionController,
           activityController: activityController,
+          initialTagIDs: const [],
+          onTagIDsChanged: (List<int> ids) => tagIDs = ids,
           formButton: FilledButton(
             onPressed: (() async {
               if (_formKey.currentState!.validate()) {
@@ -48,7 +52,10 @@ class _CreateTaskState extends State<CreateTask> {
                   description: descriptionController.text,
                   task: activityController.text,
                 );
-                await taskNotifier.insertTask(newTask);
+                final created = await taskNotifier.create(newTask);
+                if (tagIDs.isNotEmpty) {
+                  await taskNotifier.setTags(created, tagIDs);
+                }
                 if (context.mounted) {
                   Navigator.pop(context, true);
                 }
