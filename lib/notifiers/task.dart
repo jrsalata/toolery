@@ -24,9 +24,10 @@ class TaskNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> create(Task t) async {
-    await repository.insertTask(t);
+  Future<Task> create(Task t) async {
+    final Task created = await repository.insertTask(t);
     await loadAll();
+    return created;
   }
 
   Future<void> delete(int id) async {

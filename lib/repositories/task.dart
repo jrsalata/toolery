@@ -1,12 +1,11 @@
 import 'package:toolery/models/task.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:toolery/database/startdb.dart';
-import 'package:toolery/models/tag.dart';
 import 'dart:async';
 
 abstract class TaskRepository {
   Future<List<Task>> allTasks();
-  Future<void> insertTask(Task task);
+  Future<Task> insertTask(Task task);
   Future<Task> getTask(int id);
   Future<void> updateTask(Task task);
   Future<void> deleteTask(int id);
@@ -50,10 +49,15 @@ class SqliteTaskRepository implements TaskRepository {
   }
 
   @override
-  Future<void> insertTask(Task task) async {
+  Future<Task> insertTask(Task task) async {
     Map<String, Object?> map = _toMap(task);
     map.remove('id');
-    await db.insert(table, map, conflictAlgorithm: ConflictAlgorithm.replace);
+    final id = await db.insert(
+      table,
+      map,
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    return getTask(id);
   }
 
   @override
@@ -95,7 +99,7 @@ class SqliteTaskRepository implements TaskRepository {
       'SELECT id, name, color FROM tag JOIN tasktag on tag.id = tasktag.tagID WHERE tasktag.taskID = ?',
       [taskID],
     );
-    return rows.map((row) => Tag.fromMap(row).id).toList();
+    return rows.map((row) => row['id'] as int).toList();
   }
 
   @override
@@ -103,7 +107,7 @@ class SqliteTaskRepository implements TaskRepository {
     await db.insert(joinTable, {
       'taskID': taskID,
       'tagID': tagID,
-    }, conflictAlgorithm: ConflictAlgorithm.ignore);
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   @override
