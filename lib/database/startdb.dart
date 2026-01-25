@@ -4,7 +4,27 @@ import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+Database? _database;
+Future<Database>? _databaseFuture;
+
 Future<Database> getDatabase() async {
+  // Return cached database if already initialized
+  if (_database != null) {
+    return _database!;
+  }
+
+  // If initialization is in progress, wait for it to complete
+  if (_databaseFuture != null) {
+    return _databaseFuture!;
+  }
+
+  // Start initialization and cache the future
+  _databaseFuture = _initDatabase();
+  _database = await _databaseFuture!;
+  return _database!;
+}
+
+Future<Database> _initDatabase() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   return openDatabase(
