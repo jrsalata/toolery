@@ -2,11 +2,14 @@
 import 'package:flutter/material.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:provider/provider.dart';
+import 'package:toolery/forms/breathing/main.dart';
 import 'package:toolery/forms/task/main.dart';
 import 'package:toolery/notifiers/task.dart';
 import 'package:toolery/notifiers/tag.dart';
+import 'package:toolery/notifiers/breathing.dart';
 import 'package:toolery/repositories/task.dart';
 import 'package:toolery/repositories/tag.dart';
+import 'package:toolery/repositories/breathing.dart';
 
 // Page imports
 import 'package:toolery/settings.dart';
@@ -15,6 +18,7 @@ import 'package:toolery/welcome_page.dart';
 void main() {
   TaskRepository taskRepo = SqliteTaskRepository();
   TagRepository tagRepo = SqliteTagRepository();
+  BreathingRepository breathingRepo = SqliteBreathingRepository();
   runApp(
     MultiProvider(
       providers: [
@@ -23,6 +27,9 @@ void main() {
           create: (_) => TaskNotifier(repository: taskRepo),
         ),
         ChangeNotifierProvider(create: (_) => TagNotifier(repository: tagRepo)),
+        ChangeNotifierProvider(
+          create: (_) => BreathingNotifier(repository: breathingRepo),
+        ),
       ],
       child: const Main(),
     ),
@@ -97,10 +104,19 @@ class _MainPageState extends State<MainPage> {
     return SafeArea(
       child: Scaffold(
         // NOTE: body and destinations must be in the same order to navigate
-        body: [WelcomePage(), TaskPage(), SettingsPage()][currentDestination],
+        body: [
+          WelcomePage(),
+          BreathingPage(),
+          TaskPage(),
+          SettingsPage(),
+        ][currentDestination],
         bottomNavigationBar: NavigationBar(
           destinations: [
             NavigationDestination(icon: Icon(Icons.home), label: "Menu 1"),
+            NavigationDestination(
+              icon: Icon(Icons.self_improvement),
+              label: "Breathing Exercises",
+            ),
             NavigationDestination(icon: Icon(Icons.task), label: "Tasks"),
             NavigationDestination(
               icon: Icon(Icons.settings),

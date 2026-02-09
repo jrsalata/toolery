@@ -96,4 +96,20 @@ class Breathing {
         holdOut.hashCode ^
         reps.hashCode;
   }
+
+  String get humanReadable {
+    String returnString = "In $countIn";
+
+    if (holdIn > 0) {
+      returnString = "$returnString - Hold $holdIn";
+    }
+
+    returnString = "$returnString - Out $countOut";
+
+    if (holdOut > 0) {
+      returnString = "$returnString - Hold $holdOut";
+    }
+
+    return returnString;
+  }
 }

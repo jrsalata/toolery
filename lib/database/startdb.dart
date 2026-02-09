@@ -79,6 +79,6 @@ Future<Database> _initDatabase() async {
         );
       }
     },
-    version: 3,
+    version: 4,
   );
 }
