@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -37,7 +38,13 @@ Future<Database> _initDatabase() async {
         'CREATE TABLE tag (id INTEGER PRIMARY KEY, name TEXT, color INTEGER)',
       );
       db.execute(
+        'CREATE TABLE breathing (id INTEGER PRIMARY KEY, name TEXT, countIn INTEGER, holdIn INTEGER, countOut INTEGER, holdOut INTEGER, reps INTEGER)',
+      );
+      db.execute(
         'CREATE TABLE tasktag (taskID INTEGER NOT NULL, tagID INTEGER NOT NULL, PRIMARY KEY (taskID, tagID), FOREIGN KEY(tagID) REFERENCES tag(id), FOREIGN KEY(taskID) REFERENCES task(id))',
+      );
+      db.execute(
+        'CREATE TABLE breathingtag (breathingID INTEGER NOT NULL, tagID INTEGER NOT NULL, PRIMARY KEY (breathingID, tagID), FOREIGN KEY(tagID) REFERENCES tag(id), FOREIGN KEY(breathingID) REFERENCES breathing(id))',
       );
     },
     onUpgrade: (db, prevVersion, curVersion) {
@@ -62,6 +69,14 @@ Future<Database> _initDatabase() async {
         // replace old table
         db.execute('DROP TABLE IF EXISTS tasktag');
         db.execute('ALTER TABLE tasktag_new RENAME TO tasktag');
+      }
+      if (prevVersion < 4) {
+        db.execute(
+          'CREATE TABLE breathing (id INTEGER PRIMARY KEY, name TEXT, countIn INTEGER, holdIn INTEGER, countOut INTEGER, holdOut INTEGER, reps INTEGER)',
+        );
+        db.execute(
+          'CREATE TABLE breathingtag (breathingID INTEGER NOT NULL, tagID INTEGER NOT NULL, PRIMARY KEY (breathingID, tagID), FOREIGN KEY(tagID) REFERENCES tag(id), FOREIGN KEY(breathingID) REFERENCES breathing(id))',
+        );
       }
     },
     version: 3,
