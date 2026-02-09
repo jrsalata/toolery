@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
+import 'package:toolery/forms/breathing/exercise.dart';
 import 'package:toolery/forms/breathing/update.dart';
 import 'package:toolery/models/breathing.dart';
 import 'package:toolery/models/tag.dart';
@@ -73,6 +75,18 @@ class BreathingInfo extends StatelessWidget {
                       ),
                     if (tags.isEmpty) const Text('No tags'),
                   ],
+                ),
+                FilledButton(
+                  child: const Text('Start Exercise'),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ExerciseView(breathingID: breathingID),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

@@ -117,7 +117,10 @@ class _MainPageState extends State<MainPage> {
               icon: Icon(Icons.self_improvement),
               label: "Breathing",
             ),
-            NavigationDestination(icon: Icon(Icons.task), label: "Tasks"),
+            NavigationDestination(
+              icon: Icon(Icons.task_alt_rounded),
+              label: "Tasks",
+            ),
             NavigationDestination(
               icon: Icon(Icons.settings),
               label: "Settings",
