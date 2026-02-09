@@ -74,6 +74,7 @@ class _BreathingFormState extends State<BreathingForm> {
   String? _validateInt(String? value, String fieldName) {
     if (value == null || value.isEmpty) return 'Please enter $fieldName';
     if (int.tryParse(value) == null) return '$fieldName must be an integer';
+    if (int.tryParse(value)! < 0) return '$fieldName must be non-negative';
     return null;
   }
 
@@ -85,8 +86,8 @@ class _BreathingFormState extends State<BreathingForm> {
           autofocus: true,
           controller: nameController,
           decoration: InputDecoration(
-            labelText: "Breathing Name",
-            hintText: "Enter the name of a breathing",
+            labelText: "Breathing Exercise Name",
+            hintText: "Enter the name of your exercise",
             border: OutlineInputBorder(),
           ),
           validator: (value) {
@@ -112,7 +113,7 @@ class _BreathingFormState extends State<BreathingForm> {
           controller: holdInController,
           decoration: InputDecoration(
             labelText: "Hold In",
-            hintText: "Seconds to hold after inhale",
+            hintText: "Seconds to hold after an inhale",
             border: OutlineInputBorder(),
           ),
           keyboardType: TextInputType.number,
@@ -134,7 +135,7 @@ class _BreathingFormState extends State<BreathingForm> {
           controller: holdOutController,
           decoration: InputDecoration(
             labelText: "Hold Out",
-            hintText: "Seconds to hold after exhale",
+            hintText: "Seconds to hold after an exhale",
             border: OutlineInputBorder(),
           ),
           keyboardType: TextInputType.number,

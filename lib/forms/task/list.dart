@@ -27,6 +27,7 @@ class _TaskListState extends State<TaskList> {
             if (tags.tags.isNotEmpty) Divider(),
             Wrap(
               children: [
+                Padding(padding: EdgeInsets.all(6)),
                 for (Tag tag in tags.tags)
                   FilterChip(
                     selected: filterTags.contains(tag.id),

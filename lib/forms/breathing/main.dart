@@ -18,7 +18,7 @@ class BreathingPage extends StatelessWidget {
             ),
           );
         },
-        label: const Text("Breathing"),
+        label: const Text("Breathing Exercise"),
         icon: const Icon(Icons.add),
       ),
     );

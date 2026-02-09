@@ -30,7 +30,7 @@ class BreathingInfo extends StatelessWidget {
         if (breathing == null) {
           return Scaffold(
             appBar: AppBar(title: const Text('Breathing')),
-            body: const Center(child: Text('Breathing not found')),
+            body: const Center(child: Text('Breathing Exercise not found')),
           );
         }
 
@@ -51,7 +51,7 @@ class BreathingInfo extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 Text(
-                  breathing.name,
+                  breathing.humanReadable,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 const SizedBox(height: 12),

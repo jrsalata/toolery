@@ -103,10 +103,10 @@ class _UpdateBreathingState extends State<UpdateBreathing> {
             const SizedBox(height: 12),
             FilledButton.tonal(
               style: ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll(
+                backgroundColor: WidgetStatePropertyAll(
                   Theme.of(context).colorScheme.errorContainer,
                 ),
-                foregroundColor: MaterialStatePropertyAll(
+                foregroundColor: WidgetStatePropertyAll(
                   Theme.of(context).colorScheme.onErrorContainer,
                 ),
               ),
@@ -126,7 +126,7 @@ class _UpdateBreathingState extends State<UpdateBreathing> {
                       TextButton(
                         onPressed: () => Navigator.pop(context, true),
                         style: ButtonStyle(
-                          foregroundColor: MaterialStatePropertyAll(
+                          foregroundColor: WidgetStatePropertyAll(
                             Theme.of(context).colorScheme.error,
                           ),
                         ),

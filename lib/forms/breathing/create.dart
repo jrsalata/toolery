@@ -42,7 +42,7 @@ class _CreateBreathingState extends State<CreateBreathing> {
   Widget build(BuildContext context) {
     final breathingNotifier = context.watch<BreathingNotifier>();
     return Scaffold(
-      appBar: AppBar(title: const Text('Create New Breathing')),
+      appBar: AppBar(title: const Text('Create New Breathing Exercise')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(12),
         child: Form(
@@ -81,7 +81,7 @@ class _CreateBreathingState extends State<CreateBreathing> {
                   );
                 }
               }),
-              child: const Text('Add Breathing'),
+              child: const Text('Add Breathing Exercise'),
             ),
           ),
         ),

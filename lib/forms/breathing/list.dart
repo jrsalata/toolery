@@ -27,6 +27,7 @@ class _BreathingListState extends State<BreathingList> {
             if (tags.tags.isNotEmpty) Divider(),
             Wrap(
               children: [
+                Padding(padding: EdgeInsets.all(6)),
                 for (Tag tag in tags.tags)
                   FilterChip(
                     selected: filterTags.contains(tag.id),
@@ -64,7 +65,7 @@ class _BreathingListState extends State<BreathingList> {
       child: Consumer<BreathingNotifier>(
         builder: (context, breathings, child) {
           if (breathings.breathings.isEmpty) {
-            return Text("No breathings yet :(");
+            return Text("No breathing exercises yet :(");
           }
 
           final List<Breathing> filteredBreathings = breathings.breathings

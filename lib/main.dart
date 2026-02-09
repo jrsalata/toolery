@@ -115,7 +115,7 @@ class _MainPageState extends State<MainPage> {
             NavigationDestination(icon: Icon(Icons.home), label: "Menu 1"),
             NavigationDestination(
               icon: Icon(Icons.self_improvement),
-              label: "Breathing Exercises",
+              label: "Breathing",
             ),
             NavigationDestination(icon: Icon(Icons.task), label: "Tasks"),
             NavigationDestination(
