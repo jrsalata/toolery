@@ -47,38 +47,7 @@ Future<Database> _initDatabase() async {
         'CREATE TABLE breathingtag (breathingID INTEGER NOT NULL, tagID INTEGER NOT NULL, PRIMARY KEY (breathingID, tagID), FOREIGN KEY(tagID) REFERENCES tag(id), FOREIGN KEY(breathingID) REFERENCES breathing(id))',
       );
     },
-    onUpgrade: (db, prevVersion, curVersion) {
-      // migrate older versions to use a composite primary key on tasktag
-      if (prevVersion < 2) {
-        db.execute(
-          'CREATE TABLE tag (id INTEGER PRIMARY KEY, name TEXT, color INTEGER)',
-        );
-        db.execute(
-          'CREATE TABLE tasktag (taskID INTEGER PRIMARY KEY, tagID INTEGER, FOREIGN KEY(tagID) REFERENCES tag(id), FOREIGN KEY(taskID) REFERENCES task(id))',
-        );
-      }
-      if (prevVersion < 3) {
-        // ensure new table exists
-        db.execute(
-          'CREATE TABLE IF NOT EXISTS tasktag_new (taskID INTEGER NOT NULL, tagID INTEGER NOT NULL, PRIMARY KEY (taskID, tagID), FOREIGN KEY(tagID) REFERENCES tag(id), FOREIGN KEY(taskID) REFERENCES task(id))',
-        );
-        // copy existing relations into the new table (ignore duplicates)
-        db.execute(
-          'INSERT OR IGNORE INTO tasktag_new (taskID, tagID) SELECT taskID, tagID FROM tasktag',
-        );
-        // replace old table
-        db.execute('DROP TABLE IF EXISTS tasktag');
-        db.execute('ALTER TABLE tasktag_new RENAME TO tasktag');
-      }
-      if (prevVersion < 4) {
-        db.execute(
-          'CREATE TABLE breathing (id INTEGER PRIMARY KEY, name TEXT, countIn INTEGER, holdIn INTEGER, countOut INTEGER, holdOut INTEGER, reps INTEGER)',
-        );
-        db.execute(
-          'CREATE TABLE breathingtag (breathingID INTEGER NOT NULL, tagID INTEGER NOT NULL, PRIMARY KEY (breathingID, tagID), FOREIGN KEY(tagID) REFERENCES tag(id), FOREIGN KEY(breathingID) REFERENCES breathing(id))',
-        );
-      }
-    },
-    version: 4,
+    onUpgrade: (db, prevVersion, curVersion) {},
+    version: 1,
   );
 }
