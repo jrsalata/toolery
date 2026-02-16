@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
-import 'package:toolery/forms/breathing/exercise.dart';
+import 'package:toolery/breathingExercises/exercise.dart';
 import 'package:toolery/forms/breathing/update.dart';
 import 'package:toolery/models/breathing.dart';
 import 'package:toolery/models/tag.dart';
