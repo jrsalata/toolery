@@ -118,33 +118,29 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Consumer<SettingsNotifier>(
-        builder: (context, settings, child) {
-          return Scaffold(
-            // NOTE: body and destinations must be in the same order to navigate
-            body: [
-              WelcomePage(),
-              TaskPage(),
-              SettingsPage(packageInfo: _packageInfo),
-            ][currentDestination],
-            bottomNavigationBar: NavigationBar(
-              destinations: [
-                NavigationDestination(icon: Icon(Icons.home), label: "Menu 1"),
-                NavigationDestination(icon: Icon(Icons.task), label: "Tasks"),
-                NavigationDestination(
-                  icon: Icon(Icons.settings),
-                  label: "Settings",
-                ),
-              ],
-              onDestinationSelected: (int index) {
-                setState(() {
-                  currentDestination = index;
-                });
-              },
-              selectedIndex: currentDestination,
+      child: Scaffold(
+        // NOTE: body and destinations must be in the same order to navigate
+        body: [
+          WelcomePage(),
+          TaskPage(),
+          SettingsPage(packageInfo: _packageInfo),
+        ][currentDestination],
+        bottomNavigationBar: NavigationBar(
+          destinations: [
+            NavigationDestination(icon: Icon(Icons.home), label: "Menu 1"),
+            NavigationDestination(icon: Icon(Icons.task), label: "Tasks"),
+            NavigationDestination(
+              icon: Icon(Icons.settings),
+              label: "Settings",
             ),
-          );
-        },
+          ],
+          onDestinationSelected: (int index) {
+            setState(() {
+              currentDestination = index;
+            });
+          },
+          selectedIndex: currentDestination,
+        ),
       ),
     );
   }
