@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:toolery/forms/tag/main.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsNotifier with ChangeNotifier {
   static const int defaultCustomThemeColor = 0xFF673AB7;
@@ -67,6 +68,7 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Uri sourceCodeLink = Uri.parse("https://github.com/jrsalata/toolery");
     return Scaffold(
       appBar: AppBar(title: const Text('Settings page')),
       body: Center(
@@ -131,30 +133,24 @@ class SettingsPage extends StatelessWidget {
               ),
               Card(
                 child: ListTile(
+                  title: Text("Source Code"),
+                  subtitle: Text("Users are welcome to contribute!"),
+                  onTap: () async {
+                    if (!await launchUrl(sourceCodeLink)) {
+                      throw Exception('Could not launch $sourceCodeLink');
+                    }
+                  },
+                ),
+              ),
+
+              Card(
+                child: ListTile(
                   title: Text("About"),
-                  onTap: () => showDialog(
+                  onTap: () => showAboutDialog(
                     context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text("About ${packageInfo.appName}"),
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("App Name: ${packageInfo.appName}"),
-                            Text("Package Name: ${packageInfo.packageName}"),
-                            Text("Version: ${packageInfo.version}"),
-                            Text("Build Number: ${packageInfo.buildNumber}"),
-                          ],
-                        ),
-                        actions: [
-                          TextButton(
-                            child: const Text("Close"),
-                            onPressed: () => Navigator.of(context).pop(),
-                          ),
-                        ],
-                      );
-                    },
+                    applicationName: packageInfo.appName,
+                    applicationVersion: packageInfo.version,
+                    children: [Text("Created by John Salata")],
                   ),
                 ),
               ),
