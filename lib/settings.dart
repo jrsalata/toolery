@@ -9,6 +9,7 @@ class SettingsNotifier with ChangeNotifier {
 
   bool darkMode = false;
   bool materialTheme = true;
+  bool returningUser = true;
   int customTheme = defaultCustomThemeColor;
 
   SettingsNotifier() {
@@ -20,6 +21,8 @@ class SettingsNotifier with ChangeNotifier {
     darkMode = prefs.getBool('enableDarkMode') ?? true;
     materialTheme = prefs.getBool('useMaterialTheme') ?? true;
     customTheme = prefs.getInt('customThemeColor') ?? defaultCustomThemeColor;
+    returningUser = prefs.getBool('returningUser') ?? false;
+
     notifyListeners();
   }
 
@@ -48,6 +51,11 @@ class SettingsNotifier with ChangeNotifier {
   void changeCustomTheme(int value) {
     customTheme = value;
     _setIntPrefs("customThemeColor", value);
+  }
+
+  void changeReturningUser(bool value) {
+    returningUser = value;
+    _setBoolPrefs("returningUser", value);
   }
 }
 
