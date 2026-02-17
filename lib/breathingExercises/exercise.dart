@@ -6,6 +6,7 @@ import 'package:toolery/breathingExercises/controller.dart';
 import 'package:toolery/breathingExercises/visualizer.dart';
 import 'package:toolery/breathingExercises/phase_info.dart';
 import 'package:toolery/breathingExercises/controls.dart';
+import 'package:toolery/settings.dart';
 
 class ExerciseView extends StatelessWidget {
   final int breathingID;
@@ -59,7 +60,9 @@ class ExerciseView extends StatelessWidget {
                       const SizedBox(height: 20),
                       ExerciseControls(
                         running: ctrl.running,
-                        onStartStop: ctrl.toggle,
+                        onStartStop: () => ctrl.toggle(
+                          context.read<SettingsNotifier>().countUp,
+                        ),
                         onClose: () {
                           ctrl.stop();
                           Navigator.maybePop(context);

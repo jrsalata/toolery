@@ -80,12 +80,12 @@ class ExerciseController extends ChangeNotifier {
     phases = p;
   }
 
-  void start() {
+  void start(bool countUp) {
     if (phases.isEmpty) return;
     running = true;
     phaseIndex = 0;
     notifyListeners();
-    _startPhase(phaseIndex);
+    _startPhase(phaseIndex, countUp);
   }
 
   void stop() {
@@ -97,22 +97,22 @@ class ExerciseController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggle() {
+  void toggle(bool countUp) {
     if (running) {
       stop();
     } else {
-      start();
+      start(countUp);
     }
   }
 
-  void _startPhase(int index) {
+  void _startPhase(int index, bool countUp) {
     if (index < 0 || index >= phases.length) {
       _completeExercise();
       return;
     }
     final Phase phase = phases[index];
     phaseIndex = index;
-    elapsed = 1;
+    elapsed = countUp ? 1 : phase.seconds;
     displayScale = phase.initialScale;
     notifyListeners();
 
@@ -122,10 +122,9 @@ class ExerciseController extends ChangeNotifier {
     });
 
     HapticFeedback.mediumImpact();
-
     _tickTimer?.cancel();
     if (phase.seconds <= 0) {
-      Future.microtask(() => _advancePhase());
+      Future.microtask(() => _advancePhase(countUp));
       return;
     }
 
@@ -134,21 +133,24 @@ class ExerciseController extends ChangeNotifier {
         timer.cancel();
         return;
       }
-      elapsed += 1;
+      elapsed += countUp ? 1 : -1;
       notifyListeners();
-      if (elapsed > phase.seconds) {
+      if (countUp && elapsed > phase.seconds) {
         timer.cancel();
-        _advancePhase();
+        _advancePhase(countUp);
+      } else if (!countUp && elapsed <= 0) {
+        timer.cancel();
+        _advancePhase(countUp);
       }
     });
   }
 
-  void _advancePhase() {
+  void _advancePhase(bool countUp) {
     final next = phaseIndex + 1;
     if (next >= phases.length) {
       _completeExercise();
     } else {
-      _startPhase(next);
+      _startPhase(next, countUp);
     }
   }
 

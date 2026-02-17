@@ -9,6 +9,7 @@ class SettingsNotifier with ChangeNotifier {
 
   bool darkMode = false;
   bool materialTheme = true;
+  bool countUp = true;
   int customTheme = defaultCustomThemeColor;
 
   SettingsNotifier() {
@@ -20,6 +21,7 @@ class SettingsNotifier with ChangeNotifier {
     darkMode = prefs.getBool('enableDarkMode') ?? true;
     materialTheme = prefs.getBool('useMaterialTheme') ?? true;
     customTheme = prefs.getInt('customThemeColor') ?? defaultCustomThemeColor;
+    countUp = prefs.getBool("countUp") ?? true;
     notifyListeners();
   }
 
@@ -45,6 +47,11 @@ class SettingsNotifier with ChangeNotifier {
     _setBoolPrefs("useMaterialTheme", value);
   }
 
+  void changeCountUp(bool value) {
+    countUp = value;
+    _setBoolPrefs("countUp", value);
+  }
+
   void changeCustomTheme(int value) {
     customTheme = value;
     _setIntPrefs("customThemeColor", value);
@@ -62,6 +69,17 @@ class SettingsPage extends StatelessWidget {
         child: Consumer<SettingsNotifier>(
           builder: (context, settings, child) => ListView(
             children: [
+              Card(
+                child: ListTile(
+                  title: Text("Count up for breathing exercises?"),
+                  trailing: Switch(
+                    value: settings.countUp,
+                    onChanged: ((bool value) {
+                      settings.changeCountUp(value);
+                    }),
+                  ),
+                ),
+              ),
               Card(
                 child: ListTile(
                   title: Text("Enable Dark mode?"),
