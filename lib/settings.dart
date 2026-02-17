@@ -136,8 +136,14 @@ class SettingsPage extends StatelessWidget {
                   title: Text("Source Code"),
                   subtitle: Text("Users are welcome to contribute!"),
                   onTap: () async {
-                    if (!await launchUrl(sourceCodeLink)) {
-                      throw Exception('Could not launch $sourceCodeLink');
+                    final launched = await launchUrl(sourceCodeLink);
+                    if (!launched) {
+                      debugPrint('Could not launch $sourceCodeLink');
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Could not open source code link.'),
+                        ),
+                      );
                     }
                   },
                 ),
