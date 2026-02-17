@@ -110,6 +110,7 @@ class _MainPageState extends State<MainPage> {
 
   Future<void> _initPackageInfo() async {
     final info = await PackageInfo.fromPlatform();
+    if (!mounted) return;
     setState(() {
       _packageInfo = info;
     });
