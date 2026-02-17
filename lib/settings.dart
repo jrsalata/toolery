@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:toolery/forms/tag/main.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsNotifier with ChangeNotifier {
   static const int defaultCustomThemeColor = 0xFF673AB7;
 
   bool darkMode = false;
   bool materialTheme = true;
+  bool returningUser = true;
   int customTheme = defaultCustomThemeColor;
 
   SettingsNotifier() {
@@ -20,6 +23,8 @@ class SettingsNotifier with ChangeNotifier {
     darkMode = prefs.getBool('enableDarkMode') ?? true;
     materialTheme = prefs.getBool('useMaterialTheme') ?? true;
     customTheme = prefs.getInt('customThemeColor') ?? defaultCustomThemeColor;
+    returningUser = prefs.getBool('returningUser') ?? false;
+
     notifyListeners();
   }
 
@@ -49,13 +54,21 @@ class SettingsNotifier with ChangeNotifier {
     customTheme = value;
     _setIntPrefs("customThemeColor", value);
   }
+
+  void changeReturningUser(bool value) {
+    returningUser = value;
+    _setBoolPrefs("returningUser", value);
+  }
 }
 
 class SettingsPage extends StatelessWidget {
-  const SettingsPage({super.key});
+  final PackageInfo packageInfo;
+
+  const SettingsPage({super.key, required this.packageInfo});
 
   @override
   Widget build(BuildContext context) {
+    final Uri sourceCodeLink = Uri.parse("https://github.com/jrsalata/toolery");
     return Scaffold(
       appBar: AppBar(title: const Text('Settings page')),
       body: Center(
@@ -115,6 +128,35 @@ class SettingsPage extends StatelessWidget {
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const TagPage()),
+                  ),
+                ),
+              ),
+              Card(
+                child: ListTile(
+                  title: Text("Source Code"),
+                  subtitle: Text("Users are welcome to contribute!"),
+                  onTap: () async {
+                    final launched = await launchUrl(sourceCodeLink);
+                    if (!launched) {
+                      debugPrint('Could not launch $sourceCodeLink');
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Could not open source code link.'),
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ),
+
+              Card(
+                child: ListTile(
+                  title: Text("About"),
+                  onTap: () => showAboutDialog(
+                    context: context,
+                    applicationName: packageInfo.appName,
+                    applicationVersion: packageInfo.version,
+                    children: [Text("Created by John Salata")],
                   ),
                 ),
               ),
