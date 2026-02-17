@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
@@ -60,7 +61,9 @@ class SettingsNotifier with ChangeNotifier {
 }
 
 class SettingsPage extends StatelessWidget {
-  const SettingsPage({super.key});
+  final PackageInfo packageInfo;
+
+  const SettingsPage({super.key, required this.packageInfo});
 
   @override
   Widget build(BuildContext context) {
@@ -123,6 +126,35 @@ class SettingsPage extends StatelessWidget {
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const TagPage()),
+                  ),
+                ),
+              ),
+              Card(
+                child: ListTile(
+                  title: Text("About"),
+                  onTap: () => showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text("About ${packageInfo.appName}"),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("App Name: ${packageInfo.appName}"),
+                            Text("Package Name: ${packageInfo.packageName}"),
+                            Text("Version: ${packageInfo.version}"),
+                            Text("Build Number: ${packageInfo.buildNumber}"),
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                            child: const Text("Close"),
+                            onPressed: () => Navigator.of(context).pop(),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ),
               ),
