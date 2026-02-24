@@ -121,7 +121,7 @@ class ExerciseController extends ChangeNotifier {
       notifyListeners();
     });
 
-    HapticFeedback.mediumImpact();
+    HapticFeedback.vibrate();
     _tickTimer?.cancel();
     if (phase.seconds <= 0) {
       Future.microtask(() => _advancePhase(countUp));
