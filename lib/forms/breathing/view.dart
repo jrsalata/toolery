@@ -26,9 +26,9 @@ class BreathingInfo extends StatelessWidget {
         if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         }
-        final Breathing? breathing = snapshot.data;
+        final Breathing breathing = snapshot.data!;
         final tagNotifier = context.watch<TagNotifier>();
-        if (breathing == null) {
+        if (breathing.id == -1) {
           return Scaffold(
             appBar: AppBar(title: const Text('Breathing')),
             body: const Center(child: Text('Breathing Exercise not found')),
