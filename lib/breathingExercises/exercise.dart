@@ -25,8 +25,8 @@ class ExerciseView extends StatelessWidget {
         if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         }
-        final Breathing? breathing = snapshot.data;
-        if (breathing == null) {
+        final Breathing breathing = snapshot.data!;
+        if (breathing.id == -1) {
           return Scaffold(
             appBar: AppBar(title: const Text('Breathing')),
             body: const Center(child: Text('Breathing Exercise not found')),
