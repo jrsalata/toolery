@@ -79,7 +79,10 @@ Future<Database> _initDatabase() async {
         "INSERT INTO breathing (id, name, countIn, holdIn, countOut, holdOut, reps) VALUES (1, 'Square breathing', 4, 4, 4, 4, 6)",
       );
       db.execute(
-        "INSERT INTO breathing (id, name, countIn, holdIn, countOut, holdOut, reps) VALUES (2, '4-7-8', 4, 7, 8, 0, 4)",
+        "INSERT INTO breathing (id, name, countIn, holdIn, countOut, holdOut, reps) VALUES (2, 'Triangle breathing', 4, 4, 4, 0, 6)",
+      );
+      db.execute(
+        "INSERT INTO breathing (id, name, countIn, holdIn, countOut, holdOut, reps) VALUES (3, '4-7-8', 4, 7, 8, 0, 4)",
       );
 
       db.execute("INSERT INTO tasktag (taskID, tagID) VALUES (1, 1)");
