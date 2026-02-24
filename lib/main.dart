@@ -1,6 +1,7 @@
 // System imports
 import 'package:flutter/material.dart';
 import 'package:dynamic_color/dynamic_color.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:toolery/forms/breathing/main.dart';
 import 'package:toolery/forms/task/main.dart';
@@ -99,6 +100,29 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int currentDestination = 0;
 
+  PackageInfo _packageInfo = PackageInfo(
+    appName: 'Unknown',
+    packageName: 'Unknown',
+    version: 'Unknown',
+    buildNumber: 'Unknown',
+    buildSignature: 'Unknown',
+    installerStore: 'Unknown',
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _initPackageInfo();
+  }
+
+  Future<void> _initPackageInfo() async {
+    final info = await PackageInfo.fromPlatform();
+    if (!mounted) return;
+    setState(() {
+      _packageInfo = info;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -108,7 +132,7 @@ class _MainPageState extends State<MainPage> {
           WelcomePage(),
           BreathingPage(),
           TaskPage(),
-          SettingsPage(),
+          SettingsPage(packageInfo: _packageInfo),
         ][currentDestination],
         bottomNavigationBar: NavigationBar(
           destinations: [
