@@ -37,33 +37,66 @@ Future<Database> _initDatabase() async {
         'CREATE TABLE tag (id INTEGER PRIMARY KEY, name TEXT, color INTEGER)',
       );
       db.execute(
+        'CREATE TABLE breathing (id INTEGER PRIMARY KEY, name TEXT, countIn INTEGER, holdIn INTEGER, countOut INTEGER, holdOut INTEGER, reps INTEGER)',
+      );
+      db.execute(
         'CREATE TABLE tasktag (taskID INTEGER NOT NULL, tagID INTEGER NOT NULL, PRIMARY KEY (taskID, tagID), FOREIGN KEY(tagID) REFERENCES tag(id), FOREIGN KEY(taskID) REFERENCES task(id))',
       );
+      db.execute(
+        'CREATE TABLE breathingtag (breathingID INTEGER NOT NULL, tagID INTEGER NOT NULL, PRIMARY KEY (breathingID, tagID), FOREIGN KEY(tagID) REFERENCES tag(id), FOREIGN KEY(breathingID) REFERENCES breathing(id))',
+      );
+
+      db.execute(
+        "INSERT INTO tag (id, name, color) VALUES (1, 'mindfulness', 4283215696)",
+      );
+      db.execute(
+        "INSERT INTO tag (id, name, color) VALUES (2, 'breathing', 4278221563)",
+      );
+      db.execute(
+        "INSERT INTO tag (id, name, color) VALUES (3, 'stress', 4294901760)",
+      );
+      db.execute(
+        "INSERT INTO tag (id, name, color) VALUES (4, 'anxiety', 4294967040)",
+      );
+      db.execute(
+        "INSERT INTO tag (id, name, color) VALUES (5, 'self-care', 4289429645)",
+      );
+
+      db.execute(
+        "INSERT INTO task (id, name, description, task) VALUES (1, 'Journal', 'Write a short journal entry', 'Spend 5-10 minutes writing about your day or feelings.')",
+      );
+      db.execute(
+        "INSERT INTO task (id, name, description, task) VALUES (2, 'Say something kind', 'Say something kind to yourself out loud', 'Say: \"I am doing my best\" or another kind phrase.')",
+      );
+      db.execute(
+        "INSERT INTO task (id, name, description, task) VALUES (3, 'Take a walk', 'Step outside for a short walk', 'Walk for 5-15 minutes in a safe and calming environment.')",
+      );
+      db.execute(
+        "INSERT INTO task (id, name, description, task) VALUES (4, 'Drink water', 'Hydrate', 'Slowly drink a glass of water to fuel your body.')",
+      );
+
+      db.execute(
+        "INSERT INTO breathing (id, name, countIn, holdIn, countOut, holdOut, reps) VALUES (1, 'Square breathing', 4, 4, 4, 4, 6)",
+      );
+      db.execute(
+        "INSERT INTO breathing (id, name, countIn, holdIn, countOut, holdOut, reps) VALUES (2, 'Triangle breathing', 4, 4, 4, 0, 6)",
+      );
+      db.execute(
+        "INSERT INTO breathing (id, name, countIn, holdIn, countOut, holdOut, reps) VALUES (3, '4-7-8', 4, 7, 8, 0, 4)",
+      );
+
+      db.execute("INSERT INTO tasktag (taskID, tagID) VALUES (1, 1)");
+      db.execute("INSERT INTO tasktag (taskID, tagID) VALUES (1, 5)");
+      db.execute("INSERT INTO tasktag (taskID, tagID) VALUES (2, 5)");
+      db.execute("INSERT INTO tasktag (taskID, tagID) VALUES (3, 1)");
+      db.execute("INSERT INTO tasktag (taskID, tagID) VALUES (3, 3)");
+      db.execute("INSERT INTO tasktag (taskID, tagID) VALUES (4, 5)");
+
+      db.execute("INSERT INTO breathingtag (breathingID, tagID) VALUES (1, 2)");
+      db.execute("INSERT INTO breathingtag (breathingID, tagID) VALUES (1, 1)");
+      db.execute("INSERT INTO breathingtag (breathingID, tagID) VALUES (2, 2)");
     },
-    onUpgrade: (db, prevVersion, curVersion) {
-      // migrate older versions to use a composite primary key on tasktag
-      if (prevVersion < 2) {
-        db.execute(
-          'CREATE TABLE tag (id INTEGER PRIMARY KEY, name TEXT, color INTEGER)',
-        );
-        db.execute(
-          'CREATE TABLE tasktag (taskID INTEGER PRIMARY KEY, tagID INTEGER, FOREIGN KEY(tagID) REFERENCES tag(id), FOREIGN KEY(taskID) REFERENCES task(id))',
-        );
-      }
-      if (prevVersion < 3) {
-        // ensure new table exists
-        db.execute(
-          'CREATE TABLE IF NOT EXISTS tasktag_new (taskID INTEGER NOT NULL, tagID INTEGER NOT NULL, PRIMARY KEY (taskID, tagID), FOREIGN KEY(tagID) REFERENCES tag(id), FOREIGN KEY(taskID) REFERENCES task(id))',
-        );
-        // copy existing relations into the new table (ignore duplicates)
-        db.execute(
-          'INSERT OR IGNORE INTO tasktag_new (taskID, tagID) SELECT taskID, tagID FROM tasktag',
-        );
-        // replace old table
-        db.execute('DROP TABLE IF EXISTS tasktag');
-        db.execute('ALTER TABLE tasktag_new RENAME TO tasktag');
-      }
-    },
-    version: 3,
+    onUpgrade: (db, prevVersion, curVersion) {},
+    version: 1,
   );
 }

@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:toolery/forms/task/view.dart';
+import 'package:toolery/forms/breathing/view.dart';
 import 'package:toolery/models/tag.dart';
-import 'package:toolery/models/task.dart';
+import 'package:toolery/models/breathing.dart';
 import 'package:toolery/notifiers/tag.dart';
-import 'package:toolery/notifiers/task.dart';
+import 'package:toolery/notifiers/breathing.dart';
 
-// dedicated Widget to list all of the tasks
-class TaskList extends StatefulWidget {
-  const TaskList({super.key});
+// dedicated Widget to list all of the breathings
+class BreathingList extends StatefulWidget {
+  const BreathingList({super.key});
 
   @override
-  State<TaskList> createState() => _TaskListState();
+  State<BreathingList> createState() => _BreathingListState();
 }
 
-class _TaskListState extends State<TaskList> {
+class _BreathingListState extends State<BreathingList> {
   List<int> filterTags = [];
 
   @override
@@ -27,7 +27,6 @@ class _TaskListState extends State<TaskList> {
             if (tags.tags.isNotEmpty) Divider(),
             Wrap(
               children: [
-                const SizedBox(width: 6, height: 6),
                 for (Tag tag in tags.tags)
                   FilterChip(
                     selected: filterTags.contains(tag.id),
@@ -62,34 +61,37 @@ class _TaskListState extends State<TaskList> {
           ],
         );
       },
-      child: Consumer<TaskNotifier>(
-        builder: (context, tasks, child) {
-          if (tasks.tasks.isEmpty) {
-            return Text("No tasks yet :(");
+      child: Consumer<BreathingNotifier>(
+        builder: (context, breathings, child) {
+          if (breathings.breathings.isEmpty) {
+            return Text("No breathing exercises yet :(");
           }
 
-          final List<Task> filteredTasks = tasks.tasks.where((task) {
-            return filterTags.isEmpty ||
-                filterTags.every(
-                  (tagID) => tasks.getTags(task).contains(tagID),
-                );
-          }).toList();
+          final List<Breathing> filteredBreathings = breathings.breathings
+              .where((breathing) {
+                return filterTags.isEmpty ||
+                    filterTags.every(
+                      (tagID) => breathings.getTags(breathing).contains(tagID),
+                    );
+              })
+              .toList();
 
-          if (filteredTasks.isEmpty) {
-            return Text("No tasks match the selected filters");
+          if (filteredBreathings.isEmpty) {
+            return Text("No breathings match the selected filters");
           }
 
           return ListView(
             children: [
-              for (Task task in filteredTasks)
+              for (Breathing breathing in filteredBreathings)
                 ListTile(
-                  title: Text(task.name),
-                  subtitle: Text(task.description),
+                  title: Text(breathing.name),
+                  subtitle: Text(breathing.humanReadable),
                   onTap: () async {
                     await Navigator.push<bool>(
                       context,
                       MaterialPageRoute<bool>(
-                        builder: (context) => TaskInfo(taskID: task.id),
+                        builder: (context) =>
+                            BreathingInfo(breathingID: breathing.id),
                       ),
                     );
                   },
