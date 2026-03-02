@@ -69,7 +69,32 @@ class _BreathingListState extends State<BreathingList> {
       child: Consumer<BreathingNotifier>(
         builder: (context, breathings, child) {
           if (breathings.breathings.isEmpty) {
-            return Text("No breathing exercises yet :(");
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.air,
+                    size: 72,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No breathing exercises yet',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Tap + to create your first exercise',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            );
           }
 
           final List<Breathing> filteredBreathings = breathings.breathings
@@ -82,7 +107,25 @@ class _BreathingListState extends State<BreathingList> {
               .toList();
 
           if (filteredBreathings.isEmpty) {
-            return Text("No breathings match the selected filters");
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.filter_list_off,
+                    size: 72,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No exercises match the selected filters',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            );
           }
 
           return ListView.separated(

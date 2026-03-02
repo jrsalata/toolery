@@ -77,7 +77,7 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final Uri sourceCodeLink = Uri.parse("https://github.com/jrsalata/toolery");
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings page')),
+      appBar: AppBar(title: const Text('Settings')),
       body: Center(
         child: Consumer<SettingsNotifier>(
           builder: (context, settings, child) => ListView(

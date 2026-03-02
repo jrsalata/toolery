@@ -73,8 +73,31 @@ class _AffirmationDetailPageState extends State<AffirmationDetailPage> {
         builder: (context, notifier, _) {
           final listItems = notifier.items[widget.list.id] ?? [];
           if (listItems.isEmpty) {
-            return const Center(
-              child: Text('No affirmations yet. Tap + to add one!'),
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.format_quote,
+                    size: 72,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No affirmations yet',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Tap + to add your first affirmation',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
             );
           }
           return ListView.separated(

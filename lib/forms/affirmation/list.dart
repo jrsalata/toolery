@@ -41,8 +41,31 @@ class AffirmationListView extends StatelessWidget {
     return Consumer<AffirmationNotifier>(
       builder: (context, notifier, child) {
         if (notifier.lists.isEmpty) {
-          return const Center(
-            child: Text('No lists yet. Tap + New List to create one!'),
+          return Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.self_improvement,
+                  size: 72,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'No affirmation lists yet',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Tap + New List to create one',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
           );
         }
         return ListView.separated(

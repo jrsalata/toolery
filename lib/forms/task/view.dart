@@ -20,10 +20,15 @@ class TaskInfo extends StatelessWidget {
       future: taskNotifier.getById(taskID),
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
-          return const CircularProgressIndicator();
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
         }
         if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
+          return Scaffold(
+            appBar: AppBar(title: const Text('Task')),
+            body: Center(child: Text('Error loading task: ${snapshot.error}')),
+          );
         }
         final Task? task = snapshot.data;
         final tagNotifier = context.watch<TagNotifier>();
@@ -74,7 +79,13 @@ class TaskInfo extends StatelessWidget {
                         ),
                         backgroundColor: tag.color,
                       ),
-                    if (tags.isEmpty) const Text('No tags'),
+                    if (tags.isEmpty)
+                      Text(
+                        'No tags',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      ),
                   ],
                 ),
               ],
