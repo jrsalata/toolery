@@ -20,10 +20,17 @@ class ExerciseView extends StatelessWidget {
       future: breathingNotifier.getById(breathingID),
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
-          return const Center(child: CircularProgressIndicator());
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
         }
         if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
+          return Scaffold(
+            appBar: AppBar(title: const Text('Breathing')),
+            body: Center(
+              child: Text('Error loading exercise: ${snapshot.error}'),
+            ),
+          );
         }
         final Breathing breathing = snapshot.data!;
         if (breathing.id == -1) {

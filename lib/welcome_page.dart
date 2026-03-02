@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:toolery/forms/affirmation/main.dart';
+import 'package:toolery/forms/breathing/main.dart';
+import 'package:toolery/forms/task/main.dart';
 import 'package:toolery/settings.dart';
 
 class WelcomePage extends StatefulWidget {
@@ -133,9 +136,76 @@ class _WelcomePageState extends State<WelcomePage> {
               });
             }
             return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Text("This is a welcome page for Toolery!"),
-                const Text("We will see how this works!"),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 4,
+                  ),
+                  child: Card(
+                    child: ListTile(
+                      leading: const Icon(Icons.task_alt, size: 32),
+                      title: const Text('Tasks'),
+                      subtitle: const Text(
+                        'Activities and prompts that help you the most',
+                      ),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.push<void>(
+                          context,
+                          MaterialPageRoute(builder: (_) => const TaskPage()),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 4,
+                  ),
+                  child: Card(
+                    child: ListTile(
+                      leading: const Icon(Icons.air, size: 32),
+                      title: const Text('Breathing Exercises'),
+                      subtitle: const Text(
+                        'Guided breathing exercises to help calm and ground yourself',
+                      ),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.push<void>(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const BreathingPage(),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 4,
+                  ),
+                  child: Card(
+                    child: ListTile(
+                      leading: const Icon(Icons.self_improvement, size: 32),
+                      title: const Text('Affirmations'),
+                      subtitle: const Text('Important reminders in the moment'),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.push<void>(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const AffirmationPage(),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
               ],
             );
           },

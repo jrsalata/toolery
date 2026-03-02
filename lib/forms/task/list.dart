@@ -26,6 +26,10 @@ class _TaskListState extends State<TaskList> {
           children: [
             if (tags.tags.isNotEmpty) Divider(),
             Wrap(
+              alignment: WrapAlignment.center,
+              runAlignment: WrapAlignment.center,
+              spacing: 6,
+              runSpacing: 6,
               children: [
                 const SizedBox(width: 6, height: 6),
                 for (Tag tag in tags.tags)
@@ -65,36 +69,79 @@ class _TaskListState extends State<TaskList> {
       child: Consumer<TaskNotifier>(
         builder: (context, tasks, child) {
           if (tasks.tasks.isEmpty) {
-            return Text("No tasks yet :(");
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.task_alt,
+                    size: 72,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No tasks yet',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Tap + to add your first task',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            );
           }
 
           final List<Task> filteredTasks = tasks.tasks.where((task) {
             return filterTags.isEmpty ||
-                filterTags.every(
-                  (tagID) => tasks.getTags(task).contains(tagID),
-                );
+                filterTags.any((tagID) => tasks.getTags(task).contains(tagID));
           }).toList();
 
           if (filteredTasks.isEmpty) {
-            return Text("No tasks match the selected filters");
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.filter_list_off,
+                    size: 72,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No tasks match the selected filters',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            );
           }
 
-          return ListView(
-            children: [
-              for (Task task in filteredTasks)
-                ListTile(
-                  title: Text(task.name),
-                  subtitle: Text(task.description),
-                  onTap: () async {
-                    await Navigator.push<bool>(
-                      context,
-                      MaterialPageRoute<bool>(
-                        builder: (context) => TaskInfo(taskID: task.id),
-                      ),
-                    );
-                  },
-                ),
-            ],
+          return ListView.separated(
+            itemCount: filteredTasks.length,
+            separatorBuilder: (_, __) => const Divider(height: 1),
+            itemBuilder: (context, index) {
+              final task = filteredTasks[index];
+              return ListTile(
+                title: Text(task.name),
+                subtitle: Text(task.description),
+                onTap: () async {
+                  await Navigator.push<bool>(
+                    context,
+                    MaterialPageRoute<bool>(
+                      builder: (context) => TaskInfo(taskID: task.id),
+                    ),
+                  );
+                },
+              );
+            },
           );
         },
       ),

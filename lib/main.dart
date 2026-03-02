@@ -8,9 +8,11 @@ import 'package:toolery/forms/task/main.dart';
 import 'package:toolery/notifiers/task.dart';
 import 'package:toolery/notifiers/tag.dart';
 import 'package:toolery/notifiers/breathing.dart';
+import 'package:toolery/notifiers/affirmation.dart';
 import 'package:toolery/repositories/task.dart';
 import 'package:toolery/repositories/tag.dart';
 import 'package:toolery/repositories/breathing.dart';
+import 'package:toolery/repositories/affirmation.dart';
 
 // Page imports
 import 'package:toolery/settings.dart';
@@ -20,6 +22,7 @@ void main() {
   TaskRepository taskRepo = SqliteTaskRepository();
   TagRepository tagRepo = SqliteTagRepository();
   BreathingRepository breathingRepo = SqliteBreathingRepository();
+  AffirmationRepository affirmationRepo = SqliteAffirmationRepository();
   runApp(
     MultiProvider(
       providers: [
@@ -30,6 +33,9 @@ void main() {
         ChangeNotifierProvider(create: (_) => TagNotifier(repository: tagRepo)),
         ChangeNotifierProvider(
           create: (_) => BreathingNotifier(repository: breathingRepo),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => AffirmationNotifier(repository: affirmationRepo),
         ),
       ],
       child: const Main(),
@@ -136,11 +142,8 @@ class _MainPageState extends State<MainPage> {
         ][currentDestination],
         bottomNavigationBar: NavigationBar(
           destinations: [
-            NavigationDestination(icon: Icon(Icons.home), label: "Menu 1"),
-            NavigationDestination(
-              icon: Icon(Icons.self_improvement),
-              label: "Breathing",
-            ),
+            NavigationDestination(icon: Icon(Icons.home), label: "Menu"),
+            NavigationDestination(icon: Icon(Icons.air), label: "Breathing"),
             NavigationDestination(
               icon: Icon(Icons.task_alt_rounded),
               label: "Tasks",

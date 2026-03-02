@@ -26,7 +26,12 @@ class _BreathingListState extends State<BreathingList> {
           children: [
             if (tags.tags.isNotEmpty) Divider(),
             Wrap(
+              alignment: WrapAlignment.center,
+              runAlignment: WrapAlignment.center,
+              spacing: 6,
+              runSpacing: 6,
               children: [
+                const SizedBox(width: 6, height: 6),
                 for (Tag tag in tags.tags)
                   FilterChip(
                     selected: filterTags.contains(tag.id),
@@ -64,39 +69,84 @@ class _BreathingListState extends State<BreathingList> {
       child: Consumer<BreathingNotifier>(
         builder: (context, breathings, child) {
           if (breathings.breathings.isEmpty) {
-            return Text("No breathing exercises yet :(");
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.air,
+                    size: 72,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No breathing exercises yet',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Tap + to create your first exercise',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            );
           }
 
           final List<Breathing> filteredBreathings = breathings.breathings
               .where((breathing) {
                 return filterTags.isEmpty ||
-                    filterTags.every(
+                    filterTags.any(
                       (tagID) => breathings.getTags(breathing).contains(tagID),
                     );
               })
               .toList();
 
           if (filteredBreathings.isEmpty) {
-            return Text("No breathings match the selected filters");
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.filter_list_off,
+                    size: 72,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No exercises match the selected filters',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            );
           }
 
-          return ListView(
-            children: [
-              for (Breathing breathing in filteredBreathings)
-                ListTile(
-                  title: Text(breathing.name),
-                  subtitle: Text(breathing.humanReadable),
-                  onTap: () async {
-                    await Navigator.push<bool>(
-                      context,
-                      MaterialPageRoute<bool>(
-                        builder: (context) =>
-                            BreathingInfo(breathingID: breathing.id),
-                      ),
-                    );
-                  },
-                ),
-            ],
+          return ListView.separated(
+            itemCount: filteredBreathings.length,
+            separatorBuilder: (_, __) => const Divider(height: 1),
+            itemBuilder: (context, index) {
+              final breathing = filteredBreathings[index];
+              return ListTile(
+                title: Text(breathing.name),
+                subtitle: Text(breathing.humanReadable),
+                onTap: () async {
+                  await Navigator.push<bool>(
+                    context,
+                    MaterialPageRoute<bool>(
+                      builder: (context) =>
+                          BreathingInfo(breathingID: breathing.id),
+                    ),
+                  );
+                },
+              );
+            },
           );
         },
       ),
