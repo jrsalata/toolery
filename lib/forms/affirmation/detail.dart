@@ -21,6 +21,7 @@ class _AffirmationDetailPageState extends State<AffirmationDetailPage> {
     super.initState();
     // Load items when page opens
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       context.read<AffirmationNotifier>().loadItemsForList(widget.list.id);
     });
   }
