@@ -100,7 +100,7 @@ class _BreathingListState extends State<BreathingList> {
           final List<Breathing> filteredBreathings = breathings.breathings
               .where((breathing) {
                 return filterTags.isEmpty ||
-                    filterTags.every(
+                    filterTags.any(
                       (tagID) => breathings.getTags(breathing).contains(tagID),
                     );
               })

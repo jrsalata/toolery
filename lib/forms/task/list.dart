@@ -99,7 +99,7 @@ class _TaskListState extends State<TaskList> {
 
           final List<Task> filteredTasks = tasks.tasks.where((task) {
             return filterTags.isEmpty ||
-                filterTags.every((tagID) => tasks.getTags(task).contains(tagID));
+                filterTags.any((tagID) => tasks.getTags(task).contains(tagID));
           }).toList();
 
           if (filteredTasks.isEmpty) {
