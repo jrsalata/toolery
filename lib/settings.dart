@@ -157,11 +157,13 @@ class SettingsPage extends StatelessWidget {
                     final launched = await launchUrl(sourceCodeLink);
                     if (!launched) {
                       debugPrint('Could not launch $sourceCodeLink');
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Could not open source code link.'),
-                        ),
-                      );
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Could not open source code link.'),
+                          ),
+                        );
+                      }
                     }
                   },
                 ),

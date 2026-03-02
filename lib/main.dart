@@ -8,9 +8,11 @@ import 'package:toolery/forms/task/main.dart';
 import 'package:toolery/notifiers/task.dart';
 import 'package:toolery/notifiers/tag.dart';
 import 'package:toolery/notifiers/breathing.dart';
+import 'package:toolery/notifiers/affirmation.dart';
 import 'package:toolery/repositories/task.dart';
 import 'package:toolery/repositories/tag.dart';
 import 'package:toolery/repositories/breathing.dart';
+import 'package:toolery/repositories/affirmation.dart';
 
 // Page imports
 import 'package:toolery/settings.dart';
@@ -20,6 +22,7 @@ void main() {
   TaskRepository taskRepo = SqliteTaskRepository();
   TagRepository tagRepo = SqliteTagRepository();
   BreathingRepository breathingRepo = SqliteBreathingRepository();
+  AffirmationRepository affirmationRepo = SqliteAffirmationRepository();
   runApp(
     MultiProvider(
       providers: [
@@ -30,6 +33,9 @@ void main() {
         ChangeNotifierProvider(create: (_) => TagNotifier(repository: tagRepo)),
         ChangeNotifierProvider(
           create: (_) => BreathingNotifier(repository: breathingRepo),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => AffirmationNotifier(repository: affirmationRepo),
         ),
       ],
       child: const Main(),

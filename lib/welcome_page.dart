@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:toolery/forms/affirmation/main.dart';
 import 'package:toolery/settings.dart';
 
 class WelcomePage extends StatefulWidget {
@@ -133,9 +134,40 @@ class _WelcomePageState extends State<WelcomePage> {
               });
             }
             return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Text("This is a welcome page for Toolery!"),
-                const Text("We will see how this works!"),
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
+                  child: Text("This is a welcome page for Toolery!"),
+                ),
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+                  child: Text("We will see how this works!"),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 4,
+                  ),
+                  child: Card(
+                    child: ListTile(
+                      leading: const Icon(Icons.self_improvement, size: 32),
+                      title: const Text('Affirmations'),
+                      subtitle: const Text(
+                        'Your personal lists of uplifting reminders',
+                      ),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.push<void>(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const AffirmationPage(),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
               ],
             );
           },

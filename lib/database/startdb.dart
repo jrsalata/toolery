@@ -40,12 +40,19 @@ Future<Database> _initDatabase() async {
         'CREATE TABLE breathing (id INTEGER PRIMARY KEY, name TEXT, countIn INTEGER, holdIn INTEGER, countOut INTEGER, holdOut INTEGER, reps INTEGER)',
       );
       db.execute(
+        'CREATE TABLE affirmation_list (id INTEGER PRIMARY KEY, name TEXT)',
+      );
+      db.execute(
+        'CREATE TABLE affirmation_items (id INTEGER PRIMARY KEY, list_id INTEGER NOT NULL, item TEXT, FOREIGN KEY(list_id) REFERENCES affirmation_list(id))',
+      );
+      db.execute(
         'CREATE TABLE tasktag (taskID INTEGER NOT NULL, tagID INTEGER NOT NULL, PRIMARY KEY (taskID, tagID), FOREIGN KEY(tagID) REFERENCES tag(id), FOREIGN KEY(taskID) REFERENCES task(id))',
       );
       db.execute(
         'CREATE TABLE breathingtag (breathingID INTEGER NOT NULL, tagID INTEGER NOT NULL, PRIMARY KEY (breathingID, tagID), FOREIGN KEY(tagID) REFERENCES tag(id), FOREIGN KEY(breathingID) REFERENCES breathing(id))',
       );
 
+      // tag examples
       db.execute(
         "INSERT INTO tag (id, name, color) VALUES (1, 'mindfulness', 4283215696)",
       );
@@ -62,6 +69,7 @@ Future<Database> _initDatabase() async {
         "INSERT INTO tag (id, name, color) VALUES (5, 'self-care', 4289429645)",
       );
 
+      // task examples
       db.execute(
         "INSERT INTO task (id, name, description, task) VALUES (1, 'Journal', 'Write a short journal entry', 'Spend 5-10 minutes writing about your day or feelings.')",
       );
@@ -75,6 +83,7 @@ Future<Database> _initDatabase() async {
         "INSERT INTO task (id, name, description, task) VALUES (4, 'Drink water', 'Hydrate', 'Slowly drink a glass of water to fuel your body.')",
       );
 
+      // breathing exercise examples
       db.execute(
         "INSERT INTO breathing (id, name, countIn, holdIn, countOut, holdOut, reps) VALUES (1, 'Square breathing', 4, 4, 4, 4, 6)",
       );
@@ -85,6 +94,7 @@ Future<Database> _initDatabase() async {
         "INSERT INTO breathing (id, name, countIn, holdIn, countOut, holdOut, reps) VALUES (3, '4-7-8', 4, 7, 8, 0, 4)",
       );
 
+      // adding tags to tasks
       db.execute("INSERT INTO tasktag (taskID, tagID) VALUES (1, 1)");
       db.execute("INSERT INTO tasktag (taskID, tagID) VALUES (1, 5)");
       db.execute("INSERT INTO tasktag (taskID, tagID) VALUES (2, 5)");
@@ -92,11 +102,52 @@ Future<Database> _initDatabase() async {
       db.execute("INSERT INTO tasktag (taskID, tagID) VALUES (3, 3)");
       db.execute("INSERT INTO tasktag (taskID, tagID) VALUES (4, 5)");
 
+      // adding tags to breathing tasks
       db.execute("INSERT INTO breathingtag (breathingID, tagID) VALUES (1, 2)");
       db.execute("INSERT INTO breathingtag (breathingID, tagID) VALUES (1, 1)");
       db.execute("INSERT INTO breathingtag (breathingID, tagID) VALUES (2, 2)");
+
+      // affirmation list examples
+      db.execute(
+        "INSERT INTO affirmation_list (id, name) VALUES (1, 'Morning Affirmations')",
+      );
+      db.execute(
+        "INSERT INTO affirmation_list (id, name) VALUES (2, 'Peace Reminders')",
+      );
+
+      // affirmation items
+      db.execute(
+        "INSERT INTO affirmation_items (list_id, item) VALUES (1, 'I am enough exactly as I am')",
+      );
+      db.execute(
+        "INSERT INTO affirmation_items (list_id, item) VALUES (1, 'I am worthy of love and kindness')",
+      );
+      db.execute(
+        "INSERT INTO affirmation_items (list_id, item) VALUES (1, 'I am grateful for this moment')",
+      );
+      db.execute(
+        "INSERT INTO affirmation_items (list_id, item) VALUES (2, 'May I experience peace and health today')",
+      );
+      db.execute(
+        "INSERT INTO affirmation_items (list_id, item) VALUES (2, 'May I be resilient and capable')",
+      );
+      db.execute(
+        "INSERT INTO affirmation_items (list_id, item) VALUES (2, 'I can do hard things')",
+      );
+      db.execute(
+        "INSERT INTO affirmation_items (list_id, item) VALUES (2, 'My feelings are valid')",
+      );
     },
-    onUpgrade: (db, prevVersion, curVersion) {},
-    version: 1,
+    onUpgrade: (db, prevVersion, curVersion) {
+      if (prevVersion < 2) {
+        db.execute(
+          'CREATE TABLE IF NOT EXISTS affirmation_list (id INTEGER PRIMARY KEY, name TEXT)',
+        );
+        db.execute(
+          'CREATE TABLE IF NOT EXISTS affirmation_items (id INTEGER PRIMARY KEY, list_id INTEGER NOT NULL, item TEXT, FOREIGN KEY(list_id) REFERENCES affirmation_list(id))',
+        );
+      }
+    },
+    version: 2,
   );
 }
