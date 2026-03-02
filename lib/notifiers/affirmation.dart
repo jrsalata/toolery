@@ -68,7 +68,12 @@ class AffirmationNotifier extends ChangeNotifier {
   }
 
   Future<String> randomAffirmation(int listId) async {
-    final list = items[listId] ?? await repository.itemsForList(listId);
+    var list = items[listId];
+    if (list == null) {
+      list = await repository.itemsForList(listId);
+      items[listId] = list;
+      notifyListeners();
+    }
     if (list.isEmpty) return '';
     final r = Random();
     final pick = list[r.nextInt(list.length)];
