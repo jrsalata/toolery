@@ -39,8 +39,8 @@ class SqliteAffirmationRepository implements AffirmationRepository {
 
   @override
   Future<void> deleteList(int id) async {
-    await db.delete('affirmation_list', where: 'id = ?', whereArgs: [id]);
     await db.delete('affirmation_items', where: 'list_id = ?', whereArgs: [id]);
+    await db.delete('affirmation_list', where: 'id = ?', whereArgs: [id]);
   }
 
   @override
