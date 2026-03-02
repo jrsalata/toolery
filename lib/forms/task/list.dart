@@ -26,6 +26,10 @@ class _TaskListState extends State<TaskList> {
           children: [
             if (tags.tags.isNotEmpty) Divider(),
             Wrap(
+              alignment: WrapAlignment.center,
+              runAlignment: WrapAlignment.center,
+              spacing: 6,
+              runSpacing: 6,
               children: [
                 const SizedBox(width: 6, height: 6),
                 for (Tag tag in tags.tags)
@@ -70,31 +74,31 @@ class _TaskListState extends State<TaskList> {
 
           final List<Task> filteredTasks = tasks.tasks.where((task) {
             return filterTags.isEmpty ||
-                filterTags.every(
-                  (tagID) => tasks.getTags(task).contains(tagID),
-                );
+                filterTags.any((tagID) => tasks.getTags(task).contains(tagID));
           }).toList();
 
           if (filteredTasks.isEmpty) {
             return Text("No tasks match the selected filters");
           }
 
-          return ListView(
-            children: [
-              for (Task task in filteredTasks)
-                ListTile(
-                  title: Text(task.name),
-                  subtitle: Text(task.description),
-                  onTap: () async {
-                    await Navigator.push<bool>(
-                      context,
-                      MaterialPageRoute<bool>(
-                        builder: (context) => TaskInfo(taskID: task.id),
-                      ),
-                    );
-                  },
-                ),
-            ],
+          return ListView.separated(
+            itemCount: filteredTasks.length,
+            separatorBuilder: (_, __) => const Divider(height: 1),
+            itemBuilder: (context, index) {
+              final task = filteredTasks[index];
+              return ListTile(
+                title: Text(task.name),
+                subtitle: Text(task.description),
+                onTap: () async {
+                  await Navigator.push<bool>(
+                    context,
+                    MaterialPageRoute<bool>(
+                      builder: (context) => TaskInfo(taskID: task.id),
+                    ),
+                  );
+                },
+              );
+            },
           );
         },
       ),

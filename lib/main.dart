@@ -142,11 +142,8 @@ class _MainPageState extends State<MainPage> {
         ][currentDestination],
         bottomNavigationBar: NavigationBar(
           destinations: [
-            NavigationDestination(icon: Icon(Icons.home), label: "Menu 1"),
-            NavigationDestination(
-              icon: Icon(Icons.self_improvement),
-              label: "Breathing",
-            ),
+            NavigationDestination(icon: Icon(Icons.home), label: "Menu"),
+            NavigationDestination(icon: Icon(Icons.air), label: "Breathing"),
             NavigationDestination(
               icon: Icon(Icons.task_alt_rounded),
               label: "Tasks",

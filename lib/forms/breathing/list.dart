@@ -26,7 +26,12 @@ class _BreathingListState extends State<BreathingList> {
           children: [
             if (tags.tags.isNotEmpty) Divider(),
             Wrap(
+              alignment: WrapAlignment.center,
+              runAlignment: WrapAlignment.center,
+              spacing: 6,
+              runSpacing: 6,
               children: [
+                const SizedBox(width: 6, height: 6),
                 for (Tag tag in tags.tags)
                   FilterChip(
                     selected: filterTags.contains(tag.id),
@@ -80,23 +85,25 @@ class _BreathingListState extends State<BreathingList> {
             return Text("No breathings match the selected filters");
           }
 
-          return ListView(
-            children: [
-              for (Breathing breathing in filteredBreathings)
-                ListTile(
-                  title: Text(breathing.name),
-                  subtitle: Text(breathing.humanReadable),
-                  onTap: () async {
-                    await Navigator.push<bool>(
-                      context,
-                      MaterialPageRoute<bool>(
-                        builder: (context) =>
-                            BreathingInfo(breathingID: breathing.id),
-                      ),
-                    );
-                  },
-                ),
-            ],
+          return ListView.separated(
+            itemCount: filteredBreathings.length,
+            separatorBuilder: (_, __) => const Divider(height: 1),
+            itemBuilder: (context, index) {
+              final breathing = filteredBreathings[index];
+              return ListTile(
+                title: Text(breathing.name),
+                subtitle: Text(breathing.humanReadable),
+                onTap: () async {
+                  await Navigator.push<bool>(
+                    context,
+                    MaterialPageRoute<bool>(
+                      builder: (context) =>
+                          BreathingInfo(breathingID: breathing.id),
+                    ),
+                  );
+                },
+              );
+            },
           );
         },
       ),
