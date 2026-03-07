@@ -8,7 +8,24 @@ import 'package:toolery/breathingExercises/phase_info.dart';
 import 'package:toolery/breathingExercises/controls.dart';
 import 'package:toolery/settings.dart';
 
+/// Full-screen view for running a single guided breathing exercise.
+///
+/// Given a [breathingID], [ExerciseView] fetches the corresponding [Breathing]
+/// record from [BreathingNotifier] and creates an [ExerciseController] scoped
+/// to this route. While loading, a progress indicator is shown. If the record
+/// cannot be found or an error occurs the user is presented with a descriptive
+/// message.
+///
+/// The view is composed of three child widgets:
+/// - [PhaseInfo] – shows the current phase label and elapsed/countdown timer.
+/// - [BreathingVisualizer] – animated circle that expands and contracts with
+///   the breathing rhythm.
+/// - [ExerciseControls] – Start/Stop and Close buttons.
+///
+/// Parameters:
+/// - [breathingID]: The database id of the [Breathing] exercise to run.
 class ExerciseView extends StatelessWidget {
+  /// The database id of the [Breathing] exercise to run.
   final int breathingID;
 
   const ExerciseView({super.key, required this.breathingID});

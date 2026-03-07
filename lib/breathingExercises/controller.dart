@@ -5,6 +5,28 @@ import 'package:toolery/models/breathing.dart';
 import 'package:toolery/breathingExercises/phase.dart';
 import 'package:sound_effect/sound_effect.dart';
 
+/// Controls the state and timing for a single guided breathing exercise.
+///
+/// [ExerciseController] extends [ChangeNotifier] and is provided to the
+/// widget tree by [ExerciseView] via a [ChangeNotifierProvider]. It converts
+/// a [Breathing] definition into a flat list of [Phase]s, then advances
+/// through them using a periodic [Timer].
+///
+/// **Key state**
+/// - [phases] – the full sequence of phases built from the [Breathing].
+/// - [phaseIndex] – index of the currently active phase.
+/// - [elapsed] – seconds since the current phase started (counting up) or
+///   remaining seconds (counting down), controlled by [countUp].
+/// - [running] – whether the exercise is in progress.
+/// - [displayScale] – inner-circle scale in `[0.0, 1.0]`, consumed by
+///   [BreathingVisualizer].
+///
+/// Parameters:
+/// - [breathing]: The exercise definition.
+/// - [countUp]: When `true` the counter increases from 1; when `false` it
+///   counts down from the phase duration.
+/// - [breathingVibrate]: Trigger a haptic vibration at the start of each phase.
+/// - [breathingSounds]: Play an audio cue at the start of each phase.
 class ExerciseController extends ChangeNotifier {
   // breathing exercise that we are controlling
   final Breathing breathing;
@@ -19,21 +41,36 @@ class ExerciseController extends ChangeNotifier {
   bool _soundsLoaded = false;
 
   // state management
+
+  /// The flat list of [Phase]s for this exercise.
   List<Phase> phases = [];
+
+  /// Index of the currently active phase within [phases].
   int phaseIndex = 0;
+
+  /// The elapsed or remaining seconds for the current phase.
   int elapsed = 0;
+
+  /// Whether the exercise is currently running.
   bool running = false;
 
-  // initial starting value
-  // will change with time
+  /// Current scale of the inner circle in the [BreathingVisualizer] (`0.0`–`1.0`).
   double displayScale = 0.0;
 
   // max and mins
+  /// Minimum displayScale value (inner circle at its smallest).
   final double minScale = 0.0;
+
+  /// Maximum displayScale value (inner circle fills the outer circle).
   final double maxScale = 1.0;
 
   Timer? _tickTimer;
 
+  /// Creates an [ExerciseController] for the given [breathing] definition.
+  ///
+  /// Phases are built immediately. If [breathingSounds] is `true` the audio
+  /// assets are loaded asynchronously; if loading fails, sounds are silently
+  /// disabled.
   ExerciseController(
     this.breathing,
     this.countUp,
@@ -56,6 +93,8 @@ class ExerciseController extends ChangeNotifier {
     }
   }
 
+  /// The currently active [Phase], or `null` if the exercise has not started
+  /// or has completed.
   Phase? get currentPhase {
     if (phaseIndex >= 0 && phaseIndex < phases.length) {
       return phases[phaseIndex];
@@ -110,6 +149,9 @@ class ExerciseController extends ChangeNotifier {
     phases = p;
   }
 
+  /// Starts the exercise from the first phase.
+  ///
+  /// Does nothing if [phases] is empty.
   void start() {
     if (phases.isEmpty) return;
     running = true;
@@ -118,6 +160,7 @@ class ExerciseController extends ChangeNotifier {
     _startPhase(phaseIndex);
   }
 
+  /// Stops the exercise and resets all state to initial values.
   void stop() {
     _tickTimer?.cancel();
     running = false;
@@ -127,6 +170,7 @@ class ExerciseController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Toggles between running and stopped states.
   void toggle() {
     if (running) {
       stop();

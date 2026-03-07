@@ -3,17 +3,37 @@ import 'package:sqflite/sqflite.dart';
 import 'package:toolery/database/startdb.dart';
 import 'dart:async';
 
+/// Defines the data-access contract for [Task] persistence.
+///
+/// Concrete implementations (e.g. [SqliteTaskRepository]) are injected into
+/// [TaskNotifier] so that the notifier remains database-agnostic and is easy
+/// to test with a fake in-memory implementation.
 abstract class TaskRepository {
+  /// Returns all tasks ordered by their insertion sequence.
   Future<List<Task>> allTasks();
+
+  /// Persists [task] and returns the saved copy with its database-assigned id.
   Future<Task> insertTask(Task task);
+
+  /// Returns the task with the given [id], or a sentinel "Null" task if none exists.
   Future<Task> getTask(int id);
+
+  /// Overwrites the stored record that matches [task.id] with new field values.
   Future<void> updateTask(Task task);
+
+  /// Permanently removes the task with [id] and its associated tag links.
   Future<void> deleteTask(int id);
+
+  /// Returns the list of tag IDs currently attached to the task with [taskID].
   Future<List<int>> tagsForTask(int taskID);
+
+  /// Links the tag [tagID] to the task [taskID].
   Future<void> addTag(int taskID, int tagID);
+
+  /// Removes the link between tag [tagID] and task [taskID].
   Future<void> removeTag(int taskID, int tagID);
 
-  // flag if the repository is ready
+  /// Completes when the repository has finished initialising and is ready to use.
   Future<void> get ready;
 }
 

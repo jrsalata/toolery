@@ -4,15 +4,37 @@ import 'package:sqflite/sqflite.dart';
 import 'package:toolery/database/startdb.dart';
 import 'package:toolery/models/breathing.dart';
 
+/// Defines the data-access contract for [Breathing] exercise persistence.
+///
+/// Concrete implementations (e.g. [SqliteBreathingRepository]) are injected
+/// into [BreathingNotifier] so the notifier stays database-agnostic and
+/// testable.
 abstract class BreathingRepository {
+  /// Returns all breathing exercises in insertion order.
   Future<List<Breathing>> allBreathing();
+
+  /// Persists [breathing] and returns the saved copy with its database-assigned id.
   Future<Breathing> insertBreathing(Breathing breathing);
+
+  /// Returns the breathing exercise with [id], or a sentinel empty record if none exists.
   Future<Breathing> getBreathing(int id);
+
+  /// Overwrites the stored record that matches [breathing.id] with new field values.
   Future<void> updateBreathing(Breathing breathing);
+
+  /// Permanently removes the breathing exercise with [id] and its tag links.
   Future<void> deleteBreathing(int id);
+
+  /// Completes when the repository has finished initialising and is ready to use.
   Future<void> get ready;
+
+  /// Returns the list of tag IDs currently attached to the breathing exercise [breathingID].
   Future<List<int>> tagsForBreathing(int breathingID);
+
+  /// Links the tag [tagID] to the breathing exercise [breathingId].
   Future<void> addTag(int breathingId, int tagID);
+
+  /// Removes the link between tag [tagID] and breathing exercise [breathingID].
   Future<void> removeTag(int breathingID, int tagID);
 }
 
