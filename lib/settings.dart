@@ -6,6 +6,23 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:toolery/forms/tag/main.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+/// Manages and persists the user's application preferences.
+///
+/// Settings are stored via [SharedPreferences] and loaded automatically when
+/// the notifier is created. Widgets can listen for changes via
+/// `context.watch<SettingsNotifier>()`.
+///
+/// **Available preferences**
+/// - [darkMode] – use the dark colour scheme.
+/// - [materialTheme] – use dynamic Material You colours derived from the
+///   device wallpaper instead of [customTheme].
+/// - [countUp] – breathing exercise timer counts up from 0 (when `true`) or
+///   down from the phase duration (when `false`).
+/// - [breathingVibrate] – trigger haptic feedback at the start of each phase.
+/// - [breathingSounds] – play audio cues at the start of each phase.
+/// - [returningUser] – skip the first-launch intro dialogs.
+/// - [customTheme] – ARGB colour integer used as the seed for the app's colour
+///   scheme when [materialTheme] is `false`.
 class SettingsNotifier with ChangeNotifier {
   static const int defaultCustomThemeColor = 0xFF673AB7;
 
