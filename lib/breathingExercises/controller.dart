@@ -3,10 +3,22 @@ import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:toolery/models/breathing.dart';
 import 'package:toolery/breathingExercises/phase.dart';
+import 'package:sound_effect/sound_effect.dart';
 
 class ExerciseController extends ChangeNotifier {
+  // breathing exercise that we are controlling
   final Breathing breathing;
 
+  // flags and settings
+  final bool countUp;
+  final bool breathingVibrate;
+  final bool breathingSounds;
+
+  // sound effect management
+  final SoundEffect _soundEffect = SoundEffect();
+  bool _soundsLoaded = false;
+
+  // state management
   List<Phase> phases = [];
   int phaseIndex = 0;
   int elapsed = 0;
@@ -22,8 +34,26 @@ class ExerciseController extends ChangeNotifier {
 
   Timer? _tickTimer;
 
-  ExerciseController(this.breathing) {
+  ExerciseController(
+    this.breathing,
+    this.countUp,
+    this.breathingVibrate,
+    this.breathingSounds,
+  ) {
     _buildPhases();
+    if (breathingSounds) {
+      Future.microtask(() async {
+        try {
+          await _soundEffect.initialize();
+          await _soundEffect.load('inhale', 'assets/audio/block1.mp3');
+          await _soundEffect.load('hold', 'assets/audio/stick1.mp3');
+          await _soundEffect.load('exhale', 'assets/audio/block2.mp3');
+          _soundsLoaded = true;
+        } catch (_) {
+          _soundsLoaded = false;
+        }
+      });
+    }
   }
 
   Phase? get currentPhase {
@@ -80,12 +110,12 @@ class ExerciseController extends ChangeNotifier {
     phases = p;
   }
 
-  void start(bool countUp) {
+  void start() {
     if (phases.isEmpty) return;
     running = true;
     phaseIndex = 0;
     notifyListeners();
-    _startPhase(phaseIndex, countUp);
+    _startPhase(phaseIndex);
   }
 
   void stop() {
@@ -97,15 +127,30 @@ class ExerciseController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggle(bool countUp) {
+  void toggle() {
     if (running) {
       stop();
     } else {
-      start(countUp);
+      start();
     }
   }
 
-  void _startPhase(int index, bool countUp) {
+  void _playForPhase(Phase phase) {
+    if (!_soundsLoaded) return;
+    switch (phase.type) {
+      case PhaseType.inhale:
+        _soundEffect.play('inhale');
+        break;
+      case PhaseType.hold:
+        _soundEffect.play('hold');
+        break;
+      case PhaseType.exhale:
+        _soundEffect.play('exhale');
+        break;
+    }
+  }
+
+  void _startPhase(int index) {
     if (index < 0 || index >= phases.length) {
       _completeExercise();
       return;
@@ -121,10 +166,13 @@ class ExerciseController extends ChangeNotifier {
       notifyListeners();
     });
 
-    HapticFeedback.vibrate();
+    if (breathingVibrate) HapticFeedback.vibrate();
+
+    if (breathingSounds) _playForPhase(phase);
+
     _tickTimer?.cancel();
     if (phase.seconds <= 0) {
-      Future.microtask(() => _advancePhase(countUp));
+      Future.microtask(() => _advancePhase());
       return;
     }
 
@@ -137,20 +185,20 @@ class ExerciseController extends ChangeNotifier {
       notifyListeners();
       if (countUp && elapsed > phase.seconds) {
         timer.cancel();
-        _advancePhase(countUp);
+        _advancePhase();
       } else if (!countUp && elapsed <= 0) {
         timer.cancel();
-        _advancePhase(countUp);
+        _advancePhase();
       }
     });
   }
 
-  void _advancePhase(bool countUp) {
+  void _advancePhase() {
     final next = phaseIndex + 1;
     if (next >= phases.length) {
       _completeExercise();
     } else {
-      _startPhase(next, countUp);
+      _startPhase(next);
     }
   }
 
@@ -161,12 +209,13 @@ class ExerciseController extends ChangeNotifier {
     phaseIndex = 0;
     displayScale = minScale;
     notifyListeners();
-    HapticFeedback.vibrate();
+    if (breathingVibrate) HapticFeedback.vibrate();
   }
 
   @override
   void dispose() {
     _tickTimer?.cancel();
+    _soundEffect.release();
     super.dispose();
   }
 }

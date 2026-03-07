@@ -139,11 +139,10 @@ class _AffirmationDetailPageState extends State<AffirmationDetailPage> {
 
 class _AffirmationItemDialog extends StatefulWidget {
   const _AffirmationItemDialog({
-    Key? key,
     this.existing,
     required this.notifier,
     required this.listId,
-  }) : super(key: key);
+  });
 
   final AffirmationItem? existing;
   final AffirmationNotifier notifier;
