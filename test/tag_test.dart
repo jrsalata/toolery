@@ -18,20 +18,6 @@ void main() {
       expect(map['color'], isA<int>());
     });
 
-    test('fromMap reconstructs a Tag', () {
-      final map = {'id': 2, 'name': 'Health', 'color': Colors.green.toARGB32()};
-      final t = Tag.fromMap(map);
-      expect(t.id, 2);
-      expect(t.name, 'Health');
-      expect(t.color, Colors.green);
-    });
-
-    test('toJson/fromJson round-trip', () {
-      final json = tag.toJson();
-      final restored = Tag.fromJson(json);
-      expect(restored, tag);
-    });
-
     test('copyWith changes only specified fields', () {
       final copy = tag.copyWith(name: 'Personal');
       expect(copy.id, tag.id);

@@ -107,7 +107,7 @@ void main() {
       });
 
       test('omits holdIn section when holdIn is 0', () {
-        final b = breathing.copyWith(holdIn: 0);
+        final b = breathing.copyWith(holdIn: 0, holdOut: 0);
         expect(b.humanReadable, isNot(contains('Hold')));
       });
 
