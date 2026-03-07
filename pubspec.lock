@@ -501,6 +501,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  sound_effect:
+    dependency: "direct main"
+    description:
+      name: sound_effect
+      sha256: "62b2b737973eabab52f106cf27c068faba58ce92e1f1e4f3dc48a3d30be848a3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.2"
   source_map_stack_trace:
     dependency: transitive
     description:

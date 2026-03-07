@@ -3,9 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:toolery/models/breathing.dart';
 import 'package:toolery/breathingExercises/phase.dart';
+import 'package:sound_effect/sound_effect.dart';
 
 class ExerciseController extends ChangeNotifier {
   final Breathing breathing;
+
+  final SoundEffect _soundEffect = SoundEffect();
+  bool _soundsLoaded = false;
 
   List<Phase> phases = [];
   int phaseIndex = 0;
@@ -24,6 +28,17 @@ class ExerciseController extends ChangeNotifier {
 
   ExerciseController(this.breathing) {
     _buildPhases();
+    Future.microtask(() async {
+      try {
+        await _soundEffect.initialize();
+        await _soundEffect.load('inhale', 'assets/audio/block1.mp3');
+        await _soundEffect.load('hold', 'assets/audio/stick1.mp3');
+        await _soundEffect.load('exhale', 'assets/audio/block2.mp3');
+        _soundsLoaded = true;
+      } catch (_) {
+        _soundsLoaded = false;
+      }
+    });
   }
 
   Phase? get currentPhase {
@@ -105,6 +120,21 @@ class ExerciseController extends ChangeNotifier {
     }
   }
 
+  void _playForPhase(Phase phase) {
+    if (!_soundsLoaded) return;
+    switch (phase.type) {
+      case PhaseType.inhale:
+        _soundEffect.play('inhale');
+        break;
+      case PhaseType.hold:
+        _soundEffect.play('hold');
+        break;
+      case PhaseType.exhale:
+        _soundEffect.play('exhale');
+        break;
+    }
+  }
+
   void _startPhase(int index, bool countUp, bool breathingVibrate) {
     if (index < 0 || index >= phases.length) {
       _completeExercise(breathingVibrate);
@@ -122,6 +152,8 @@ class ExerciseController extends ChangeNotifier {
     });
 
     if (breathingVibrate) HapticFeedback.vibrate();
+
+    _playForPhase(phase);
 
     _tickTimer?.cancel();
     if (phase.seconds <= 0) {
@@ -168,6 +200,7 @@ class ExerciseController extends ChangeNotifier {
   @override
   void dispose() {
     _tickTimer?.cancel();
+    _soundEffect.release();
     super.dispose();
   }
 }
