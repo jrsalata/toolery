@@ -80,12 +80,12 @@ class ExerciseController extends ChangeNotifier {
     phases = p;
   }
 
-  void start(bool countUp) {
+  void start(bool countUp, bool breathingVibrate) {
     if (phases.isEmpty) return;
     running = true;
     phaseIndex = 0;
     notifyListeners();
-    _startPhase(phaseIndex, countUp);
+    _startPhase(phaseIndex, countUp, breathingVibrate);
   }
 
   void stop() {
@@ -97,17 +97,17 @@ class ExerciseController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggle(bool countUp) {
+  void toggle(bool countUp, bool breathingVibrate) {
     if (running) {
       stop();
     } else {
-      start(countUp);
+      start(countUp, breathingVibrate);
     }
   }
 
-  void _startPhase(int index, bool countUp) {
+  void _startPhase(int index, bool countUp, bool breathingVibrate) {
     if (index < 0 || index >= phases.length) {
-      _completeExercise();
+      _completeExercise(breathingVibrate);
       return;
     }
     final Phase phase = phases[index];
@@ -121,10 +121,11 @@ class ExerciseController extends ChangeNotifier {
       notifyListeners();
     });
 
-    HapticFeedback.vibrate();
+    if (breathingVibrate) HapticFeedback.vibrate();
+
     _tickTimer?.cancel();
     if (phase.seconds <= 0) {
-      Future.microtask(() => _advancePhase(countUp));
+      Future.microtask(() => _advancePhase(countUp, breathingVibrate));
       return;
     }
 
@@ -137,31 +138,31 @@ class ExerciseController extends ChangeNotifier {
       notifyListeners();
       if (countUp && elapsed > phase.seconds) {
         timer.cancel();
-        _advancePhase(countUp);
+        _advancePhase(countUp, breathingVibrate);
       } else if (!countUp && elapsed <= 0) {
         timer.cancel();
-        _advancePhase(countUp);
+        _advancePhase(countUp, breathingVibrate);
       }
     });
   }
 
-  void _advancePhase(bool countUp) {
+  void _advancePhase(bool countUp, bool breathingVibrate) {
     final next = phaseIndex + 1;
     if (next >= phases.length) {
-      _completeExercise();
+      _completeExercise(breathingVibrate);
     } else {
-      _startPhase(next, countUp);
+      _startPhase(next, countUp, breathingVibrate);
     }
   }
 
-  void _completeExercise() {
+  void _completeExercise(bool breathingVibrate) {
     _tickTimer?.cancel();
     running = false;
     elapsed = 0;
     phaseIndex = 0;
     displayScale = minScale;
     notifyListeners();
-    HapticFeedback.vibrate();
+    if (breathingVibrate) HapticFeedback.vibrate();
   }
 
   @override

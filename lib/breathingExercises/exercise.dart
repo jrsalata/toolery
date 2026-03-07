@@ -69,6 +69,7 @@ class ExerciseView extends StatelessWidget {
                         running: ctrl.running,
                         onStartStop: () => ctrl.toggle(
                           context.read<SettingsNotifier>().countUp,
+                          context.read<SettingsNotifier>().breathingVibrate,
                         ),
                         onClose: () {
                           ctrl.stop();
