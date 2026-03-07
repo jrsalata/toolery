@@ -126,7 +126,7 @@ class _TaskListState extends State<TaskList> {
 
           return ListView.separated(
             itemCount: filteredTasks.length,
-            separatorBuilder: (_, __) => const Divider(height: 1),
+            separatorBuilder: (_, _) => const Divider(height: 1),
             itemBuilder: (context, index) {
               final task = filteredTasks[index];
               return ListTile(
