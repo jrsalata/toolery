@@ -13,6 +13,7 @@ class SettingsNotifier with ChangeNotifier {
   bool materialTheme = true;
   bool countUp = true;
   bool breathingVibrate = true;
+  bool breathingSounds = true;
   bool returningUser = true;
   int customTheme = defaultCustomThemeColor;
 
@@ -27,6 +28,7 @@ class SettingsNotifier with ChangeNotifier {
     customTheme = prefs.getInt('customThemeColor') ?? defaultCustomThemeColor;
     countUp = prefs.getBool("countUp") ?? true;
     breathingVibrate = prefs.getBool("breathingVibrate") ?? true;
+    breathingSounds = prefs.getBool("breathingSounds") ?? true;
     returningUser = prefs.getBool('returningUser') ?? false;
 
     notifyListeners();
@@ -62,6 +64,11 @@ class SettingsNotifier with ChangeNotifier {
   void changeBreathingVibrate(bool value) {
     breathingVibrate = value;
     _setBoolPrefs("breathingVibrate", value);
+  }
+
+  void changeBreathingSounds(bool value) {
+    breathingSounds = value;
+    _setBoolPrefs("breathingSounds", value);
   }
 
   void changeCustomTheme(int value) {

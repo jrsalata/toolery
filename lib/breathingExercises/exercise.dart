@@ -40,7 +40,12 @@ class ExerciseView extends StatelessWidget {
           );
         }
         return ChangeNotifierProvider<ExerciseController>(
-          create: (_) => ExerciseController(breathing),
+          create: (_) => ExerciseController(
+            breathing,
+            context.read<SettingsNotifier>().countUp,
+            context.read<SettingsNotifier>().breathingVibrate,
+            context.read<SettingsNotifier>().breathingSounds,
+          ),
           child: Consumer<ExerciseController>(
             builder: (context, ctrl, _) {
               return Scaffold(
@@ -67,10 +72,7 @@ class ExerciseView extends StatelessWidget {
                       const SizedBox(height: 20),
                       ExerciseControls(
                         running: ctrl.running,
-                        onStartStop: () => ctrl.toggle(
-                          context.read<SettingsNotifier>().countUp,
-                          context.read<SettingsNotifier>().breathingVibrate,
-                        ),
+                        onStartStop: () => ctrl.toggle(),
                         onClose: () {
                           ctrl.stop();
                           Navigator.maybePop(context);

@@ -6,11 +6,19 @@ import 'package:toolery/breathingExercises/phase.dart';
 import 'package:sound_effect/sound_effect.dart';
 
 class ExerciseController extends ChangeNotifier {
+  // breathing exercise that we are controlling
   final Breathing breathing;
 
+  // flags and settings
+  final bool countUp;
+  final bool breathingVibrate;
+  final bool breathingSounds;
+
+  // sound effect management
   final SoundEffect _soundEffect = SoundEffect();
   bool _soundsLoaded = false;
 
+  // state management
   List<Phase> phases = [];
   int phaseIndex = 0;
   int elapsed = 0;
@@ -26,7 +34,12 @@ class ExerciseController extends ChangeNotifier {
 
   Timer? _tickTimer;
 
-  ExerciseController(this.breathing) {
+  ExerciseController(
+    this.breathing,
+    this.countUp,
+    this.breathingVibrate,
+    this.breathingSounds,
+  ) {
     _buildPhases();
     Future.microtask(() async {
       try {
@@ -95,12 +108,12 @@ class ExerciseController extends ChangeNotifier {
     phases = p;
   }
 
-  void start(bool countUp, bool breathingVibrate) {
+  void start() {
     if (phases.isEmpty) return;
     running = true;
     phaseIndex = 0;
     notifyListeners();
-    _startPhase(phaseIndex, countUp, breathingVibrate);
+    _startPhase(phaseIndex);
   }
 
   void stop() {
@@ -112,11 +125,11 @@ class ExerciseController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggle(bool countUp, bool breathingVibrate) {
+  void toggle() {
     if (running) {
       stop();
     } else {
-      start(countUp, breathingVibrate);
+      start();
     }
   }
 
@@ -135,9 +148,9 @@ class ExerciseController extends ChangeNotifier {
     }
   }
 
-  void _startPhase(int index, bool countUp, bool breathingVibrate) {
+  void _startPhase(int index) {
     if (index < 0 || index >= phases.length) {
-      _completeExercise(breathingVibrate);
+      _completeExercise();
       return;
     }
     final Phase phase = phases[index];
@@ -153,11 +166,11 @@ class ExerciseController extends ChangeNotifier {
 
     if (breathingVibrate) HapticFeedback.vibrate();
 
-    _playForPhase(phase);
+    if (breathingSounds) _playForPhase(phase);
 
     _tickTimer?.cancel();
     if (phase.seconds <= 0) {
-      Future.microtask(() => _advancePhase(countUp, breathingVibrate));
+      Future.microtask(() => _advancePhase());
       return;
     }
 
@@ -170,24 +183,24 @@ class ExerciseController extends ChangeNotifier {
       notifyListeners();
       if (countUp && elapsed > phase.seconds) {
         timer.cancel();
-        _advancePhase(countUp, breathingVibrate);
+        _advancePhase();
       } else if (!countUp && elapsed <= 0) {
         timer.cancel();
-        _advancePhase(countUp, breathingVibrate);
+        _advancePhase();
       }
     });
   }
 
-  void _advancePhase(bool countUp, bool breathingVibrate) {
+  void _advancePhase() {
     final next = phaseIndex + 1;
     if (next >= phases.length) {
-      _completeExercise(breathingVibrate);
+      _completeExercise();
     } else {
-      _startPhase(next, countUp, breathingVibrate);
+      _startPhase(next);
     }
   }
 
-  void _completeExercise(bool breathingVibrate) {
+  void _completeExercise() {
     _tickTimer?.cancel();
     running = false;
     elapsed = 0;

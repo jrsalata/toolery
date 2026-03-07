@@ -29,6 +29,17 @@ class BreathingSettingsPage extends StatelessWidget {
               ),
               Card(
                 child: ListTile(
+                  title: const Text("Enable sounds?"),
+                  trailing: Switch(
+                    value: settings.breathingSounds,
+                    onChanged: ((bool value) {
+                      settings.changeBreathingSounds(value);
+                    }),
+                  ),
+                ),
+              ),
+              Card(
+                child: ListTile(
                   title: const Text("Turn on vibrations?"),
                   trailing: Switch(
                     value: settings.breathingVibrate,
