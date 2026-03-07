@@ -12,7 +12,7 @@ class BreathingPage extends StatelessWidget {
         title: const Text('Breathing Exercises'),
         actions: [
           IconButton(
-            icon: Icon(Icons.settings),
+            icon: const Icon(Icons.settings),
             onPressed: () async {
               await Navigator.push<bool>(
                 context,
@@ -23,7 +23,7 @@ class BreathingPage extends StatelessWidget {
             },
           ),
         ],
-        actionsPadding: EdgeInsets.only(right: 16.0),
+        actionsPadding: const EdgeInsets.only(right: 16.0),
       ),
       body: const BreathingList(),
       floatingActionButton: FloatingActionButton.extended(

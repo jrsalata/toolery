@@ -41,17 +41,19 @@ class ExerciseController extends ChangeNotifier {
     this.breathingSounds,
   ) {
     _buildPhases();
-    Future.microtask(() async {
-      try {
-        await _soundEffect.initialize();
-        await _soundEffect.load('inhale', 'assets/audio/block1.mp3');
-        await _soundEffect.load('hold', 'assets/audio/stick1.mp3');
-        await _soundEffect.load('exhale', 'assets/audio/block2.mp3');
-        _soundsLoaded = true;
-      } catch (_) {
-        _soundsLoaded = false;
-      }
-    });
+    if (breathingSounds) {
+      Future.microtask(() async {
+        try {
+          await _soundEffect.initialize();
+          await _soundEffect.load('inhale', 'assets/audio/block1.mp3');
+          await _soundEffect.load('hold', 'assets/audio/stick1.mp3');
+          await _soundEffect.load('exhale', 'assets/audio/block2.mp3');
+          _soundsLoaded = true;
+        } catch (_) {
+          _soundsLoaded = false;
+        }
+      });
+    }
   }
 
   Phase? get currentPhase {

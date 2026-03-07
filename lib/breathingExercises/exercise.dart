@@ -39,12 +39,15 @@ class ExerciseView extends StatelessWidget {
             body: const Center(child: Text('Breathing Exercise not found')),
           );
         }
+
+        final settings = context.read<SettingsNotifier>();
+
         return ChangeNotifierProvider<ExerciseController>(
           create: (_) => ExerciseController(
             breathing,
-            context.read<SettingsNotifier>().countUp,
-            context.read<SettingsNotifier>().breathingVibrate,
-            context.read<SettingsNotifier>().breathingSounds,
+            settings.countUp,
+            settings.breathingVibrate,
+            settings.breathingSounds,
           ),
           child: Consumer<ExerciseController>(
             builder: (context, ctrl, _) {
