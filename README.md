@@ -17,6 +17,12 @@ Some features include:
 
 It is currently in a closed testing period. If you are interested, please email toolery@salata.software with the email address associated with your Google Play Account!
 
+## Contributions
+
+Contributions are welcome!
+
+TODO: Make contributions and build/run guide.
+
 ## Credit
 
 ### App Icon
