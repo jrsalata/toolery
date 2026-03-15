@@ -1,22 +1,21 @@
 # toolery
+Toolery is an Android app created using Flutter that I created to act as a sort of toolbox for mental health. Its a place to write down various techniques, thought patterns, and reminders that help you when you need it most. It is a fairly simple app, but one that I created out of necessity for myself.
 
-Toolery is meant to be a mental health toolbox created by you, for you. You know what your brain needs in different situations and we want to make it easier for you to remember those needs.
+The overall design philosophy is to have most, if not all, of the content be user-customizable and local. This means that there are no accounts, no advertisements, and complete control over your toolbox. Users know what they need best and they should have full control over their tools.
 
-Create tasks that you know help you when experiencing different situations. Tag them so you can find only the ones you need when you need them.
+If I can afford the Apple development program, it will also be on iOS as Flutter is a multi-platform tool.
 
-All of the content is created by you so you have control.
+Some features include:
 
-Never any ads, monetization, or generative-AI* for the contents.
+- Custom guided breathing exercises
+- Affirmations lists for reminders to yourself
+- Detailed tasks to help you out
+- Tags to organize tasks
+- No data collection
+- No account
+- No ads
 
-*Gen-AI may be used for small parts of development. However, it will be kept minimal as this is a learning project.
-
-## Goals
-
-- notifications for daily tasks/activities
-- guided meditation sessions
-- personal journal with promps
-- list of personal mantras that help with focus
-- custom themes
+It is currently in a closed testing period. If you are interested, please email toolery@salata.software with the email address associated with your Google Play Account!
 
 ## Credit
 
