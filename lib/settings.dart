@@ -196,7 +196,10 @@ class SettingsPage extends StatelessWidget {
                     context: context,
                     applicationName: packageInfo.appName,
                     applicationVersion: packageInfo.version,
-                    children: [Text("Created by John Salata")],
+                    children: [
+                      Text("Created by John Salata"),
+                      Text("App icon created by Morgan Roberts"),
+                    ],
                   ),
                 ),
               ),

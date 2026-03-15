@@ -20,6 +20,10 @@ Never any ads, monetization, or generative-AI* for the contents.
 
 ## Credit
 
+### App Icon
+
+My good friend Morgan Roberts created the app icon. Highly recommend you check out their work at [imaginativeillustrator.com](https://www.imaginativeillustrator.com/)
+
 ### Sound Effects
 
 All sound effects were from [Pixabay](https://pixabay.com/). Specifically
