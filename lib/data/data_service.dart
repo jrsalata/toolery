@@ -65,7 +65,7 @@ class DataService {
       final rows = await db.query(tableName);
       final csvContent = _encodeCSV(rows);
       final bytes = utf8.encode(csvContent);
-      archive.addFile(ArchiveFile('$tableName.csv', bytes.length, bytes));
+      archive.addFile(ArchiveFile.bytes('$tableName.csv', bytes));
     }
 
     final zipData = ZipEncoder().encode(archive);
