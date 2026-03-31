@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toolery/forms/affirmation/main.dart';
 import 'package:toolery/forms/breathing/main.dart';
+import 'package:toolery/forms/journal/main.dart';
 import 'package:toolery/forms/task/main.dart';
 import 'package:toolery/settings.dart';
 
@@ -200,6 +201,30 @@ class _WelcomePageState extends State<WelcomePage> {
                           context,
                           MaterialPageRoute(
                             builder: (_) => const AffirmationPage(),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 4,
+                  ),
+                  child: Card(
+                    child: ListTile(
+                      leading: const Icon(Icons.menu_book, size: 32),
+                      title: const Text('Journal'),
+                      subtitle: const Text(
+                        'Write and reflect on your thoughts and feelings',
+                      ),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.push<void>(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const JournalPage(),
                           ),
                         );
                       },

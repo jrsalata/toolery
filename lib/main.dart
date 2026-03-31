@@ -4,11 +4,14 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:toolery/forms/breathing/main.dart';
+import 'package:toolery/forms/journal/main.dart';
 import 'package:toolery/forms/task/main.dart';
+import 'package:toolery/notifiers/journal.dart';
 import 'package:toolery/notifiers/task.dart';
 import 'package:toolery/notifiers/tag.dart';
 import 'package:toolery/notifiers/breathing.dart';
 import 'package:toolery/notifiers/affirmation.dart';
+import 'package:toolery/repositories/journal.dart';
 import 'package:toolery/repositories/task.dart';
 import 'package:toolery/repositories/tag.dart';
 import 'package:toolery/repositories/breathing.dart';
@@ -23,6 +26,7 @@ void main() {
   TagRepository tagRepo = SqliteTagRepository();
   BreathingRepository breathingRepo = SqliteBreathingRepository();
   AffirmationRepository affirmationRepo = SqliteAffirmationRepository();
+  JournalRepository journalRepo = SqliteJournalRepository();
   runApp(
     MultiProvider(
       providers: [
@@ -36,6 +40,9 @@ void main() {
         ),
         ChangeNotifierProvider(
           create: (_) => AffirmationNotifier(repository: affirmationRepo),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => JournalNotifier(repository: journalRepo),
         ),
       ],
       child: const Main(),
@@ -138,6 +145,7 @@ class _MainPageState extends State<MainPage> {
           WelcomePage(),
           BreathingPage(),
           TaskPage(),
+          JournalPage(),
           SettingsPage(packageInfo: _packageInfo),
         ][currentDestination],
         bottomNavigationBar: NavigationBar(
@@ -147,6 +155,10 @@ class _MainPageState extends State<MainPage> {
             NavigationDestination(
               icon: Icon(Icons.task_alt_rounded),
               label: "Tasks",
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.menu_book),
+              label: "Journal",
             ),
             NavigationDestination(
               icon: Icon(Icons.settings),

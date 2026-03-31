@@ -51,6 +51,12 @@ Future<Database> _initDatabase() async {
       await db.execute(
         'CREATE TABLE breathingtag (breathingID INTEGER NOT NULL, tagID INTEGER NOT NULL, PRIMARY KEY (breathingID, tagID), FOREIGN KEY(tagID) REFERENCES tag(id), FOREIGN KEY(breathingID) REFERENCES breathing(id))',
       );
+      await db.execute(
+        'CREATE TABLE journal (id INTEGER PRIMARY KEY, title TEXT, dateWritten TEXT, content TEXT)',
+      );
+      await db.execute(
+        'CREATE TABLE journaltag (entryID INTEGER NOT NULL, tagID INTEGER NOT NULL, PRIMARY KEY (entryID, tagID), FOREIGN KEY(tagID) REFERENCES tag(id), FOREIGN KEY(entryID) REFERENCES journal(id))',
+      );
 
       // tag examples
       await db.execute(
@@ -153,7 +159,15 @@ Future<Database> _initDatabase() async {
           'CREATE TABLE IF NOT EXISTS affirmation_items (id INTEGER PRIMARY KEY, list_id INTEGER NOT NULL, item TEXT, FOREIGN KEY(list_id) REFERENCES affirmation_list(id))',
         );
       }
+      if (prevVersion < 3) {
+        await db.execute(
+          'CREATE TABLE IF NOT EXISTS journal (id INTEGER PRIMARY KEY, title TEXT, dateWritten TEXT, content TEXT)',
+        );
+        await db.execute(
+          'CREATE TABLE IF NOT EXISTS journaltag (entryID INTEGER NOT NULL, tagID INTEGER NOT NULL, PRIMARY KEY (entryID, tagID), FOREIGN KEY(tagID) REFERENCES tag(id), FOREIGN KEY(entryID) REFERENCES journal(id))',
+        );
+      }
     },
-    version: 2,
+    version: 3,
   );
 }
