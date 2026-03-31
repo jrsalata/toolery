@@ -113,7 +113,9 @@ class DataService {
     try {
       archive = ZipDecoder().decodeBytes(zipBytes);
     } catch (_) {
-      return ImportResult.error('The selected file is not a valid ZIP archive.');
+      return ImportResult.error(
+        'The selected file is not a valid ZIP archive.',
+      );
     }
 
     // Validate that every required CSV is present.
@@ -159,8 +161,7 @@ class DataService {
   /// Encodes [rows] (a list of column-name → value maps) as an RFC 4180 CSV
   /// string.  Returns an empty string when [rows] is empty.
   @visibleForTesting
-  static String encodeCSV(List<Map<String, Object?>> rows) =>
-      _encodeCSV(rows);
+  static String encodeCSV(List<Map<String, Object?>> rows) => _encodeCSV(rows);
 
   /// Decodes a RFC 4180 CSV string into a list of column-name → value maps.
   ///

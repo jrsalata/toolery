@@ -6,7 +6,13 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:toolery/data/data_service.dart';
 import 'package:toolery/accessibility/color_picker_dialog.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:toolery/data/data_service.dart';
 import 'package:toolery/forms/tag/main.dart';
+import 'package:toolery/notifiers/affirmation.dart';
+import 'package:toolery/notifiers/breathing.dart';
+import 'package:toolery/notifiers/tag.dart';
+import 'package:toolery/notifiers/task.dart';
 import 'package:toolery/notifiers/affirmation.dart';
 import 'package:toolery/notifiers/breathing.dart';
 import 'package:toolery/notifiers/tag.dart';
@@ -117,17 +123,14 @@ class SettingsPage extends StatelessWidget {
       filePath = await DataService.exportData();
     } catch (e) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Export failed: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Export failed: $e')));
       return;
     }
     if (!context.mounted) return;
     await SharePlus.instance.share(
-      ShareParams(
-        files: [XFile(filePath)],
-        subject: 'Toolery Data Export',
-      ),
+      ShareParams(files: [XFile(filePath)], subject: 'Toolery Data Export'),
     );
   }
 
