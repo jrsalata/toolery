@@ -13,6 +13,7 @@ class BreathingPage extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
+            tooltip: 'Breathing settings',
             onPressed: () async {
               await Navigator.push<bool>(
                 context,
@@ -27,6 +28,7 @@ class BreathingPage extends StatelessWidget {
       ),
       body: const BreathingList(),
       floatingActionButton: FloatingActionButton.extended(
+        tooltip: 'Create breathing exercise',
         onPressed: () async {
           await Navigator.push<bool>(
             context,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:toolery/accessibility/contrast.dart';
 import 'package:toolery/forms/breathing/view.dart';
 import 'package:toolery/models/tag.dart';
 import 'package:toolery/models/breathing.dart';
@@ -39,14 +40,10 @@ class _BreathingListState extends State<BreathingList> {
                     selectedColor: tag.color,
                     label: Text(tag.name),
                     labelStyle: TextStyle(
-                      color: tag.color.computeLuminance() > 0.5
-                          ? Colors.black
-                          : Colors.white,
+                      color: highContrastTextColor(tag.color),
                     ),
                     showCheckmark: true,
-                    checkmarkColor: tag.color.computeLuminance() > 0.5
-                        ? Colors.black
-                        : Colors.white,
+                    checkmarkColor: highContrastTextColor(tag.color),
                     onSelected: (bool selected) {
                       setState(() {
                         if (selected) {
