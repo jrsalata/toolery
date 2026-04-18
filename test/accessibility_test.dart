@@ -92,6 +92,14 @@ void main() {
         highContrastTextColor(const Color(0xFFFF0000)),
         equals(Colors.black),
       );
+      expect(
+        highContrastTextColor(const Color(0xFF808080)),
+        equals(Colors.black),
+      );
+      expect(
+        highContrastTextColor(const Color(0xFF0000AA)),
+        equals(Colors.white),
+      );
     });
   });
 }
