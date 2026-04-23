@@ -144,7 +144,7 @@ void main() {
       await tester.pumpWidget(_buildSettingsApp(materialTheme: true));
       await tester.pump();
 
-      await tester.tap(find.text('Use System Theme Color?'));
+      await tester.tap(find.byType(Switch).at(1));
       await tester.pump();
       expect(find.text('Set Custom Theme Color'), findsOneWidget);
       await tester.tap(find.text('Set Custom Theme Color'));
