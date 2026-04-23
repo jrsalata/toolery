@@ -42,6 +42,41 @@ Widget _buildTestApp(Widget child) {
   );
 }
 
+Widget _buildSettingsApp({required bool materialTheme}) {
+  final settings = SettingsNotifier()
+    ..returningUser = true
+    ..materialTheme = materialTheme;
+  return MultiProvider(
+    providers: [
+      ChangeNotifierProvider<SettingsNotifier>.value(value: settings),
+      ChangeNotifierProvider(
+        create: (_) => TaskNotifier(repository: FakeTaskRepository()),
+      ),
+      ChangeNotifierProvider(
+        create: (_) => TagNotifier(repository: FakeTagRepository()),
+      ),
+      ChangeNotifierProvider(
+        create: (_) => BreathingNotifier(repository: FakeBreathingRepository()),
+      ),
+      ChangeNotifierProvider(
+        create: (_) => AffirmationNotifier(repository: FakeAffirmationRepository()),
+      ),
+    ],
+    child: MaterialApp(
+      home: SettingsPage(
+        packageInfo: PackageInfo(
+          appName: 'Toolery',
+          packageName: 'software.salata.toolery',
+          version: '0.1.0',
+          buildNumber: '1',
+          buildSignature: '',
+          installerStore: '',
+        ),
+      ),
+    ),
+  );
+}
+
 void main() {
   group('Accessibility', () {
     TestWidgetsFlutterBinding.ensureInitialized();
@@ -95,40 +130,7 @@ void main() {
 
     testWidgets('settings switches include semantic labels',
         (WidgetTester tester) async {
-      final settings = SettingsNotifier()
-        ..returningUser = true
-        ..materialTheme = true;
-      await tester.pumpWidget(MultiProvider(
-        providers: [
-          ChangeNotifierProvider<SettingsNotifier>.value(value: settings),
-          ChangeNotifierProvider(
-            create: (_) => TaskNotifier(repository: FakeTaskRepository()),
-          ),
-          ChangeNotifierProvider(
-            create: (_) => TagNotifier(repository: FakeTagRepository()),
-          ),
-          ChangeNotifierProvider(
-            create: (_) =>
-                BreathingNotifier(repository: FakeBreathingRepository()),
-          ),
-          ChangeNotifierProvider(
-            create: (_) =>
-                AffirmationNotifier(repository: FakeAffirmationRepository()),
-          ),
-        ],
-        child: MaterialApp(
-          home: SettingsPage(
-            packageInfo: PackageInfo(
-              appName: 'Toolery',
-              packageName: 'software.salata.toolery',
-              version: '0.1.0',
-              buildNumber: '1',
-              buildSignature: '',
-              installerStore: '',
-            ),
-          ),
-        ),
-      ));
+      await tester.pumpWidget(_buildSettingsApp(materialTheme: true));
       await tester.pump();
 
       final semantics = SemanticsTester(tester);
@@ -139,40 +141,7 @@ void main() {
 
     testWidgets('settings color picker exposes tooltip labels for colors',
         (WidgetTester tester) async {
-      final settings = SettingsNotifier()
-        ..returningUser = true
-        ..materialTheme = true;
-      await tester.pumpWidget(MultiProvider(
-        providers: [
-          ChangeNotifierProvider<SettingsNotifier>.value(value: settings),
-          ChangeNotifierProvider(
-            create: (_) => TaskNotifier(repository: FakeTaskRepository()),
-          ),
-          ChangeNotifierProvider(
-            create: (_) => TagNotifier(repository: FakeTagRepository()),
-          ),
-          ChangeNotifierProvider(
-            create: (_) =>
-                BreathingNotifier(repository: FakeBreathingRepository()),
-          ),
-          ChangeNotifierProvider(
-            create: (_) =>
-                AffirmationNotifier(repository: FakeAffirmationRepository()),
-          ),
-        ],
-        child: MaterialApp(
-          home: SettingsPage(
-            packageInfo: PackageInfo(
-              appName: 'Toolery',
-              packageName: 'software.salata.toolery',
-              version: '0.1.0',
-              buildNumber: '1',
-              buildSignature: '',
-              installerStore: '',
-            ),
-          ),
-        ),
-      ));
+      await tester.pumpWidget(_buildSettingsApp(materialTheme: true));
       await tester.pump();
 
       await tester.tap(find.text('Use System Theme Color?'));
