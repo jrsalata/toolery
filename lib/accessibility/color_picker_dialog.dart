@@ -23,8 +23,9 @@ const List<Color> accessibleColorPalette = <Color>[
 ];
 
 String colorHexLabel(Color color) {
-  final rgb = color.toARGB32() & 0x00FFFFFF; // Strip alpha; keep RGB only.
-  return '#${rgb.toRadixString(16).toUpperCase().padLeft(6, '0')}';
+  final rgbValue =
+      color.toARGB32() & 0x00FFFFFF; // Strip alpha; keep RGB only.
+  return '#${rgbValue.toRadixString(16).toUpperCase().padLeft(6, '0')}';
 }
 
 Future<void> showAccessibleColorPickerDialog({
@@ -36,30 +37,33 @@ Future<void> showAccessibleColorPickerDialog({
   await showDialog<void>(
     context: context,
     barrierDismissible: true,
-    builder: (BuildContext dialogContext) => AlertDialog(
-      title: Text(title),
-      content: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 360),
-        child: Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            for (final color in accessibleColorPalette)
-              _ColorSwatchButton(
-                color: color,
-                selected: color.toARGB32() == pickerColor.toARGB32(),
-                onTap: () => onColorChanged(color),
-              ),
-          ],
+    builder: (BuildContext dialogContext) {
+      final pickerColorArgb = pickerColor.toARGB32();
+      return AlertDialog(
+        title: Text(title),
+        content: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 360),
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final color in accessibleColorPalette)
+                _ColorSwatchButton(
+                  color: color,
+                  selected: color.toARGB32() == pickerColorArgb,
+                  onTap: () => onColorChanged(color),
+                ),
+            ],
+          ),
         ),
-      ),
-      actions: [
-        TextButton(
-          child: const Text('Done'),
-          onPressed: () => Navigator.of(dialogContext).pop(),
-        ),
-      ],
-    ),
+        actions: [
+          TextButton(
+            child: const Text('Done'),
+            onPressed: () => Navigator.of(dialogContext).pop(),
+          ),
+        ],
+      );
+    },
   );
 }
 
