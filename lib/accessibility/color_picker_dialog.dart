@@ -61,7 +61,7 @@ Future<void> showAccessibleColorPickerDialog({
         ),
         actions: [
           TextButton(
-            child: const Text('Done'),
+            child: const Text('Done!'),
             onPressed: () => Navigator.of(dialogContext).pop(),
           ),
         ],
