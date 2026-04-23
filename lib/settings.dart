@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:toolery/accessibility/color_picker_dialog.dart';
 import 'package:toolery/forms/tag/main.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -114,56 +114,32 @@ class SettingsPage extends StatelessWidget {
           builder: (context, settings, child) => ListView(
             children: [
               Card(
-                child: ListTile(
+                child: SwitchListTile(
                   title: const Text("Enable Dark mode?"),
-                  trailing: Semantics(
-                    label: 'Enable dark mode',
-                    toggled: settings.darkMode,
-                    child: Switch(
-                      value: settings.darkMode,
-                      onChanged: ((bool value) {
-                        settings.changeDarkMode(value);
-                      }),
-                    ),
-                  ),
+                  value: settings.darkMode,
+                  onChanged: ((bool value) {
+                    settings.changeDarkMode(value);
+                  }),
                 ),
               ),
               Card(
-                child: ListTile(
+                child: SwitchListTile(
                   title: const Text("Use System Theme Color?"),
-                  trailing: Semantics(
-                    label: 'Use system theme color',
-                    toggled: settings.materialTheme,
-                    child: Switch(
-                      value: settings.materialTheme,
-                      onChanged: ((bool value) {
-                        settings.changeMaterialTheme(value);
-                      }),
-                    ),
-                  ),
+                  value: settings.materialTheme,
+                  onChanged: ((bool value) {
+                    settings.changeMaterialTheme(value);
+                  }),
                 ),
               ),
               if (!settings.materialTheme)
                 Card(
                   child: ListTile(
                     title: const Text("Set Custom Theme Color"),
-                    onTap: () async => showDialog<void>(
+                    onTap: () async => showAccessibleColorPickerDialog(
                       context: context,
-                      barrierDismissible: true,
-                      builder: (BuildContext builder) => AlertDialog(
-                        title: const Text("Select Color"),
-                        content: BlockPicker(
-                          pickerColor: Color(settings.customTheme),
-                          onColorChanged: (changeColor) => settings
-                              .changeCustomTheme(changeColor.toARGB32()),
-                        ),
-                        actions: [
-                          TextButton(
-                            child: const Text("Done!"),
-                            onPressed: () => Navigator.of(context).pop(),
-                          ),
-                        ],
-                      ),
+                      pickerColor: Color(settings.customTheme),
+                      onColorChanged: (changeColor) =>
+                          settings.changeCustomTheme(changeColor.toARGB32()),
                     ),
                   ),
                 ),
