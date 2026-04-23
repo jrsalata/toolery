@@ -23,7 +23,7 @@ const List<Color> accessibleColorPalette = <Color>[
 ];
 
 String colorHexLabel(Color color) {
-  // Mask out alpha and keep only RGB so the label is #RRGGBB.
+  // Keep only the low 24-bit RGB value (strip alpha) so labels are #RRGGBB.
   final rgb = color.toARGB32() & 0x00FFFFFF;
   return '#${rgb.toRadixString(16).toUpperCase().padLeft(6, '0')}';
 }

@@ -146,6 +146,7 @@ void main() {
 
       await tester.tap(find.text('Use System Theme Color?'));
       await tester.pump();
+      expect(find.text('Set Custom Theme Color'), findsOneWidget);
       await tester.tap(find.text('Set Custom Theme Color'));
       await tester.pumpAndSettle();
 
