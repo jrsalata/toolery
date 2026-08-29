@@ -1,0 +1,85 @@
+name: Release
+
+# Versioning itself is manual and Dart-native: a contributor runs
+# `cider bump <major|minor|patch>` and `cider release` locally (see
+# CONTRIBUTING.md), which updates the `version:` field in pubspec.yaml and
+# moves the "Unreleased" CHANGELOG.md section under a new dated heading, then
+# commits and merges that as an ordinary PR.
+#
+# This workflow just handles the mechanical part after that lands on main:
+# if the version in pubspec.yaml actually changed, tag the commit and
+# publish a GitHub Release whose notes are the matching CHANGELOG.md
+# section. It does not decide *whether* to release -- the human already did
+# that by choosing to bump.
+
+on:
+  push:
+    branches: [ "main" ]
+
+permissions:
+  contents: write
+
+jobs:
+  tag-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check whether the version changed
+        id: check
+        run: |
+          current="$(grep -E '^version: ' pubspec.yaml | sed -E 's/^version: *//')"
+
+          before="${{ github.event.before }}"
+          if [ -z "$before" ] || ! git cat-file -e "$before" 2>/dev/null; then
+            echo "No previous commit to compare against; skipping."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          previous="$(git show "$before:pubspec.yaml" | grep -E '^version: ' | sed -E 's/^version: *//' || true)"
+
+          if [ "$current" = "$previous" ]; then
+            echo "Version unchanged ($current); skipping."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Version changed: $previous -> $current"
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "version=$current" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Extract release notes from CHANGELOG.md
+        if: steps.check.outputs.changed == 'true'
+        id: notes
+        run: |
+          version="${{ steps.check.outputs.version }}"
+          notes="$(awk -v ver="$version" '
+            $0 ~ "^## "ver"([^0-9.]|$)" { found=1; next }
+            found && /^## / { exit }
+            found { print }
+          ' CHANGELOG.md)"
+
+          if [ -z "$notes" ]; then
+            notes="_No changelog entry found for $version._"
+          fi
+
+          {
+            echo "notes<<NOTES_EOF"
+            echo "$notes"
+            echo "NOTES_EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Tag and publish release
+        if: steps.check.outputs.changed == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.check.outputs.version }}
+          NOTES: ${{ steps.notes.outputs.notes }}
+        run: |
+          gh release create "v$VERSION" \
+            --title "v$VERSION" \
+            --notes "$NOTES" \
+            --target "${{ github.sha }}"
