@@ -19,9 +19,13 @@ It is currently in a closed testing period. If you are interested, please email 
 
 ## Contributions
 
-Contributions are welcome!
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for the build/run guide,
+coding checks, and how releases are versioned.
 
-TODO: Make contributions and build/run guide.
+## License
+
+Toolery's code is licensed under the [MIT License](LICENSE). The app icon and sound effects are
+third-party work with their own terms — see the Credit section below.
 
 ## Accessibility
 
