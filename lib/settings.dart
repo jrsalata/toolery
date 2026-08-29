@@ -2,8 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:toolery/data/data_service.dart';
 import 'package:toolery/accessibility/color_picker_dialog.dart';
 import 'package:toolery/forms/tag/main.dart';
+import 'package:toolery/notifiers/affirmation.dart';
+import 'package:toolery/notifiers/breathing.dart';
+import 'package:toolery/notifiers/tag.dart';
+import 'package:toolery/notifiers/task.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// Manages and persists the user's application preferences.
@@ -104,6 +110,79 @@ class SettingsPage extends StatelessWidget {
 
   const SettingsPage({super.key, required this.packageInfo});
 
+  Future<void> _exportData(BuildContext context) async {
+    final String filePath;
+    try {
+      filePath = await DataService.exportData();
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Export failed: $e')));
+      return;
+    }
+    if (!context.mounted) return;
+    await SharePlus.instance.share(
+      ShareParams(files: [XFile(filePath)], subject: 'Toolery Data Export'),
+    );
+  }
+
+  Future<void> _importData(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Import Data'),
+        content: const Text(
+          'Importing will replace ALL current data with the contents of the '
+          'selected ZIP file. This cannot be undone. Continue?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('Import'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    if (!context.mounted) return;
+
+    final result = await DataService.importData();
+    if (!context.mounted) return;
+
+    if (result.cancelled) return;
+
+    if (!result.success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result.errorMessage ?? 'Import failed.')),
+      );
+      return;
+    }
+
+    // Reload all notifiers so the UI reflects the newly imported data.
+    await Future.wait([
+      context.read<TaskNotifier>().loadAll(),
+      context.read<TagNotifier>().loadAll(),
+      context.read<BreathingNotifier>().loadAll(),
+      context.read<AffirmationNotifier>().loadAll(),
+    ]).catchError((e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to reload data: $e')),
+        );
+      }
+      return [];
+    });
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Data imported successfully.')),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final Uri sourceCodeLink = Uri.parse("https://github.com/jrsalata/toolery");
@@ -151,6 +230,26 @@ class SettingsPage extends StatelessWidget {
                     context,
                     MaterialPageRoute(builder: (context) => const TagPage()),
                   ),
+                ),
+              ),
+              Card(
+                child: ListTile(
+                  title: const Text('Export Data'),
+                  subtitle: const Text(
+                    'Save all your data as a ZIP of CSV files',
+                  ),
+                  trailing: const Icon(Icons.upload),
+                  onTap: () => _exportData(context),
+                ),
+              ),
+              Card(
+                child: ListTile(
+                  title: const Text('Import Data'),
+                  subtitle: const Text(
+                    'Restore data from a previously exported ZIP file',
+                  ),
+                  trailing: const Icon(Icons.download),
+                  onTap: () => _importData(context),
                 ),
               ),
               Card(
