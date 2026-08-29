@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:toolery/models/affirmation_item.dart';
 import 'package:toolery/models/affirmation_list.dart';
 import 'package:toolery/models/breathing.dart';
+import 'package:toolery/models/journal.dart';
 import 'package:toolery/models/tag.dart';
 import 'package:toolery/models/task.dart';
 import 'package:toolery/repositories/affirmation.dart';
 import 'package:toolery/repositories/breathing.dart';
+import 'package:toolery/repositories/journal.dart';
 import 'package:toolery/repositories/tag.dart';
 import 'package:toolery/repositories/task.dart';
 
@@ -261,5 +263,70 @@ class FakeAffirmationRepository implements AffirmationRepository {
     for (final list in _items.values) {
       list.removeWhere((i) => i.id == id);
     }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// In-memory JournalRepository
+// ---------------------------------------------------------------------------
+
+/// An in-memory [JournalRepository] used for unit tests.
+class FakeJournalRepository implements JournalRepository {
+  final List<Journal> _entries = [];
+  final Map<int, Set<int>> _entryTags = {};
+  int _nextId = 1;
+
+  @override
+  Future<void> get ready => Future.value();
+
+  @override
+  Future<List<Journal>> allEntries() async => List.unmodifiable(_entries);
+
+  @override
+  Future<Journal> insertEntry(Journal entry) async {
+    final newEntry = entry.copyWith(id: _nextId++);
+    _entries.add(newEntry);
+    _entryTags[newEntry.id] = {};
+    return newEntry;
+  }
+
+  @override
+  Future<Journal> getEntry(int id) async {
+    return _entries.firstWhere(
+      (e) => e.id == id,
+      orElse: () => Journal(
+        id: -1,
+        title: 'Null',
+        dateWritten: '',
+        content: '[{"insert":"\\n"}]',
+      ),
+    );
+  }
+
+  @override
+  Future<void> updateEntry(Journal entry) async {
+    final index = _entries.indexWhere((e) => e.id == entry.id);
+    if (index != -1) _entries[index] = entry;
+  }
+
+  @override
+  Future<void> deleteEntry(int id) async {
+    _entries.removeWhere((e) => e.id == id);
+    _entryTags.remove(id);
+  }
+
+  @override
+  Future<List<int>> tagsForEntry(int entryID) async {
+    return (_entryTags[entryID] ?? {}).toList();
+  }
+
+  @override
+  Future<void> addTag(int entryID, int tagID) async {
+    _entryTags.putIfAbsent(entryID, () => {}).add(tagID);
+  }
+
+  @override
+  Future<void> removeTag(int entryID, int tagID) async {
+    _entryTags[entryID]?.remove(tagID);
   }
 }

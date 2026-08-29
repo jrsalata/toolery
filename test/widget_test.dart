@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'package:toolery/notifiers/affirmation.dart';
 import 'package:toolery/notifiers/breathing.dart';
+import 'package:toolery/notifiers/journal.dart';
 import 'package:toolery/notifiers/tag.dart';
 import 'package:toolery/notifiers/task.dart';
 import 'package:toolery/settings.dart';
@@ -31,6 +32,9 @@ Widget buildTestApp(Widget child) {
         create: (_) =>
             AffirmationNotifier(repository: FakeAffirmationRepository()),
       ),
+      ChangeNotifierProvider(
+        create: (_) => JournalNotifier(repository: FakeJournalRepository()),
+      ),
     ],
     child: MaterialApp(home: child),
   );
@@ -44,13 +48,15 @@ void main() {
       expect(find.text('Welcome to Toolery!'), findsOneWidget);
     });
 
-    testWidgets('shows Tasks, Breathing Exercises, and Affirmations cards',
+    testWidgets(
+        'shows Tasks, Breathing Exercises, Affirmations, and Journal cards',
         (WidgetTester tester) async {
       await tester.pumpWidget(buildTestApp(const WelcomePage()));
       await tester.pump();
       expect(find.text('Tasks'), findsOneWidget);
       expect(find.text('Breathing Exercises'), findsOneWidget);
       expect(find.text('Affirmations'), findsOneWidget);
+      expect(find.text('Journal'), findsOneWidget);
     });
 
     testWidgets('tapping Tasks card navigates to TaskPage',

@@ -24,6 +24,10 @@ dependencies:
   url_launcher: ^6.3.2
   sound_effect: ^0.1.2
   flutter_launcher_icons: ^0.14.4
+  flutter_quill: ^11.5.1
+  intl: ^0.20.2
+  flutter_localizations:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:
