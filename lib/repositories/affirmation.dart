@@ -102,7 +102,7 @@ class SqliteAffirmationRepository implements AffirmationRepository {
       whereArgs: [id],
       limit: 1,
     );
-    if (rows.isEmpty) return AffirmationList(id: -1, name: 'Null');
+    if (rows.isEmpty) return const AffirmationList(id: -1, name: 'Null');
     return AffirmationList.fromMap(rows.first);
   }
 
@@ -143,7 +143,8 @@ class SqliteAffirmationRepository implements AffirmationRepository {
       whereArgs: [id],
       limit: 1,
     );
-    if (rows.isEmpty) return AffirmationItem(id: -1, listId: -1, item: '');
+    if (rows.isEmpty)
+      return const AffirmationItem(id: -1, listId: -1, item: '');
     return AffirmationItem.fromMap(rows.first);
   }
 

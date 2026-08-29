@@ -26,14 +26,14 @@ class _WelcomePageState extends State<WelcomePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Welcome"),
-          content: Text(
+          title: const Text('Welcome'),
+          content: const Text(
             "Welcome to toolery! This is your personal toolkit made by you, for you! Everything is stored locally on your device so it is as private as your phone is. There is no subscription, cost, ads, or collected user data for this app. I'm going to briefly explain everything so you can make the most of your toolbox!",
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text("OK"),
+              child: const Text('OK'),
             ),
           ],
         );
@@ -46,14 +46,14 @@ class _WelcomePageState extends State<WelcomePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Tasks"),
-          content: Text(
-            "Tasks are meant to be things you can do when you need help. They can be a reminder, a journaling activity, a mindset. Whatever you think will help you in the moment!",
+          title: const Text('Tasks'),
+          content: const Text(
+            'Tasks are meant to be things you can do when you need help. They can be a reminder, a journaling activity, a mindset. Whatever you think will help you in the moment!',
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text("Neat!"),
+              child: const Text('Neat!'),
             ),
           ],
         );
@@ -66,14 +66,14 @@ class _WelcomePageState extends State<WelcomePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Breathing Exercises"),
-          content: Text(
-            "Breathing exercises are exactly what they sound like! Guided breathing can be a great way to ground yourself. Make whatever helps you best!",
+          title: const Text('Breathing Exercises'),
+          content: const Text(
+            'Breathing exercises are exactly what they sound like! Guided breathing can be a great way to ground yourself. Make whatever helps you best!',
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text("Cool!"),
+              child: const Text('Cool!'),
             ),
           ],
         );
@@ -86,14 +86,14 @@ class _WelcomePageState extends State<WelcomePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Tags"),
-          content: Text(
-            "Tags can be configured in the settings page. They are a way to label your tasks and breathing exercises so you can quickly find what you need! Like everything else, it is completely customizable",
+          title: const Text('Tags'),
+          content: const Text(
+            'Tags can be configured in the settings page. They are a way to label your tasks and breathing exercises so you can quickly find what you need! Like everything else, it is completely customizable',
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text("Shiny!"),
+              child: const Text('Shiny!'),
             ),
           ],
         );
@@ -105,9 +105,9 @@ class _WelcomePageState extends State<WelcomePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("One Last Reminder"),
-          content: Text(
-            "While your toolbox is a great place to go to in moments of crisis, if you feel like you want to hurt yourself or someone else, please reach out to a local hotline or your nearest hospital. Some resources will be listed in the settings tab.",
+          title: const Text('One Last Reminder'),
+          content: const Text(
+            'While your toolbox is a great place to go to in moments of crisis, if you feel like you want to hurt yourself or someone else, please reach out to a local hotline or your nearest hospital. Some resources will be listed in the settings tab.',
           ),
           actions: [
             TextButton(
@@ -115,7 +115,7 @@ class _WelcomePageState extends State<WelcomePage> {
                 Navigator.of(context).pop();
                 settings.changeReturningUser(true);
               },
-              child: Text("Understood"),
+              child: const Text('Understood'),
             ),
           ],
         );

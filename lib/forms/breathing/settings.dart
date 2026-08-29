@@ -15,10 +15,10 @@ class BreathingSettingsPage extends StatelessWidget {
             children: [
               Card(
                 child: ListTile(
-                  title: const Text("Count up for breathing exercises?"),
+                  title: const Text('Count up for breathing exercises?'),
                   subtitle: settings.countUp
-                      ? const Text("Currently: 1, 2, 3, 4")
-                      : const Text("Currently: 4, 3, 2, 1"),
+                      ? const Text('Currently: 1, 2, 3, 4')
+                      : const Text('Currently: 4, 3, 2, 1'),
                   trailing: Switch(
                     value: settings.countUp,
                     onChanged: ((bool value) {
@@ -29,7 +29,7 @@ class BreathingSettingsPage extends StatelessWidget {
               ),
               Card(
                 child: ListTile(
-                  title: const Text("Enable sounds?"),
+                  title: const Text('Enable sounds?'),
                   trailing: Switch(
                     value: settings.breathingSounds,
                     onChanged: ((bool value) {
@@ -40,7 +40,7 @@ class BreathingSettingsPage extends StatelessWidget {
               ),
               Card(
                 child: ListTile(
-                  title: const Text("Turn on vibrations?"),
+                  title: const Text('Turn on vibrations?'),
                   trailing: Switch(
                     value: settings.breathingVibrate,
                     onChanged: ((bool value) {

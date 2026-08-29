@@ -1,9 +1,10 @@
 import 'dart:async';
-import 'package:flutter/services.dart';
+
 import 'package:flutter/foundation.dart';
-import 'package:toolery/models/breathing.dart';
-import 'package:toolery/breathingExercises/phase.dart';
+import 'package:flutter/services.dart';
 import 'package:sound_effect/sound_effect.dart';
+import 'package:toolery/breathingExercises/phase.dart';
+import 'package:toolery/models/breathing.dart';
 
 /// Controls the state and timing for a single guided breathing exercise.
 ///

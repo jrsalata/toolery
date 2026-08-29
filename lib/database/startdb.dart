@@ -101,22 +101,22 @@ Future<Database> _initDatabase() async {
       );
 
       // adding tags to tasks
-      await db.execute("INSERT INTO tasktag (taskID, tagID) VALUES (1, 1)");
-      await db.execute("INSERT INTO tasktag (taskID, tagID) VALUES (1, 5)");
-      await db.execute("INSERT INTO tasktag (taskID, tagID) VALUES (2, 5)");
-      await db.execute("INSERT INTO tasktag (taskID, tagID) VALUES (3, 1)");
-      await db.execute("INSERT INTO tasktag (taskID, tagID) VALUES (3, 3)");
-      await db.execute("INSERT INTO tasktag (taskID, tagID) VALUES (4, 5)");
+      await db.execute('INSERT INTO tasktag (taskID, tagID) VALUES (1, 1)');
+      await db.execute('INSERT INTO tasktag (taskID, tagID) VALUES (1, 5)');
+      await db.execute('INSERT INTO tasktag (taskID, tagID) VALUES (2, 5)');
+      await db.execute('INSERT INTO tasktag (taskID, tagID) VALUES (3, 1)');
+      await db.execute('INSERT INTO tasktag (taskID, tagID) VALUES (3, 3)');
+      await db.execute('INSERT INTO tasktag (taskID, tagID) VALUES (4, 5)');
 
       // adding tags to breathing tasks
       await db.execute(
-        "INSERT INTO breathingtag (breathingID, tagID) VALUES (1, 2)",
+        'INSERT INTO breathingtag (breathingID, tagID) VALUES (1, 2)',
       );
       await db.execute(
-        "INSERT INTO breathingtag (breathingID, tagID) VALUES (1, 1)",
+        'INSERT INTO breathingtag (breathingID, tagID) VALUES (1, 1)',
       );
       await db.execute(
-        "INSERT INTO breathingtag (breathingID, tagID) VALUES (2, 2)",
+        'INSERT INTO breathingtag (breathingID, tagID) VALUES (2, 2)',
       );
 
       // affirmation list examples

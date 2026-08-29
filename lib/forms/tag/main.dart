@@ -17,7 +17,7 @@ class TagPage extends StatelessWidget {
             MaterialPageRoute<bool>(builder: (context) => const CreateTag()),
           );
         },
-        label: const Text("Tags"),
+        label: const Text('Tags'),
         icon: const Icon(Icons.add),
       ),
     );

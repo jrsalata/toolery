@@ -24,13 +24,15 @@ void main() {
     });
 
     test('createList adds a list', () async {
-      await notifier.createList(AffirmationList(id: 0, name: 'Mornings'));
+      await notifier.createList(const AffirmationList(id: 0, name: 'Mornings'));
       expect(notifier.lists.length, 1);
       expect(notifier.lists.first.name, 'Mornings');
     });
 
     test('deleteList removes the list and its items', () async {
-      await notifier.createList(AffirmationList(id: 0, name: 'To Delete'));
+      await notifier.createList(
+        const AffirmationList(id: 0, name: 'To Delete'),
+      );
       final id = notifier.lists.first.id;
       await notifier.deleteList(id);
       expect(notifier.lists, isEmpty);
@@ -38,14 +40,14 @@ void main() {
     });
 
     test('updateList changes list name', () async {
-      await notifier.createList(AffirmationList(id: 0, name: 'Original'));
+      await notifier.createList(const AffirmationList(id: 0, name: 'Original'));
       final list = notifier.lists.first;
       await notifier.updateList(list.copyWith(name: 'Updated'));
       expect(notifier.lists.first.name, 'Updated');
     });
 
     test('addItem adds an item to the correct list', () async {
-      await notifier.createList(AffirmationList(id: 0, name: 'List A'));
+      await notifier.createList(const AffirmationList(id: 0, name: 'List A'));
       final listId = notifier.lists.first.id;
       await notifier.addItem(
         AffirmationItem(id: 0, listId: listId, item: 'I am strong'),
@@ -55,7 +57,7 @@ void main() {
     });
 
     test('updateItem changes item text', () async {
-      await notifier.createList(AffirmationList(id: 0, name: 'List B'));
+      await notifier.createList(const AffirmationList(id: 0, name: 'List B'));
       final listId = notifier.lists.first.id;
       await notifier.addItem(
         AffirmationItem(id: 0, listId: listId, item: 'Original'),
@@ -66,7 +68,7 @@ void main() {
     });
 
     test('deleteItem removes the item', () async {
-      await notifier.createList(AffirmationList(id: 0, name: 'List C'));
+      await notifier.createList(const AffirmationList(id: 0, name: 'List C'));
       final listId = notifier.lists.first.id;
       await notifier.addItem(
         AffirmationItem(id: 0, listId: listId, item: 'To Remove'),
@@ -77,7 +79,7 @@ void main() {
     });
 
     test('randomAffirmation returns one of the items in the list', () async {
-      await notifier.createList(AffirmationList(id: 0, name: 'Random'));
+      await notifier.createList(const AffirmationList(id: 0, name: 'Random'));
       final listId = notifier.lists.first.id;
       await notifier.addItem(
         AffirmationItem(id: 0, listId: listId, item: 'Affirmation A'),
@@ -90,7 +92,7 @@ void main() {
     });
 
     test('randomAffirmation returns empty string for empty list', () async {
-      await notifier.createList(AffirmationList(id: 0, name: 'Empty'));
+      await notifier.createList(const AffirmationList(id: 0, name: 'Empty'));
       final listId = notifier.lists.first.id;
       final result = await notifier.randomAffirmation(listId);
       expect(result, '');
@@ -104,7 +106,9 @@ void main() {
     });
 
     test('loadItemsForList populates items map for given list', () async {
-      await notifier.createList(AffirmationList(id: 0, name: 'Load Test'));
+      await notifier.createList(
+        const AffirmationList(id: 0, name: 'Load Test'),
+      );
       final listId = notifier.lists.first.id;
       await repo.insertItem(
         AffirmationItem(id: 0, listId: listId, item: 'Seeded item'),

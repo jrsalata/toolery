@@ -25,7 +25,7 @@ class _TaskListState extends State<TaskList> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (tags.tags.isNotEmpty) Divider(),
+            if (tags.tags.isNotEmpty) const Divider(),
             Wrap(
               alignment: WrapAlignment.center,
               runAlignment: WrapAlignment.center,
@@ -58,7 +58,7 @@ class _TaskListState extends State<TaskList> {
                   ),
               ],
             ),
-            if (tags.tags.isNotEmpty) Divider(),
+            if (tags.tags.isNotEmpty) const Divider(),
             Expanded(child: child ?? const SizedBox.shrink()),
           ],
         );

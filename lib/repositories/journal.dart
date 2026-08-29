@@ -1,7 +1,8 @@
-import 'package:toolery/models/journal.dart';
+import 'dart:async';
+
 import 'package:sqflite/sqflite.dart';
 import 'package:toolery/database/startdb.dart';
-import 'dart:async';
+import 'package:toolery/models/journal.dart';
 
 /// Defines the data-access contract for [Journal] persistence.
 ///
@@ -92,7 +93,7 @@ class SqliteJournalRepository implements JournalRepository {
       limit: 1,
     );
     if (rows.isEmpty) {
-      return Journal(
+      return const Journal(
         id: -1,
         title: 'Null',
         dateWritten: '',

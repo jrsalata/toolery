@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:toolery/models/tag.dart';
 import 'package:toolery/models/breathing.dart';
+import 'package:toolery/models/tag.dart';
 import 'package:toolery/notifiers/tag.dart';
 
 class BreathingForm extends StatefulWidget {
@@ -85,9 +85,9 @@ class _BreathingFormState extends State<BreathingForm> {
         TextFormField(
           autofocus: true,
           controller: nameController,
-          decoration: InputDecoration(
-            labelText: "Breathing Exercise Name",
-            hintText: "Enter the name of your exercise",
+          decoration: const InputDecoration(
+            labelText: 'Breathing Exercise Name',
+            hintText: 'Enter the name of your exercise',
             border: OutlineInputBorder(),
           ),
           validator: (value) {
@@ -100,9 +100,9 @@ class _BreathingFormState extends State<BreathingForm> {
         const SizedBox(height: 8),
         TextFormField(
           controller: countInController,
-          decoration: InputDecoration(
-            labelText: "Count In",
-            hintText: "Seconds for inhale",
+          decoration: const InputDecoration(
+            labelText: 'Count In',
+            hintText: 'Seconds for inhale',
             border: OutlineInputBorder(),
           ),
           keyboardType: TextInputType.number,
@@ -111,9 +111,9 @@ class _BreathingFormState extends State<BreathingForm> {
         const SizedBox(height: 8),
         TextFormField(
           controller: holdInController,
-          decoration: InputDecoration(
-            labelText: "Hold In",
-            hintText: "Seconds to hold after an inhale",
+          decoration: const InputDecoration(
+            labelText: 'Hold In',
+            hintText: 'Seconds to hold after an inhale',
             border: OutlineInputBorder(),
           ),
           keyboardType: TextInputType.number,
@@ -122,9 +122,9 @@ class _BreathingFormState extends State<BreathingForm> {
         const SizedBox(height: 8),
         TextFormField(
           controller: countOutController,
-          decoration: InputDecoration(
-            labelText: "Count Out",
-            hintText: "Seconds for exhale",
+          decoration: const InputDecoration(
+            labelText: 'Count Out',
+            hintText: 'Seconds for exhale',
             border: OutlineInputBorder(),
           ),
           keyboardType: TextInputType.number,
@@ -133,9 +133,9 @@ class _BreathingFormState extends State<BreathingForm> {
         const SizedBox(height: 8),
         TextFormField(
           controller: holdOutController,
-          decoration: InputDecoration(
-            labelText: "Hold Out",
-            hintText: "Seconds to hold after an exhale",
+          decoration: const InputDecoration(
+            labelText: 'Hold Out',
+            hintText: 'Seconds to hold after an exhale',
             border: OutlineInputBorder(),
           ),
           keyboardType: TextInputType.number,
@@ -144,9 +144,9 @@ class _BreathingFormState extends State<BreathingForm> {
         const SizedBox(height: 8),
         TextFormField(
           controller: repsController,
-          decoration: InputDecoration(
-            labelText: "Repetitions",
-            hintText: "Number of reps",
+          decoration: const InputDecoration(
+            labelText: 'Repetitions',
+            hintText: 'Number of reps',
             border: OutlineInputBorder(),
           ),
           keyboardType: TextInputType.number,

@@ -55,7 +55,7 @@ class BreathingInfo extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Description",
+                  'Description',
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 Text(
@@ -63,7 +63,7 @@ class BreathingInfo extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 const SizedBox(height: 12),
-                Text("Tags", style: Theme.of(context).textTheme.bodyLarge),
+                Text('Tags', style: Theme.of(context).textTheme.bodyLarge),
                 const SizedBox(height: 6),
                 Wrap(
                   spacing: 8,

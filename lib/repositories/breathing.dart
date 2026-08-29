@@ -96,7 +96,7 @@ class SqliteBreathingRepository implements BreathingRepository {
     if (rows.isEmpty) {
       return Breathing(
         id: -1,
-        name: "Empty",
+        name: 'Empty',
         countIn: 0,
         holdIn: 0,
         countOut: 0,
@@ -136,7 +136,7 @@ class SqliteBreathingRepository implements BreathingRepository {
   Future<void> removeTag(int breathingID, int tagID) async {
     await db.delete(
       joinTable,
-      where: "breathingID = ? AND tagID = ?",
+      where: 'breathingID = ? AND tagID = ?',
       whereArgs: [breathingID, tagID],
     );
   }

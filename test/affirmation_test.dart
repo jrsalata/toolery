@@ -1,10 +1,10 @@
 import 'package:test/test.dart';
-import 'package:toolery/models/affirmation_list.dart';
 import 'package:toolery/models/affirmation_item.dart';
+import 'package:toolery/models/affirmation_list.dart';
 
 void main() {
   group('AffirmationList model', () {
-    final list = AffirmationList(id: 1, name: 'Morning Mantras');
+    const list = AffirmationList(id: 1, name: 'Morning Mantras');
 
     test('toString returns expected format', () {
       expect(list.toString(), 'AffirmationList(id: 1, name: Morning Mantras)');
@@ -38,7 +38,7 @@ void main() {
     });
 
     test('equality holds for identical data', () {
-      final other = AffirmationList(id: 1, name: 'Morning Mantras');
+      const other = AffirmationList(id: 1, name: 'Morning Mantras');
       expect(list, other);
     });
 
@@ -48,13 +48,13 @@ void main() {
     });
 
     test('hashCode is consistent with equality', () {
-      final other = AffirmationList(id: 1, name: 'Morning Mantras');
+      const other = AffirmationList(id: 1, name: 'Morning Mantras');
       expect(list.hashCode, other.hashCode);
     });
   });
 
   group('AffirmationItem model', () {
-    final item = AffirmationItem(id: 1, listId: 2, item: 'I am capable');
+    const item = AffirmationItem(id: 1, listId: 2, item: 'I am capable');
 
     test('toString returns expected format', () {
       expect(
@@ -93,7 +93,7 @@ void main() {
     });
 
     test('equality holds for identical data', () {
-      final other = AffirmationItem(id: 1, listId: 2, item: 'I am capable');
+      const other = AffirmationItem(id: 1, listId: 2, item: 'I am capable');
       expect(item, other);
     });
 
@@ -104,7 +104,7 @@ void main() {
     });
 
     test('hashCode is consistent with equality', () {
-      final other = AffirmationItem(id: 1, listId: 2, item: 'I am capable');
+      const other = AffirmationItem(id: 1, listId: 2, item: 'I am capable');
       expect(item.hashCode, other.hashCode);
     });
   });

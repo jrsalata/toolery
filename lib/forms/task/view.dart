@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toolery/forms/task/update.dart';
-import 'package:toolery/models/task.dart';
 import 'package:toolery/models/tag.dart';
-import 'package:toolery/notifiers/task.dart';
+import 'package:toolery/models/task.dart';
 import 'package:toolery/notifiers/tag.dart';
+import 'package:toolery/notifiers/task.dart';
 
 // single-page to show all of the info on one task
 class TaskInfo extends StatelessWidget {
@@ -52,7 +52,7 @@ class TaskInfo extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Description",
+                  'Description',
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 Text(
@@ -60,10 +60,10 @@ class TaskInfo extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 const SizedBox(height: 12),
-                Text("Activity", style: Theme.of(context).textTheme.bodyLarge),
+                Text('Activity', style: Theme.of(context).textTheme.bodyLarge),
                 Text(task.task, style: Theme.of(context).textTheme.bodyMedium),
                 const SizedBox(height: 12),
-                Text("Tags", style: Theme.of(context).textTheme.bodyLarge),
+                Text('Tags', style: Theme.of(context).textTheme.bodyLarge),
                 const SizedBox(height: 6),
                 Wrap(
                   spacing: 8,
