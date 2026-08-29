@@ -8,6 +8,8 @@ import 'package:toolery/models/journal.dart';
 import 'package:toolery/models/tag.dart';
 import 'package:toolery/notifiers/journal.dart';
 import 'package:toolery/notifiers/tag.dart';
+import 'package:toolery/widgets/confirm_dialog.dart';
+import 'package:toolery/widgets/tag_action.dart';
 
 class JournalView extends StatefulWidget {
   const JournalView({super.key, required this.entryID});
@@ -70,6 +72,23 @@ class _JournalViewState extends State<JournalView> {
     }
   }
 
+  Future<void> _delete(Journal entry) async {
+    final journalNotifier = context.read<JournalNotifier>();
+    final confirmed = await confirmDestructive(
+      context,
+      title: 'Delete entry?',
+      message:
+          'This action cannot be undone. Are you sure you want to delete '
+          'this journal entry?',
+    );
+    if (confirmed) {
+      await journalNotifier.delete(entry.id);
+      if (mounted) {
+        Navigator.pop(context, true);
+      }
+    }
+  }
+
   String _formatDate(String isoDate) {
     try {
       final dt = DateTime.parse(isoDate);
@@ -106,7 +125,46 @@ class _JournalViewState extends State<JournalView> {
     final tags = tagNotifier.tags.where((t) => tagIds.contains(t.id)).toList();
 
     return Scaffold(
-      appBar: AppBar(title: Text(entry.title)),
+      appBar: AppBar(
+        title: Text(entry.title),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.edit_outlined),
+            tooltip: 'Edit',
+            onPressed: () async {
+              await Navigator.push<bool>(
+                context,
+                MaterialPageRoute<bool>(
+                  builder: (context) => UpdateJournal(entry: entry),
+                ),
+              );
+              // Reload entry data after returning from update
+              await _loadEntry();
+            },
+          ),
+          PopupMenuButton<void>(
+            tooltip: 'More',
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                onTap: () => _delete(entry),
+                child: ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: Icon(
+                    Icons.delete_outline,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                  title: Text(
+                    'Delete',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -122,18 +180,7 @@ class _JournalViewState extends State<JournalView> {
             Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: [
-                for (Tag tag in tags)
-                  Chip(
-                    label: Text(tag.name),
-                    labelStyle: TextStyle(
-                      color: tag.color.computeLuminance() > 0.5
-                          ? Colors.black
-                          : Colors.white,
-                    ),
-                    backgroundColor: tag.color,
-                  ),
-              ],
+              children: [for (Tag tag in tags) TagChip(tag: tag)],
             ),
             if (tags.isNotEmpty) const SizedBox(height: 8),
             const Divider(),
@@ -145,19 +192,6 @@ class _JournalViewState extends State<JournalView> {
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await Navigator.push<bool>(
-            context,
-            MaterialPageRoute<bool>(
-              builder: (context) => UpdateJournal(entry: entry),
-            ),
-          );
-          // Reload entry data after returning from update
-          await _loadEntry();
-        },
-        child: const Icon(Icons.edit),
       ),
     );
   }

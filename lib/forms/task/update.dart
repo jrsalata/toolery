@@ -1,8 +1,13 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toolery/forms/task/form.dart';
 import 'package:toolery/models/task.dart';
 import 'package:toolery/notifiers/task.dart';
+import 'package:toolery/widgets/confirm_dialog.dart';
+import 'package:toolery/widgets/editor_app_bar.dart';
+import 'package:toolery/widgets/tag_action.dart';
+import 'package:toolery/widgets/unsaved_changes.dart';
 
 // page to update the task
 class UpdateTask extends StatefulWidget {
@@ -15,12 +20,13 @@ class UpdateTask extends StatefulWidget {
 }
 
 class _UpdateTaskState extends State<UpdateTask> {
-  List<int> tagIDs = [];
   late Task _task;
   final _formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
   final descriptionController = TextEditingController();
   final activityController = TextEditingController();
+  late List<int> _tagIDs;
+  late List<int> _initialTagIDs;
 
   @override
   void initState() {
@@ -29,6 +35,8 @@ class _UpdateTaskState extends State<UpdateTask> {
     nameController.text = _task.name;
     descriptionController.text = _task.description;
     activityController.text = _task.task;
+    _initialTagIDs = context.read<TaskNotifier>().getTags(_task);
+    _tagIDs = List<int>.from(_initialTagIDs);
   }
 
   @override
@@ -40,94 +48,80 @@ class _UpdateTaskState extends State<UpdateTask> {
     super.dispose();
   }
 
+  bool _isDirty() {
+    return nameController.text != _task.name ||
+        descriptionController.text != _task.description ||
+        activityController.text != _task.task ||
+        !listEquals(_tagIDs, _initialTagIDs);
+  }
+
+  Future<void> _save() async {
+    if (_formKey.currentState!.validate()) {
+      final taskNotifier = context.read<TaskNotifier>();
+      final Task updatedTask = Task(
+        id: _task.id,
+        name: nameController.text,
+        description: descriptionController.text,
+        task: activityController.text,
+      );
+      await taskNotifier.update(updatedTask);
+      await taskNotifier.setTags(_task, _tagIDs);
+      if (mounted) {
+        Navigator.pop(context, true);
+      }
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Failed to validate!')));
+    }
+  }
+
+  Future<void> _delete() async {
+    final taskNotifier = context.read<TaskNotifier>();
+    final confirmed = await confirmDestructive(
+      context,
+      title: 'Delete task?',
+      message:
+          'This action cannot be undone. Are you sure you want to delete '
+          'this task?',
+    );
+    if (confirmed) {
+      await taskNotifier.delete(_task.id);
+      if (mounted) {
+        // we need to pop out of the edit page
+        // and the task info page
+        Navigator.pop(context, true);
+        Navigator.pop(context, true);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final taskNotifier = context.watch<TaskNotifier>();
-    tagIDs = taskNotifier.getTags(_task);
-    return Scaffold(
-      appBar: AppBar(title: Text('Edit ${_task.name}')),
-      body: Column(
-        children: [
-          Form(
+    return UnsavedChangesGuard(
+      isDirty: _isDirty,
+      child: Scaffold(
+        appBar: EditorAppBar(
+          title: 'Edit ${_task.name}',
+          tagAction: TagAction(
+            tagIDs: _tagIDs,
+            onChanged: (v) => setState(() => _tagIDs = v),
+          ),
+          onSave: _save,
+          onDelete: _delete,
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(12),
+          child: Form(
             key: _formKey,
             child: TaskForm(
               nameController: nameController,
               descriptionController: descriptionController,
               activityController: activityController,
               task: _task,
-              initialTagIDs: tagIDs,
-              onTagIDsChanged: ((List<int> tagIDList) => tagIDs = tagIDList),
-              formButton: FilledButton(
-                onPressed: (() async {
-                  if (_formKey.currentState!.validate()) {
-                    final Task updatedTask = Task(
-                      id: _task.id,
-                      name: nameController.text,
-                      description: descriptionController.text,
-                      task: activityController.text,
-                    );
-                    await taskNotifier.update(updatedTask);
-                    await taskNotifier.setTags(_task, tagIDs);
-                    if (context.mounted) {
-                      Navigator.pop(context, true);
-                    }
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Failed to validate!')),
-                    );
-                  }
-                }),
-                child: const Text('Save Changes'),
-              ),
             ),
           ),
-          FilledButton.tonal(
-            style: ButtonStyle(
-              backgroundColor: WidgetStatePropertyAll(
-                Theme.of(context).colorScheme.errorContainer,
-              ),
-              foregroundColor: WidgetStatePropertyAll(
-                Theme.of(context).colorScheme.onErrorContainer,
-              ),
-            ),
-            onPressed: () async {
-              final bool? confirm = await showDialog<bool>(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Delete task?'),
-                  content: const Text(
-                    'This action cannot be undone. Are you sure you want to delete this task?',
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context, false),
-                      child: const Text('Cancel'),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.pop(context, true),
-                      style: ButtonStyle(
-                        foregroundColor: WidgetStatePropertyAll(
-                          Theme.of(context).colorScheme.error,
-                        ),
-                      ),
-                      child: const Text('Delete'),
-                    ),
-                  ],
-                ),
-              );
-              if (confirm == true) {
-                await taskNotifier.delete(_task.id);
-                if (context.mounted) {
-                  // we need to pop out of the edit page
-                  // and the task info page
-                  Navigator.pop(context, true);
-                  Navigator.pop(context, true);
-                }
-              }
-            },
-            child: const Text('Delete'),
-          ),
-        ],
+        ),
       ),
     );
   }

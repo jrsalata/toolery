@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:toolery/models/affirmation_item.dart';
 import 'package:toolery/models/affirmation_list.dart';
 import 'package:toolery/notifiers/affirmation.dart';
+import 'package:toolery/widgets/confirm_dialog.dart';
 
 /// Full-page view of all items in one affirmation list.
 /// Inline dialogs handle add and edit; delete is in-place.
@@ -44,24 +45,12 @@ class _AffirmationDetailPageState extends State<AffirmationDetailPage> {
     AffirmationItem item,
   ) async {
     final notifier = context.read<AffirmationNotifier>();
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete affirmation?'),
-        content: Text('"${item.item}"'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
+    final confirmed = await confirmDestructive(
+      context,
+      title: 'Delete affirmation?',
+      message: '"${item.item}"',
     );
-    if (confirmed == true) {
+    if (confirmed) {
       await notifier.deleteItem(item.id, listId: widget.list.id);
     }
   }

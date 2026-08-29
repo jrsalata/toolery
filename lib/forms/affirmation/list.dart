@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:toolery/forms/affirmation/detail.dart';
 import 'package:toolery/models/affirmation_list.dart';
 import 'package:toolery/notifiers/affirmation.dart';
+import 'package:toolery/widgets/confirm_dialog.dart';
 
 class AffirmationListView extends StatelessWidget {
   const AffirmationListView({super.key});
@@ -12,26 +13,14 @@ class AffirmationListView extends StatelessWidget {
     AffirmationNotifier notifier,
     AffirmationList list,
   ) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete list?'),
-        content: Text(
-          'Delete "${list.name}" and all its affirmations? This cannot be undone.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
+    final confirmed = await confirmDestructive(
+      context,
+      title: 'Delete list?',
+      message:
+          'Delete "${list.name}" and all its affirmations? This cannot be '
+          'undone.',
     );
-    if (confirmed == true) {
+    if (confirmed) {
       await notifier.deleteList(list.id);
     }
   }

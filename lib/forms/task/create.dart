@@ -3,6 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:toolery/forms/task/form.dart';
 import 'package:toolery/models/task.dart';
 import 'package:toolery/notifiers/task.dart';
+import 'package:toolery/widgets/editor_app_bar.dart';
+import 'package:toolery/widgets/tag_action.dart';
+import 'package:toolery/widgets/unsaved_changes.dart';
 
 // page to create the task
 class CreateTask extends StatefulWidget {
@@ -19,7 +22,7 @@ class _CreateTaskState extends State<CreateTask> {
   final nameController = TextEditingController();
   final descriptionController = TextEditingController();
   final activityController = TextEditingController();
-  List<int> tagIDs = [];
+  List<int> _tagIDs = [];
 
   @override
   void dispose() {
@@ -30,42 +33,58 @@ class _CreateTaskState extends State<CreateTask> {
     super.dispose();
   }
 
+  bool _isDirty() {
+    return nameController.text.isNotEmpty ||
+        descriptionController.text.isNotEmpty ||
+        activityController.text.isNotEmpty ||
+        _tagIDs.isNotEmpty;
+  }
+
+  Future<void> _save() async {
+    if (_formKey.currentState!.validate()) {
+      final taskNotifier = context.read<TaskNotifier>();
+      final Task newTask = Task(
+        id: -1,
+        name: nameController.text,
+        description: descriptionController.text,
+        task: activityController.text,
+      );
+      final created = await taskNotifier.create(newTask);
+      if (_tagIDs.isNotEmpty) {
+        await taskNotifier.setTags(created, _tagIDs);
+      }
+      if (mounted) {
+        Navigator.pop(context, true);
+      }
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Failed to validate!')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final taskNotifier = context.watch<TaskNotifier>();
-    return Scaffold(
-      appBar: AppBar(title: const Text('Create New Task')),
-      body: Form(
-        key: _formKey,
-        child: TaskForm(
-          nameController: nameController,
-          descriptionController: descriptionController,
-          activityController: activityController,
-          initialTagIDs: const [],
-          onTagIDsChanged: (List<int> ids) => tagIDs = ids,
-          formButton: FilledButton(
-            onPressed: (() async {
-              if (_formKey.currentState!.validate()) {
-                final Task newTask = Task(
-                  id: -1,
-                  name: nameController.text,
-                  description: descriptionController.text,
-                  task: activityController.text,
-                );
-                final created = await taskNotifier.create(newTask);
-                if (tagIDs.isNotEmpty) {
-                  await taskNotifier.setTags(created, tagIDs);
-                }
-                if (context.mounted) {
-                  Navigator.pop(context, true);
-                }
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Failed to validate!')),
-                );
-              }
-            }),
-            child: const Text('Add Task'),
+    return UnsavedChangesGuard(
+      isDirty: _isDirty,
+      child: Scaffold(
+        appBar: EditorAppBar(
+          title: 'Create New Task',
+          tagAction: TagAction(
+            tagIDs: _tagIDs,
+            onChanged: (v) => setState(() => _tagIDs = v),
+          ),
+          onSave: _save,
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(12),
+          child: Form(
+            key: _formKey,
+            child: TaskForm(
+              nameController: nameController,
+              descriptionController: descriptionController,
+              activityController: activityController,
+            ),
           ),
         ),
       ),
