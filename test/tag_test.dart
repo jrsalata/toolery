@@ -4,7 +4,7 @@ import 'package:toolery/models/tag.dart';
 
 void main() {
   group('Tag model', () {
-    final tag = Tag(id: 1, name: 'Work', color: Colors.blue);
+    const tag = Tag(id: 1, name: 'Work', color: Colors.blue);
 
     test('toString returns expected format', () {
       expect(tag.toString(), contains('Tag(id: 1'));
@@ -31,7 +31,7 @@ void main() {
     });
 
     test('equality holds for identical data', () {
-      final other = Tag(id: 1, name: 'Work', color: Colors.blue);
+      const other = Tag(id: 1, name: 'Work', color: Colors.blue);
       expect(tag, other);
     });
 
@@ -42,7 +42,7 @@ void main() {
     });
 
     test('hashCode is consistent with equality', () {
-      final other = Tag(id: 1, name: 'Work', color: Colors.blue);
+      const other = Tag(id: 1, name: 'Work', color: Colors.blue);
       expect(tag.hashCode, other.hashCode);
     });
   });

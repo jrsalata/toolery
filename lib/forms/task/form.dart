@@ -63,9 +63,9 @@ class _TaskFormState extends State<TaskForm> {
         TextFormField(
           autofocus: true,
           controller: nameController,
-          decoration: InputDecoration(
-            labelText: "Task Name",
-            hintText: "Enter the name of a task",
+          decoration: const InputDecoration(
+            labelText: 'Task Name',
+            hintText: 'Enter the name of a task',
             border: OutlineInputBorder(),
           ),
           validator: (value) {
@@ -78,9 +78,9 @@ class _TaskFormState extends State<TaskForm> {
         TextFormField(
           autofocus: false,
           controller: descriptionController,
-          decoration: InputDecoration(
-            labelText: "Description",
-            hintText: "Provide a brief description of the task",
+          decoration: const InputDecoration(
+            labelText: 'Description',
+            hintText: 'Provide a brief description of the task',
             border: OutlineInputBorder(),
           ),
           maxLines: 2,
@@ -95,9 +95,9 @@ class _TaskFormState extends State<TaskForm> {
         TextFormField(
           autofocus: false,
           controller: activityController,
-          decoration: InputDecoration(
-            labelText: "Activity",
-            hintText: "Provide step-by-step instructions",
+          decoration: const InputDecoration(
+            labelText: 'Activity',
+            hintText: 'Provide step-by-step instructions',
             border: OutlineInputBorder(),
           ),
           keyboardType: TextInputType.multiline,

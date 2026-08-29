@@ -1,5 +1,5 @@
-import 'package:toolery/models/journal.dart';
 import 'package:test/test.dart';
+import 'package:toolery/models/journal.dart';
 
 void main() {
   group('Journal model', () {

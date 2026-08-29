@@ -1,8 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:toolery/models/tag.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:toolery/database/startdb.dart';
-import 'dart:async';
+import 'package:toolery/models/tag.dart';
 
 /// Defines the data-access contract for [Tag] persistence.
 ///
@@ -80,7 +81,7 @@ class SqliteTagRepository implements TagRepository {
       limit: 1,
     );
     if (rows.isEmpty) {
-      return Tag(id: -1, name: "Null", color: Colors.red);
+      return const Tag(id: -1, name: 'Null', color: Colors.red);
     }
     return _fromMap(rows.first);
   }

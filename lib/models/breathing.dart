@@ -139,16 +139,16 @@ class Breathing {
   ///
   /// Phases with a duration of `0` are omitted from the string.
   String get humanReadable {
-    String returnString = "In $countIn";
+    String returnString = 'In $countIn';
 
     if (holdIn > 0) {
-      returnString = "$returnString - Hold $holdIn";
+      returnString = '$returnString - Hold $holdIn';
     }
 
-    returnString = "$returnString - Out $countOut";
+    returnString = '$returnString - Out $countOut';
 
     if (holdOut > 0) {
-      returnString = "$returnString - Hold $holdOut";
+      returnString = '$returnString - Hold $holdOut';
     }
 
     return returnString;

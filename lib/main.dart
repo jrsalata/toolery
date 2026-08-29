@@ -1,24 +1,23 @@
 // System imports
-import 'package:flutter/material.dart';
 import 'package:dynamic_color/dynamic_color.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_quill/flutter_quill.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:toolery/forms/breathing/main.dart';
 import 'package:toolery/forms/journal/main.dart';
 import 'package:toolery/forms/task/main.dart';
-import 'package:toolery/notifiers/journal.dart';
-import 'package:toolery/notifiers/task.dart';
-import 'package:toolery/notifiers/tag.dart';
-import 'package:toolery/notifiers/breathing.dart';
 import 'package:toolery/notifiers/affirmation.dart';
-import 'package:toolery/repositories/journal.dart';
-import 'package:toolery/repositories/task.dart';
-import 'package:toolery/repositories/tag.dart';
-import 'package:toolery/repositories/breathing.dart';
+import 'package:toolery/notifiers/breathing.dart';
+import 'package:toolery/notifiers/journal.dart';
+import 'package:toolery/notifiers/tag.dart';
+import 'package:toolery/notifiers/task.dart';
 import 'package:toolery/repositories/affirmation.dart';
-
+import 'package:toolery/repositories/breathing.dart';
+import 'package:toolery/repositories/journal.dart';
+import 'package:toolery/repositories/tag.dart';
+import 'package:toolery/repositories/task.dart';
 // Page imports
 import 'package:toolery/settings.dart';
 import 'package:toolery/welcome_page.dart';
@@ -150,27 +149,30 @@ class _MainPageState extends State<MainPage> {
       child: Scaffold(
         // NOTE: body and destinations must be in the same order to navigate
         body: [
-          WelcomePage(),
-          JournalPage(),
-          TaskPage(),
-          BreathingPage(),
+          const WelcomePage(),
+          const JournalPage(),
+          const TaskPage(),
+          const BreathingPage(),
           SettingsPage(packageInfo: _packageInfo),
         ][currentDestination],
         bottomNavigationBar: NavigationBar(
           destinations: [
-            NavigationDestination(icon: Icon(Icons.home), label: "Menu"),
-            NavigationDestination(
+            const NavigationDestination(icon: Icon(Icons.home), label: 'Menu'),
+            const NavigationDestination(
               icon: Icon(Icons.menu_book),
-              label: "Journal",
+              label: 'Journal',
             ),
-            NavigationDestination(
+            const NavigationDestination(
               icon: Icon(Icons.task_alt_rounded),
-              label: "Tasks",
+              label: 'Tasks',
             ),
-            NavigationDestination(icon: Icon(Icons.air), label: "Breathing"),
-            NavigationDestination(
+            const NavigationDestination(
+              icon: Icon(Icons.air),
+              label: 'Breathing',
+            ),
+            const NavigationDestination(
               icon: Icon(Icons.settings),
-              label: "Settings",
+              label: 'Settings',
             ),
           ],
           onDestinationSelected: (int index) {

@@ -17,7 +17,7 @@ class TaskPage extends StatelessWidget {
             MaterialPageRoute<bool>(builder: (context) => const CreateTask()),
           );
         },
-        label: const Text("Task"),
+        label: const Text('Task'),
         icon: const Icon(Icons.add),
       ),
     );

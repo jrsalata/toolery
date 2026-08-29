@@ -1,13 +1,13 @@
-import 'package:toolery/models/task.dart';
 import 'package:test/test.dart';
+import 'package:toolery/models/task.dart';
 
 void main() {
   group('Task model', () {
-    final task = Task(
+    const task = Task(
       id: 1,
-      name: "Test",
-      description: "This is a test",
-      task: "Testing",
+      name: 'Test',
+      description: 'This is a test',
+      task: 'Testing',
     );
 
     test('toString returns expected format', () {
@@ -60,11 +60,11 @@ void main() {
     });
 
     test('equality holds for identical data', () {
-      final other = Task(
+      const other = Task(
         id: 1,
-        name: "Test",
-        description: "This is a test",
-        task: "Testing",
+        name: 'Test',
+        description: 'This is a test',
+        task: 'Testing',
       );
       expect(task, other);
     });
@@ -75,11 +75,11 @@ void main() {
     });
 
     test('hashCode is consistent with equality', () {
-      final other = Task(
+      const other = Task(
         id: 1,
-        name: "Test",
-        description: "This is a test",
-        task: "Testing",
+        name: 'Test',
+        description: 'This is a test',
+        task: 'Testing',
       );
       expect(task.hashCode, other.hashCode);
     });

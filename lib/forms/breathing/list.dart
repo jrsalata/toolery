@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toolery/accessibility/contrast.dart';
 import 'package:toolery/forms/breathing/view.dart';
-import 'package:toolery/models/tag.dart';
 import 'package:toolery/models/breathing.dart';
-import 'package:toolery/notifiers/tag.dart';
+import 'package:toolery/models/tag.dart';
 import 'package:toolery/notifiers/breathing.dart';
+import 'package:toolery/notifiers/tag.dart';
 
 // dedicated Widget to list all of the breathings
 class BreathingList extends StatefulWidget {
@@ -25,7 +25,7 @@ class _BreathingListState extends State<BreathingList> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (tags.tags.isNotEmpty) Divider(),
+            if (tags.tags.isNotEmpty) const Divider(),
             Wrap(
               alignment: WrapAlignment.center,
               runAlignment: WrapAlignment.center,
@@ -58,7 +58,7 @@ class _BreathingListState extends State<BreathingList> {
                   ),
               ],
             ),
-            if (tags.tags.isNotEmpty) Divider(),
+            if (tags.tags.isNotEmpty) const Divider(),
             Expanded(child: child ?? const SizedBox.shrink()),
           ],
         );

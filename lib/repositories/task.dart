@@ -1,7 +1,8 @@
-import 'package:toolery/models/task.dart';
+import 'dart:async';
+
 import 'package:sqflite/sqflite.dart';
 import 'package:toolery/database/startdb.dart';
-import 'dart:async';
+import 'package:toolery/models/task.dart';
 
 /// Defines the data-access contract for [Task] persistence.
 ///
@@ -95,11 +96,11 @@ class SqliteTaskRepository implements TaskRepository {
       limit: 1,
     );
     if (rows.isEmpty) {
-      return Task(
+      return const Task(
         id: -1,
-        name: "Null",
-        description: "If you see this, report it!",
-        task: "This task should not exist!",
+        name: 'Null',
+        description: 'If you see this, report it!',
+        task: 'This task should not exist!',
       );
     }
     return _fromMap(rows.first);
@@ -134,7 +135,7 @@ class SqliteTaskRepository implements TaskRepository {
   Future<void> removeTag(int taskID, int tagID) async {
     await db.delete(
       joinTable,
-      where: "taskID = ? AND tagID = ?",
+      where: 'taskID = ? AND tagID = ?',
       whereArgs: [taskID, tagID],
     );
   }

@@ -40,7 +40,7 @@ class FakeTaskRepository implements TaskRepository {
   Future<Task> getTask(int id) async {
     return _tasks.firstWhere(
       (t) => t.id == id,
-      orElse: () => Task(
+      orElse: () => const Task(
         id: -1,
         name: 'Null',
         description: 'Not found',
@@ -101,7 +101,7 @@ class FakeTagRepository implements TagRepository {
   Future<Tag> getTag(int id) async {
     return _tags.firstWhere(
       (t) => t.id == id,
-      orElse: () => Tag(id: -1, name: 'Null', color: Colors.red),
+      orElse: () => const Tag(id: -1, name: 'Null', color: Colors.red),
     );
   }
 
@@ -212,7 +212,7 @@ class FakeAffirmationRepository implements AffirmationRepository {
   Future<AffirmationList> getList(int id) async {
     return _lists.firstWhere(
       (l) => l.id == id,
-      orElse: () => AffirmationList(id: -1, name: 'Null'),
+      orElse: () => const AffirmationList(id: -1, name: 'Null'),
     );
   }
 
@@ -246,7 +246,7 @@ class FakeAffirmationRepository implements AffirmationRepository {
         if (item.id == id) return item;
       }
     }
-    return AffirmationItem(id: -1, listId: -1, item: '');
+    return const AffirmationItem(id: -1, listId: -1, item: '');
   }
 
   @override
@@ -293,7 +293,7 @@ class FakeJournalRepository implements JournalRepository {
   Future<Journal> getEntry(int id) async {
     return _entries.firstWhere(
       (e) => e.id == id,
-      orElse: () => Journal(
+      orElse: () => const Journal(
         id: -1,
         title: 'Null',
         dateWritten: '',

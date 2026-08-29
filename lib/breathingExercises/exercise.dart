@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:toolery/breathingExercises/controller.dart';
+import 'package:toolery/breathingExercises/controls.dart';
+import 'package:toolery/breathingExercises/phase_info.dart';
+import 'package:toolery/breathingExercises/visualizer.dart';
 import 'package:toolery/models/breathing.dart';
 import 'package:toolery/notifiers/breathing.dart';
-import 'package:toolery/breathingExercises/controller.dart';
-import 'package:toolery/breathingExercises/visualizer.dart';
-import 'package:toolery/breathingExercises/phase_info.dart';
-import 'package:toolery/breathingExercises/controls.dart';
 import 'package:toolery/settings.dart';
 
 /// Full-screen view for running a single guided breathing exercise.

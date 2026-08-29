@@ -49,9 +49,9 @@ class _TagFormState extends State<TagForm> {
           TextFormField(
             autofocus: true,
             controller: nameController,
-            decoration: InputDecoration(
-              labelText: "Tag Name",
-              hintText: "Give your tag a name",
+            decoration: const InputDecoration(
+              labelText: 'Tag Name',
+              hintText: 'Give your tag a name',
               border: OutlineInputBorder(),
             ),
             validator: (value) {
@@ -62,7 +62,7 @@ class _TagFormState extends State<TagForm> {
             },
           ),
           ListTile(
-            title: Text("Set Tag Color"),
+            title: const Text('Set Tag Color'),
             leading: ValueListenableBuilder<Color>(
               valueListenable: colorController,
               builder: (context, value, _) => SizedBox(

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:toolery/data/data_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toolery/accessibility/color_picker_dialog.dart';
+import 'package:toolery/data/data_service.dart';
 import 'package:toolery/forms/tag/main.dart';
 import 'package:toolery/notifiers/affirmation.dart';
 import 'package:toolery/notifiers/breathing.dart';
@@ -49,9 +49,9 @@ class SettingsNotifier with ChangeNotifier {
     darkMode = prefs.getBool('enableDarkMode') ?? true;
     materialTheme = prefs.getBool('useMaterialTheme') ?? true;
     customTheme = prefs.getInt('customThemeColor') ?? defaultCustomThemeColor;
-    countUp = prefs.getBool("countUp") ?? true;
-    breathingVibrate = prefs.getBool("breathingVibrate") ?? true;
-    breathingSounds = prefs.getBool("breathingSounds") ?? true;
+    countUp = prefs.getBool('countUp') ?? true;
+    breathingVibrate = prefs.getBool('breathingVibrate') ?? true;
+    breathingSounds = prefs.getBool('breathingSounds') ?? true;
     returningUser = prefs.getBool('returningUser') ?? false;
 
     notifyListeners();
@@ -59,49 +59,49 @@ class SettingsNotifier with ChangeNotifier {
 
   Future<void> _setBoolPrefs(String setting, bool value) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setBool(setting, value);
+    await prefs.setBool(setting, value);
     notifyListeners();
   }
 
   Future<void> _setIntPrefs(String setting, int value) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setInt(setting, value);
+    await prefs.setInt(setting, value);
     notifyListeners();
   }
 
   void changeDarkMode(bool value) {
     darkMode = value;
-    _setBoolPrefs("enableDarkMode", value);
+    _setBoolPrefs('enableDarkMode', value);
   }
 
   void changeMaterialTheme(bool value) {
     materialTheme = value;
-    _setBoolPrefs("useMaterialTheme", value);
+    _setBoolPrefs('useMaterialTheme', value);
   }
 
   void changeCountUp(bool value) {
     countUp = value;
-    _setBoolPrefs("countUp", value);
+    _setBoolPrefs('countUp', value);
   }
 
   void changeBreathingVibrate(bool value) {
     breathingVibrate = value;
-    _setBoolPrefs("breathingVibrate", value);
+    _setBoolPrefs('breathingVibrate', value);
   }
 
   void changeBreathingSounds(bool value) {
     breathingSounds = value;
-    _setBoolPrefs("breathingSounds", value);
+    _setBoolPrefs('breathingSounds', value);
   }
 
   void changeCustomTheme(int value) {
     customTheme = value;
-    _setIntPrefs("customThemeColor", value);
+    _setIntPrefs('customThemeColor', value);
   }
 
   void changeReturningUser(bool value) {
     returningUser = value;
-    _setBoolPrefs("returningUser", value);
+    _setBoolPrefs('returningUser', value);
   }
 }
 
@@ -185,7 +185,7 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Uri sourceCodeLink = Uri.parse("https://github.com/jrsalata/toolery");
+    final Uri sourceCodeLink = Uri.parse('https://github.com/jrsalata/toolery');
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
       body: Center(
@@ -194,7 +194,7 @@ class SettingsPage extends StatelessWidget {
             children: [
               Card(
                 child: SwitchListTile(
-                  title: const Text("Enable Dark mode?"),
+                  title: const Text('Enable Dark mode?'),
                   value: settings.darkMode,
                   onChanged: ((bool value) {
                     settings.changeDarkMode(value);
@@ -203,7 +203,7 @@ class SettingsPage extends StatelessWidget {
               ),
               Card(
                 child: SwitchListTile(
-                  title: const Text("Use System Theme Color?"),
+                  title: const Text('Use System Theme Color?'),
                   value: settings.materialTheme,
                   onChanged: ((bool value) {
                     settings.changeMaterialTheme(value);
@@ -213,7 +213,7 @@ class SettingsPage extends StatelessWidget {
               if (!settings.materialTheme)
                 Card(
                   child: ListTile(
-                    title: const Text("Set Custom Theme Color"),
+                    title: const Text('Set Custom Theme Color'),
                     onTap: () async => showAccessibleColorPickerDialog(
                       context: context,
                       pickerColor: Color(settings.customTheme),
@@ -224,7 +224,7 @@ class SettingsPage extends StatelessWidget {
                 ),
               Card(
                 child: ListTile(
-                  title: const Text("Configure Tags"),
+                  title: const Text('Configure Tags'),
                   trailing: const Icon(Icons.more_vert),
                   onTap: () => Navigator.push(
                     context,
@@ -254,8 +254,8 @@ class SettingsPage extends StatelessWidget {
               ),
               Card(
                 child: ListTile(
-                  title: const Text("Source Code"),
-                  subtitle: const Text("Users are welcome to contribute!"),
+                  title: const Text('Source Code'),
+                  subtitle: const Text('Users are welcome to contribute!'),
                   onTap: () async {
                     final launched = await launchUrl(sourceCodeLink);
                     if (!launched) {
@@ -274,14 +274,14 @@ class SettingsPage extends StatelessWidget {
 
               Card(
                 child: ListTile(
-                  title: const Text("About"),
+                  title: const Text('About'),
                   onTap: () => showAboutDialog(
                     context: context,
                     applicationName: packageInfo.appName,
                     applicationVersion: packageInfo.version,
                     children: [
-                      Text("Created by John Salata"),
-                      Text("App icon created by Morgan Roberts"),
+                      const Text('Created by John Salata'),
+                      const Text('App icon created by Morgan Roberts'),
                     ],
                   ),
                 ),
