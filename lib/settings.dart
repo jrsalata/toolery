@@ -2,17 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:toolery/data/data_service.dart';
 import 'package:toolery/accessibility/color_picker_dialog.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:toolery/data/data_service.dart';
 import 'package:toolery/forms/tag/main.dart';
-import 'package:toolery/notifiers/affirmation.dart';
-import 'package:toolery/notifiers/breathing.dart';
-import 'package:toolery/notifiers/tag.dart';
-import 'package:toolery/notifiers/task.dart';
 import 'package:toolery/notifiers/affirmation.dart';
 import 'package:toolery/notifiers/breathing.dart';
 import 'package:toolery/notifiers/tag.dart';
@@ -176,7 +169,14 @@ class SettingsPage extends StatelessWidget {
       context.read<TagNotifier>().loadAll(),
       context.read<BreathingNotifier>().loadAll(),
       context.read<AffirmationNotifier>().loadAll(),
-    ]);
+    ]).catchError((e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to reload data: $e')),
+        );
+      }
+      return [];
+    });
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Data imported successfully.')),

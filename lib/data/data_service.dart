@@ -52,6 +52,8 @@ class DataService {
     'affirmation_items',
     'tasktag',
     'breathingtag',
+    'journal',
+    'journaltag',
   ];
 
   /// Exports all database tables to CSV files compressed into a ZIP archive.
