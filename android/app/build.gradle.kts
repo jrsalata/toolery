@@ -44,7 +44,15 @@ android {
                 storePassword = keystoreProperties["storePassword"] as String
             }
         }
-        buildTypes {
+    }
+    buildTypes {
+        debug {
+            applicationIdSuffix = ".debug"
+        }
+        getByName("profile") {
+            applicationIdSuffix = ".profile"
+        }
+        if (keystorePropertiesFile.exists()) {
             release {
                 signingConfig = signingConfigs.getByName("release")
             }
