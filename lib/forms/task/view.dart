@@ -5,6 +5,8 @@ import 'package:toolery/models/tag.dart';
 import 'package:toolery/models/task.dart';
 import 'package:toolery/notifiers/tag.dart';
 import 'package:toolery/notifiers/task.dart';
+import 'package:toolery/widgets/confirm_dialog.dart';
+import 'package:toolery/widgets/tag_action.dart';
 
 // single-page to show all of the info on one task
 class TaskInfo extends StatelessWidget {
@@ -12,6 +14,23 @@ class TaskInfo extends StatelessWidget {
 
   // single task to view
   final int taskID;
+
+  Future<void> _delete(BuildContext context, Task task) async {
+    final taskNotifier = context.read<TaskNotifier>();
+    final confirmed = await confirmDestructive(
+      context,
+      title: 'Delete task?',
+      message:
+          'This action cannot be undone. Are you sure you want to delete '
+          'this task?',
+    );
+    if (confirmed) {
+      await taskNotifier.delete(task.id);
+      if (context.mounted) {
+        Navigator.pop(context, true);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +64,44 @@ class TaskInfo extends StatelessWidget {
             .toList();
 
         return Scaffold(
-          appBar: AppBar(title: Text(task.name)),
+          appBar: AppBar(
+            title: Text(task.name),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.edit_outlined),
+                tooltip: 'Edit',
+                onPressed: () async {
+                  await Navigator.push<bool>(
+                    context,
+                    MaterialPageRoute<bool>(
+                      builder: (context) => UpdateTask(task: task),
+                    ),
+                  );
+                },
+              ),
+              PopupMenuButton<void>(
+                tooltip: 'More',
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    onTap: () => _delete(context, task),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: Icon(
+                        Icons.delete_outline,
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                      title: Text(
+                        'Delete',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
           body: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -69,16 +125,7 @@ class TaskInfo extends StatelessWidget {
                   spacing: 8,
                   runSpacing: 8,
                   children: [
-                    for (Tag tag in tags)
-                      Chip(
-                        label: Text(tag.name),
-                        labelStyle: TextStyle(
-                          color: tag.color.computeLuminance() > 0.5
-                              ? Colors.black
-                              : Colors.white,
-                        ),
-                        backgroundColor: tag.color,
-                      ),
+                    for (Tag tag in tags) TagChip(tag: tag),
                     if (tags.isEmpty)
                       Text(
                         'No tags',
@@ -90,17 +137,6 @@ class TaskInfo extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () async {
-              await Navigator.push<bool>(
-                context,
-                MaterialPageRoute<bool>(
-                  builder: (context) => UpdateTask(task: task),
-                ),
-              );
-            },
-            child: const Icon(Icons.edit),
           ),
         );
       },

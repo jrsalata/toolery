@@ -10,6 +10,7 @@ import 'package:toolery/notifiers/affirmation.dart';
 import 'package:toolery/notifiers/breathing.dart';
 import 'package:toolery/notifiers/tag.dart';
 import 'package:toolery/notifiers/task.dart';
+import 'package:toolery/widgets/confirm_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// Manages and persists the user's application preferences.
@@ -128,27 +129,15 @@ class SettingsPage extends StatelessWidget {
   }
 
   Future<void> _importData(BuildContext context) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Import Data'),
-        content: const Text(
+    final confirmed = await confirmDestructive(
+      context,
+      title: 'Import Data',
+      message:
           'Importing will replace ALL current data with the contents of the '
           'selected ZIP file. This cannot be undone. Continue?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Import'),
-          ),
-        ],
-      ),
+      confirmLabel: 'Import',
     );
-    if (confirmed != true) return;
+    if (!confirmed) return;
     if (!context.mounted) return;
 
     final result = await DataService.importData();

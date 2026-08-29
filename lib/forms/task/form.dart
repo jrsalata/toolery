@@ -1,28 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:toolery/models/tag.dart';
 import 'package:toolery/models/task.dart';
-import 'package:toolery/notifiers/tag.dart';
 
 class TaskForm extends StatefulWidget {
   const TaskForm({
     super.key,
-    required this.formButton,
     required this.nameController,
     required this.descriptionController,
     required this.activityController,
     this.task,
-    this.initialTagIDs,
-    this.onTagIDsChanged,
   });
 
-  final ButtonStyleButton formButton;
   final TextEditingController nameController;
   final TextEditingController descriptionController;
   final TextEditingController activityController;
   final Task? task;
-  final List<int>? initialTagIDs;
-  final ValueChanged<List<int>>? onTagIDsChanged;
 
   @override
   State<TaskForm> createState() => _TaskFormState();
@@ -30,8 +21,6 @@ class TaskForm extends StatefulWidget {
 
 class _TaskFormState extends State<TaskForm> {
   Task? task;
-  List<int> tagIDs = [];
-  late ButtonStyleButton _formButton;
   late TextEditingController nameController;
   late TextEditingController descriptionController;
   late TextEditingController activityController;
@@ -43,11 +32,6 @@ class _TaskFormState extends State<TaskForm> {
     nameController = widget.nameController;
     descriptionController = widget.descriptionController;
     activityController = widget.activityController;
-    _formButton = widget.formButton;
-    // initialize selected tag IDs from provided initialTagIDs
-    if (widget.initialTagIDs != null) {
-      tagIDs = List<int>.from(widget.initialTagIDs!);
-    }
 
     if (task != null) {
       nameController.text = task!.name;
@@ -75,6 +59,7 @@ class _TaskFormState extends State<TaskForm> {
             return null;
           },
         ),
+        const SizedBox(height: 8),
         TextFormField(
           autofocus: false,
           controller: descriptionController,
@@ -92,6 +77,7 @@ class _TaskFormState extends State<TaskForm> {
             return null;
           },
         ),
+        const SizedBox(height: 8),
         TextFormField(
           autofocus: false,
           controller: activityController,
@@ -109,37 +95,6 @@ class _TaskFormState extends State<TaskForm> {
             return null;
           },
         ),
-        Wrap(
-          children: [
-            for (Tag tag in context.watch<TagNotifier>().tags)
-              FilterChip(
-                selected: tagIDs.contains(tag.id),
-                backgroundColor: tag.color,
-                selectedColor: tag.color,
-                label: Text(tag.name),
-                labelStyle: TextStyle(
-                  color: tag.color.computeLuminance() > 0.5
-                      ? Colors.black
-                      : Colors.white,
-                ),
-                showCheckmark: true,
-                checkmarkColor: tag.color.computeLuminance() > 0.5
-                    ? Colors.black
-                    : Colors.white,
-                onSelected: (bool selected) {
-                  setState(() {
-                    if (selected) {
-                      if (!tagIDs.contains(tag.id)) tagIDs.add(tag.id);
-                    } else {
-                      tagIDs.remove(tag.id);
-                    }
-                  });
-                  widget.onTagIDsChanged?.call(List<int>.from(tagIDs));
-                },
-              ),
-          ],
-        ),
-        _formButton,
       ],
     );
   }

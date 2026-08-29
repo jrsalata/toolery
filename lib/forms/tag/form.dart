@@ -6,13 +6,11 @@ import 'package:toolery/models/tag.dart';
 class TagForm extends StatefulWidget {
   const TagForm({
     super.key,
-    required this.formButton,
     required this.nameController,
     required this.colorController,
     this.tag,
   });
 
-  final ButtonStyleButton formButton;
   final TextEditingController nameController;
   final ValueNotifier<Color> colorController;
   final Tag? tag;
@@ -22,7 +20,6 @@ class TagForm extends StatefulWidget {
 }
 
 class _TagFormState extends State<TagForm> {
-  late ButtonStyleButton _formButton;
   Tag? tag;
   late TextEditingController nameController;
   late ValueNotifier<Color> colorController;
@@ -33,7 +30,6 @@ class _TagFormState extends State<TagForm> {
     tag = widget.tag;
     nameController = widget.nameController;
     colorController = widget.colorController;
-    _formButton = widget.formButton;
     if (tag != null) {
       nameController.text = tag!.name;
       colorController.value = tag!.color;
@@ -78,7 +74,6 @@ class _TagFormState extends State<TagForm> {
                   colorController.value = changeColor,
             ),
           ),
-          _formButton,
         ],
       ),
     );

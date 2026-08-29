@@ -6,6 +6,8 @@ import 'package:toolery/models/breathing.dart';
 import 'package:toolery/models/tag.dart';
 import 'package:toolery/notifiers/breathing.dart';
 import 'package:toolery/notifiers/tag.dart';
+import 'package:toolery/widgets/confirm_dialog.dart';
+import 'package:toolery/widgets/tag_action.dart';
 
 // single-page to show all of the info on one breathing
 class BreathingInfo extends StatelessWidget {
@@ -13,6 +15,23 @@ class BreathingInfo extends StatelessWidget {
 
   // single breathing to view
   final int breathingID;
+
+  Future<void> _delete(BuildContext context, Breathing breathing) async {
+    final breathingNotifier = context.read<BreathingNotifier>();
+    final confirmed = await confirmDestructive(
+      context,
+      title: 'Delete breathing?',
+      message:
+          'This action cannot be undone. Are you sure you want to delete '
+          'this breathing?',
+    );
+    if (confirmed) {
+      await breathingNotifier.delete(breathing.id);
+      if (context.mounted) {
+        Navigator.pop(context, true);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +67,45 @@ class BreathingInfo extends StatelessWidget {
             .toList();
 
         return Scaffold(
-          appBar: AppBar(title: Text(breathing.name)),
+          appBar: AppBar(
+            title: Text(breathing.name),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.edit_outlined),
+                tooltip: 'Edit',
+                onPressed: () async {
+                  await Navigator.push<bool>(
+                    context,
+                    MaterialPageRoute<bool>(
+                      builder: (context) =>
+                          UpdateBreathing(breathing: breathing),
+                    ),
+                  );
+                },
+              ),
+              PopupMenuButton<void>(
+                tooltip: 'More',
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    onTap: () => _delete(context, breathing),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: Icon(
+                        Icons.delete_outline,
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                      title: Text(
+                        'Delete',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
           body: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -69,16 +126,7 @@ class BreathingInfo extends StatelessWidget {
                   spacing: 8,
                   runSpacing: 8,
                   children: [
-                    for (Tag tag in tags)
-                      Chip(
-                        label: Text(tag.name),
-                        labelStyle: TextStyle(
-                          color: tag.color.computeLuminance() > 0.5
-                              ? Colors.black
-                              : Colors.white,
-                        ),
-                        backgroundColor: tag.color,
-                      ),
+                    for (Tag tag in tags) TagChip(tag: tag),
                     if (tags.isEmpty)
                       Text(
                         'No tags',
@@ -102,17 +150,6 @@ class BreathingInfo extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () async {
-              await Navigator.push<bool>(
-                context,
-                MaterialPageRoute<bool>(
-                  builder: (context) => UpdateBreathing(breathing: breathing),
-                ),
-              );
-            },
-            child: const Icon(Icons.edit),
           ),
         );
       },

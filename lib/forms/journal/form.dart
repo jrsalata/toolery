@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
-import 'package:provider/provider.dart';
-import 'package:toolery/models/tag.dart';
-import 'package:toolery/notifiers/tag.dart';
+import 'package:toolery/widgets/editor_app_bar.dart';
+import 'package:toolery/widgets/tag_action.dart';
 
 /// Shared layout for creating and editing a journal entry.
 ///
@@ -98,82 +97,6 @@ class _JournalFormState extends State<JournalForm> {
     widget.onTagIDsChanged(List<int>.from(_tagIDs));
   }
 
-  Future<void> _showTagSheet() async {
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setSheetState) {
-            return SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Tags',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 12),
-                    Consumer<TagNotifier>(
-                      builder: (context, tagNotifier, _) {
-                        return Wrap(
-                          spacing: 6,
-                          runSpacing: 6,
-                          children: [
-                            for (Tag tag in tagNotifier.tags)
-                              FilterChip(
-                                selected: _tagIDs.contains(tag.id),
-                                backgroundColor: tag.color,
-                                selectedColor: tag.color,
-                                label: Text(tag.name),
-                                labelStyle: TextStyle(
-                                  color: tag.color.computeLuminance() > 0.5
-                                      ? Colors.black
-                                      : Colors.white,
-                                ),
-                                showCheckmark: true,
-                                checkmarkColor:
-                                    tag.color.computeLuminance() > 0.5
-                                    ? Colors.black
-                                    : Colors.white,
-                                onSelected: (bool selected) {
-                                  final updated = List<int>.from(_tagIDs);
-                                  if (selected) {
-                                    if (!updated.contains(tag.id)) {
-                                      updated.add(tag.id);
-                                    }
-                                  } else {
-                                    updated.remove(tag.id);
-                                  }
-                                  setSheetState(() {});
-                                  _setTagIDs(updated);
-                                },
-                              ),
-                          ],
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 8),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text('Done'),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
   Widget _buildToolbar() {
     return SafeArea(
       top: false,
@@ -215,33 +138,11 @@ class _JournalFormState extends State<JournalForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.appBarTitle),
-        actions: [
-          IconButton(
-            icon: Badge(
-              isLabelVisible: _tagIDs.isNotEmpty,
-              label: Text('${_tagIDs.length}'),
-              child: const Icon(Icons.label_outline),
-            ),
-            tooltip: 'Tags',
-            onPressed: _showTagSheet,
-          ),
-          IconButton(
-            icon: const Icon(Icons.check),
-            tooltip: 'Save',
-            onPressed: widget.onSave,
-          ),
-          if (widget.onDelete != null)
-            PopupMenuButton<void>(
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  onTap: widget.onDelete,
-                  child: const Text('Delete'),
-                ),
-              ],
-            ),
-        ],
+      appBar: EditorAppBar(
+        title: widget.appBarTitle,
+        tagAction: TagAction(tagIDs: _tagIDs, onChanged: _setTagIDs),
+        onSave: widget.onSave,
+        onDelete: widget.onDelete,
       ),
       body: Form(
         key: widget.formKey,

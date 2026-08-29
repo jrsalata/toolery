@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:toolery/forms/tag/form.dart';
 import 'package:toolery/models/tag.dart';
 import 'package:toolery/notifiers/tag.dart';
+import 'package:toolery/widgets/editor_app_bar.dart';
+import 'package:toolery/widgets/unsaved_changes.dart';
 
 // page to create a tag
 class CreateTag extends StatefulWidget {
@@ -29,35 +31,44 @@ class _CreateTagState extends State<CreateTag> {
     super.dispose();
   }
 
+  bool _isDirty() {
+    return nameController.text.isNotEmpty ||
+        colorController.value != Colors.blue;
+  }
+
+  Future<void> _save() async {
+    if (_formKey.currentState!.validate()) {
+      final tagNotifier = context.read<TagNotifier>();
+      final Tag newTag = Tag(
+        id: -1,
+        name: nameController.text,
+        color: colorController.value,
+      );
+      await tagNotifier.create(newTag);
+      if (mounted) {
+        Navigator.pop(context, true);
+      }
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Failed to validate!')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final tagNotifier = context.watch<TagNotifier>();
-    return Scaffold(
-      appBar: AppBar(title: const Text('Create New Tag')),
-      body: Form(
-        key: _formKey,
-        child: TagForm(
-          nameController: nameController,
-          colorController: colorController,
-          formButton: FilledButton(
-            onPressed: (() async {
-              if (_formKey.currentState!.validate()) {
-                final Tag newTag = Tag(
-                  id: -1,
-                  name: nameController.text,
-                  color: colorController.value,
-                );
-                await tagNotifier.create(newTag);
-                if (context.mounted) {
-                  Navigator.pop(context, true);
-                }
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Failed to validate!')),
-                );
-              }
-            }),
-            child: const Text('Add Tag'),
+    return UnsavedChangesGuard(
+      isDirty: _isDirty,
+      child: Scaffold(
+        appBar: EditorAppBar(title: 'Create New Tag', onSave: _save),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(12),
+          child: Form(
+            key: _formKey,
+            child: TagForm(
+              nameController: nameController,
+              colorController: colorController,
+            ),
           ),
         ),
       ),

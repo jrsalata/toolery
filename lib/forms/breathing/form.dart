@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:toolery/models/breathing.dart';
-import 'package:toolery/models/tag.dart';
-import 'package:toolery/notifiers/tag.dart';
 
 class BreathingForm extends StatefulWidget {
   const BreathingForm({
     super.key,
-    required this.formButton,
     required this.nameController,
     required this.countInController,
     required this.holdInController,
@@ -15,11 +11,8 @@ class BreathingForm extends StatefulWidget {
     required this.holdOutController,
     required this.repsController,
     this.breathing,
-    this.initialTagIDs,
-    this.onTagIDsChanged,
   });
 
-  final ButtonStyleButton formButton;
   final TextEditingController nameController;
   final TextEditingController countInController;
   final TextEditingController holdInController;
@@ -27,8 +20,6 @@ class BreathingForm extends StatefulWidget {
   final TextEditingController holdOutController;
   final TextEditingController repsController;
   final Breathing? breathing;
-  final List<int>? initialTagIDs;
-  final ValueChanged<List<int>>? onTagIDsChanged;
 
   @override
   State<BreathingForm> createState() => _BreathingFormState();
@@ -36,8 +27,6 @@ class BreathingForm extends StatefulWidget {
 
 class _BreathingFormState extends State<BreathingForm> {
   Breathing? breathing;
-  List<int> tagIDs = [];
-  late ButtonStyleButton _formButton;
   late TextEditingController nameController;
   late TextEditingController countInController;
   late TextEditingController holdInController;
@@ -55,11 +44,6 @@ class _BreathingFormState extends State<BreathingForm> {
     countOutController = widget.countOutController;
     holdOutController = widget.holdOutController;
     repsController = widget.repsController;
-    _formButton = widget.formButton;
-    // initialize selected tag IDs from provided initialTagIDs
-    if (widget.initialTagIDs != null) {
-      tagIDs = List<int>.from(widget.initialTagIDs!);
-    }
 
     if (breathing != null) {
       nameController.text = breathing!.name;
@@ -152,38 +136,6 @@ class _BreathingFormState extends State<BreathingForm> {
           keyboardType: TextInputType.number,
           validator: (v) => _validateInt(v, 'Repetitions'),
         ),
-        const SizedBox(height: 8),
-        Wrap(
-          children: [
-            for (Tag tag in context.watch<TagNotifier>().tags)
-              FilterChip(
-                selected: tagIDs.contains(tag.id),
-                backgroundColor: tag.color,
-                selectedColor: tag.color,
-                label: Text(tag.name),
-                labelStyle: TextStyle(
-                  color: tag.color.computeLuminance() > 0.5
-                      ? Colors.black
-                      : Colors.white,
-                ),
-                showCheckmark: true,
-                checkmarkColor: tag.color.computeLuminance() > 0.5
-                    ? Colors.black
-                    : Colors.white,
-                onSelected: (bool selected) {
-                  setState(() {
-                    if (selected) {
-                      if (!tagIDs.contains(tag.id)) tagIDs.add(tag.id);
-                    } else {
-                      tagIDs.remove(tag.id);
-                    }
-                  });
-                  widget.onTagIDsChanged?.call(List<int>.from(tagIDs));
-                },
-              ),
-          ],
-        ),
-        _formButton,
       ],
     );
   }
