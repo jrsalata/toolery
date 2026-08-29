@@ -151,23 +151,23 @@ class _MainPageState extends State<MainPage> {
         // NOTE: body and destinations must be in the same order to navigate
         body: [
           WelcomePage(),
-          BreathingPage(),
-          TaskPage(),
           JournalPage(),
+          TaskPage(),
+          BreathingPage(),
           SettingsPage(packageInfo: _packageInfo),
         ][currentDestination],
         bottomNavigationBar: NavigationBar(
           destinations: [
             NavigationDestination(icon: Icon(Icons.home), label: "Menu"),
-            NavigationDestination(icon: Icon(Icons.air), label: "Breathing"),
-            NavigationDestination(
-              icon: Icon(Icons.task_alt_rounded),
-              label: "Tasks",
-            ),
             NavigationDestination(
               icon: Icon(Icons.menu_book),
               label: "Journal",
             ),
+            NavigationDestination(
+              icon: Icon(Icons.task_alt_rounded),
+              label: "Tasks",
+            ),
+            NavigationDestination(icon: Icon(Icons.air), label: "Breathing"),
             NavigationDestination(
               icon: Icon(Icons.settings),
               label: "Settings",

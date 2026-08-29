@@ -146,6 +146,30 @@ class _WelcomePageState extends State<WelcomePage> {
                   ),
                   child: Card(
                     child: ListTile(
+                      leading: const Icon(Icons.menu_book, size: 32),
+                      title: const Text('Journal'),
+                      subtitle: const Text(
+                        'Write and reflect on your thoughts and feelings',
+                      ),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.push<void>(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const JournalPage(),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 4,
+                  ),
+                  child: Card(
+                    child: ListTile(
                       leading: const Icon(Icons.task_alt, size: 32),
                       title: const Text('Tasks'),
                       subtitle: const Text(
@@ -201,30 +225,6 @@ class _WelcomePageState extends State<WelcomePage> {
                           context,
                           MaterialPageRoute(
                             builder: (_) => const AffirmationPage(),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 4,
-                  ),
-                  child: Card(
-                    child: ListTile(
-                      leading: const Icon(Icons.menu_book, size: 32),
-                      title: const Text('Journal'),
-                      subtitle: const Text(
-                        'Write and reflect on your thoughts and feelings',
-                      ),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () {
-                        Navigator.push<void>(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const JournalPage(),
                           ),
                         );
                       },
