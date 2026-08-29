@@ -97,8 +97,8 @@ void main() {
       }
     });
 
-    test('tableNames contains all seven expected tables', () {
-      expect(DataService.tableNames, hasLength(7));
+    test('tableNames contains all nine expected tables', () {
+      expect(DataService.tableNames, hasLength(9));
       expect(DataService.tableNames, contains('task'));
       expect(DataService.tableNames, contains('tag'));
       expect(DataService.tableNames, contains('breathing'));
@@ -106,6 +106,8 @@ void main() {
       expect(DataService.tableNames, contains('affirmation_items'));
       expect(DataService.tableNames, contains('tasktag'));
       expect(DataService.tableNames, contains('breathingtag'));
+      expect(DataService.tableNames, contains('journal'));
+      expect(DataService.tableNames, contains('journaltag'));
     });
   });
 }
