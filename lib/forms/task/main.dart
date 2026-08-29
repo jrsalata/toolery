@@ -10,6 +10,7 @@ class TaskPage extends StatelessWidget {
       appBar: AppBar(title: const Text('Tasks')),
       body: const TaskList(),
       floatingActionButton: FloatingActionButton.extended(
+        tooltip: 'Create task',
         onPressed: () async {
           await Navigator.push<bool>(
             context,

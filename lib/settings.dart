@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:toolery/accessibility/color_picker_dialog.dart';
 import 'package:toolery/forms/tag/main.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -114,55 +114,39 @@ class SettingsPage extends StatelessWidget {
           builder: (context, settings, child) => ListView(
             children: [
               Card(
-                child: ListTile(
-                  title: Text("Enable Dark mode?"),
-                  trailing: Switch(
-                    value: settings.darkMode,
-                    onChanged: ((bool value) {
-                      settings.changeDarkMode(value);
-                    }),
-                  ),
+                child: SwitchListTile(
+                  title: const Text("Enable Dark mode?"),
+                  value: settings.darkMode,
+                  onChanged: ((bool value) {
+                    settings.changeDarkMode(value);
+                  }),
                 ),
               ),
               Card(
-                child: ListTile(
-                  title: Text("Use System Theme Color?"),
-                  trailing: Switch(
-                    value: settings.materialTheme,
-                    onChanged: ((bool value) {
-                      settings.changeMaterialTheme(value);
-                    }),
-                  ),
+                child: SwitchListTile(
+                  title: const Text("Use System Theme Color?"),
+                  value: settings.materialTheme,
+                  onChanged: ((bool value) {
+                    settings.changeMaterialTheme(value);
+                  }),
                 ),
               ),
               if (!settings.materialTheme)
                 Card(
                   child: ListTile(
-                    title: Text("Set Custom Theme Color"),
-                    onTap: () async => showDialog<void>(
+                    title: const Text("Set Custom Theme Color"),
+                    onTap: () async => showAccessibleColorPickerDialog(
                       context: context,
-                      barrierDismissible: true,
-                      builder: (BuildContext builder) => AlertDialog(
-                        title: const Text("Select Color"),
-                        content: BlockPicker(
-                          pickerColor: Color(settings.customTheme),
-                          onColorChanged: (changeColor) => settings
-                              .changeCustomTheme(changeColor.toARGB32()),
-                        ),
-                        actions: [
-                          TextButton(
-                            child: const Text("Done!"),
-                            onPressed: () => Navigator.of(context).pop(),
-                          ),
-                        ],
-                      ),
+                      pickerColor: Color(settings.customTheme),
+                      onColorChanged: (changeColor) =>
+                          settings.changeCustomTheme(changeColor.toARGB32()),
                     ),
                   ),
                 ),
               Card(
                 child: ListTile(
-                  title: Text("Configure Tags"),
-                  trailing: Icon(Icons.more_vert),
+                  title: const Text("Configure Tags"),
+                  trailing: const Icon(Icons.more_vert),
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const TagPage()),
@@ -171,8 +155,8 @@ class SettingsPage extends StatelessWidget {
               ),
               Card(
                 child: ListTile(
-                  title: Text("Source Code"),
-                  subtitle: Text("Users are welcome to contribute!"),
+                  title: const Text("Source Code"),
+                  subtitle: const Text("Users are welcome to contribute!"),
                   onTap: () async {
                     final launched = await launchUrl(sourceCodeLink);
                     if (!launched) {
@@ -191,7 +175,7 @@ class SettingsPage extends StatelessWidget {
 
               Card(
                 child: ListTile(
-                  title: Text("About"),
+                  title: const Text("About"),
                   onTap: () => showAboutDialog(
                     context: context,
                     applicationName: packageInfo.appName,

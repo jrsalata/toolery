@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:toolery/accessibility/color_picker_dialog.dart';
 import 'package:toolery/models/tag.dart';
 
 // reusable form to edit the tag
@@ -71,23 +71,11 @@ class _TagFormState extends State<TagForm> {
                 child: DecoratedBox(decoration: BoxDecoration(color: value)),
               ),
             ),
-            onTap: () async => showDialog<void>(
+            onTap: () async => showAccessibleColorPickerDialog(
               context: context,
-              barrierDismissible: true,
-              builder: (BuildContext builder) => AlertDialog(
-                title: const Text("Select Color"),
-                content: BlockPicker(
-                  pickerColor: colorController.value,
-                  onColorChanged: (changeColor) =>
-                      colorController.value = changeColor,
-                ),
-                actions: [
-                  TextButton(
-                    child: const Text("Done!"),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                ],
-              ),
+              pickerColor: colorController.value,
+              onColorChanged: (changeColor) =>
+                  colorController.value = changeColor,
             ),
           ),
           _formButton,
