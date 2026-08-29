@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_quill/flutter_quill.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:toolery/forms/breathing/main.dart';
 import 'package:toolery/forms/journal/main.dart';
 import 'package:toolery/forms/task/main.dart';
@@ -92,6 +94,12 @@ class _MainState extends State<Main> {
             ),
             themeMode: settings.darkMode ? ThemeMode.dark : ThemeMode.light,
             home: child,
+            localizationsDelegates: const [
+              GlobalMaterialLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              FlutterQuillLocalizations.delegate,
+            ],
           ),
           child: const MainPage(),
         );

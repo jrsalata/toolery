@@ -19,7 +19,7 @@ class _CreateJournalState extends State<CreateJournal> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _quillController = QuillController.basic();
-  List<int> _tagIDs = [];
+  final List<int> _tagIDs = [];
 
   @override
   void dispose() {
