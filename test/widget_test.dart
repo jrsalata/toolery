@@ -25,8 +25,7 @@ Widget buildTestApp(Widget child) {
         create: (_) => TagNotifier(repository: FakeTagRepository()),
       ),
       ChangeNotifierProvider(
-        create: (_) =>
-            BreathingNotifier(repository: FakeBreathingRepository()),
+        create: (_) => BreathingNotifier(repository: FakeBreathingRepository()),
       ),
       ChangeNotifierProvider(
         create: (_) =>
@@ -49,18 +48,20 @@ void main() {
     });
 
     testWidgets(
-        'shows Tasks, Breathing Exercises, Affirmations, and Journal cards',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(buildTestApp(const WelcomePage()));
-      await tester.pump();
-      expect(find.text('Tasks'), findsOneWidget);
-      expect(find.text('Breathing Exercises'), findsOneWidget);
-      expect(find.text('Affirmations'), findsOneWidget);
-      expect(find.text('Journal'), findsOneWidget);
-    });
+      'shows Tasks, Breathing Exercises, Affirmations, and Journal cards',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestApp(const WelcomePage()));
+        await tester.pump();
+        expect(find.text('Tasks'), findsOneWidget);
+        expect(find.text('Breathing Exercises'), findsOneWidget);
+        expect(find.text('Affirmations'), findsOneWidget);
+        expect(find.text('Journal'), findsOneWidget);
+      },
+    );
 
-    testWidgets('tapping Tasks card navigates to TaskPage',
-        (WidgetTester tester) async {
+    testWidgets('tapping Tasks card navigates to TaskPage', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(buildTestApp(const WelcomePage()));
       await tester.pump();
       await tester.tap(find.text('Tasks'));

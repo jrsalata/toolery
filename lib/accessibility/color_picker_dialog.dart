@@ -26,8 +26,7 @@ const int _rgbMask = 0x00FFFFFF;
 const int _hexColorLength = 6;
 
 String colorHexLabel(Color color) {
-  final rgbValue =
-      color.toARGB32() & _rgbMask; // Strip alpha; keep RGB only.
+  final rgbValue = color.toARGB32() & _rgbMask; // Strip alpha; keep RGB only.
   return '#${rgbValue.toRadixString(16).toUpperCase().padLeft(_hexColorLength, '0')}';
 }
 

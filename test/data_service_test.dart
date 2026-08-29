@@ -79,7 +79,12 @@ void main() {
   group('DataService CSV round-trip', () {
     test('encodeCSV → decodeCSV preserves data', () {
       final original = [
-        {'id': 1, 'name': 'Task one', 'description': 'Do it', 'task': 'Do it now'},
+        {
+          'id': 1,
+          'name': 'Task one',
+          'description': 'Do it',
+          'task': 'Do it now',
+        },
         {'id': 2, 'name': 'Task "quoted"', 'description': 'A, B', 'task': 'OK'},
       ];
       final csv = DataService.encodeCSV(original);

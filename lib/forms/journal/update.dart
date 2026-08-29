@@ -26,7 +26,9 @@ class _UpdateJournalState extends State<UpdateJournal> {
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.entry.title);
-    _tagIDs = List<int>.from(context.read<JournalNotifier>().getTags(widget.entry));
+    _tagIDs = List<int>.from(
+      context.read<JournalNotifier>().getTags(widget.entry),
+    );
     try {
       final delta = jsonDecode(widget.entry.content) as List<dynamic>;
       _quillController = QuillController(
@@ -59,9 +61,9 @@ class _UpdateJournalState extends State<UpdateJournal> {
         Navigator.pop(context, true);
       }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a title')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please enter a title')));
     }
   }
 

@@ -14,7 +14,9 @@ class JournalPage extends StatelessWidget {
         onPressed: () async {
           await Navigator.push<bool>(
             context,
-            MaterialPageRoute<bool>(builder: (context) => const CreateJournal()),
+            MaterialPageRoute<bool>(
+              builder: (context) => const CreateJournal(),
+            ),
           );
         },
         label: const Text('Entry'),

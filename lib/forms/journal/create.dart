@@ -48,9 +48,9 @@ class _CreateJournalState extends State<CreateJournal> {
         Navigator.pop(context, true);
       }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a title')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please enter a title')));
     }
   }
 
