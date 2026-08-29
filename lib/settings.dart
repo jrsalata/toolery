@@ -171,9 +171,9 @@ class SettingsPage extends StatelessWidget {
       context.read<AffirmationNotifier>().loadAll(),
     ]).catchError((e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to reload data: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to reload data: $e')));
       }
       return [];
     });

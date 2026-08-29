@@ -38,7 +38,9 @@ class _JournalViewState extends State<JournalView> {
 
   Future<void> _loadEntry() async {
     try {
-      final entry = await context.read<JournalNotifier>().getById(widget.entryID);
+      final entry = await context.read<JournalNotifier>().getById(
+        widget.entryID,
+      );
       QuillController controller;
       try {
         final delta = jsonDecode(entry.content) as List<dynamic>;
@@ -80,9 +82,7 @@ class _JournalViewState extends State<JournalView> {
   @override
   Widget build(BuildContext context) {
     if (_loading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     if (_error != null) {
@@ -140,9 +140,7 @@ class _JournalViewState extends State<JournalView> {
             Expanded(
               child: QuillEditor.basic(
                 controller: _quillController!,
-                config: const QuillEditorConfig(
-                  showCursor: false,
-                ),
+                config: const QuillEditorConfig(showCursor: false),
               ),
             ),
           ],

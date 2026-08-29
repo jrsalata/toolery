@@ -201,8 +201,7 @@ class FakeAffirmationRepository implements AffirmationRepository {
   Future<void> get ready => Future.value();
 
   @override
-  Future<List<AffirmationList>> allLists() async =>
-      List.unmodifiable(_lists);
+  Future<List<AffirmationList>> allLists() async => List.unmodifiable(_lists);
 
   @override
   Future<void> insertList(AffirmationList list) async {

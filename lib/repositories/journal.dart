@@ -121,11 +121,10 @@ class SqliteJournalRepository implements JournalRepository {
 
   @override
   Future<void> addTag(int entryID, int tagID) async {
-    await db.insert(
-      joinTable,
-      {'entryID': entryID, 'tagID': tagID},
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    await db.insert(joinTable, {
+      'entryID': entryID,
+      'tagID': tagID,
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   @override
