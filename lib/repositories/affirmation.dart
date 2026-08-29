@@ -143,8 +143,9 @@ class SqliteAffirmationRepository implements AffirmationRepository {
       whereArgs: [id],
       limit: 1,
     );
-    if (rows.isEmpty)
+    if (rows.isEmpty) {
       return const AffirmationItem(id: -1, listId: -1, item: '');
+    }
     return AffirmationItem.fromMap(rows.first);
   }
 
