@@ -1,22 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:toolery/accessibility/contrast.dart';
-import 'package:toolery/forms/task/view.dart';
+import 'package:toolery/forms/journal/view.dart';
+import 'package:toolery/models/journal.dart';
 import 'package:toolery/models/tag.dart';
-import 'package:toolery/models/task.dart';
+import 'package:toolery/notifiers/journal.dart';
 import 'package:toolery/notifiers/tag.dart';
-import 'package:toolery/notifiers/task.dart';
 
-// dedicated Widget to list all of the tasks
-class TaskList extends StatefulWidget {
-  const TaskList({super.key});
+class JournalList extends StatefulWidget {
+  const JournalList({super.key});
 
   @override
-  State<TaskList> createState() => _TaskListState();
+  State<JournalList> createState() => _JournalListState();
 }
 
-class _TaskListState extends State<TaskList> {
+class _JournalListState extends State<JournalList> {
   List<int> filterTags = [];
+
+  String _formatDate(String isoDate) {
+    try {
+      final dt = DateTime.parse(isoDate);
+      return '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}';
+    } catch (_) {
+      return isoDate;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +32,7 @@ class _TaskListState extends State<TaskList> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (tags.tags.isNotEmpty) Divider(),
+            if (tags.tags.isNotEmpty) const Divider(),
             Wrap(
               alignment: WrapAlignment.center,
               runAlignment: WrapAlignment.center,
@@ -40,10 +47,14 @@ class _TaskListState extends State<TaskList> {
                     selectedColor: tag.color,
                     label: Text(tag.name),
                     labelStyle: TextStyle(
-                      color: highContrastTextColor(tag.color),
+                      color: tag.color.computeLuminance() > 0.5
+                          ? Colors.black
+                          : Colors.white,
                     ),
                     showCheckmark: true,
-                    checkmarkColor: highContrastTextColor(tag.color),
+                    checkmarkColor: tag.color.computeLuminance() > 0.5
+                        ? Colors.black
+                        : Colors.white,
                     onSelected: (bool selected) {
                       setState(() {
                         if (selected) {
@@ -58,33 +69,33 @@ class _TaskListState extends State<TaskList> {
                   ),
               ],
             ),
-            if (tags.tags.isNotEmpty) Divider(),
+            if (tags.tags.isNotEmpty) const Divider(),
             Expanded(child: child ?? const SizedBox.shrink()),
           ],
         );
       },
-      child: Consumer<TaskNotifier>(
-        builder: (context, tasks, child) {
-          if (tasks.tasks.isEmpty) {
+      child: Consumer<JournalNotifier>(
+        builder: (context, journal, child) {
+          if (journal.entries.isEmpty) {
             return Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
-                    Icons.task_alt,
+                    Icons.menu_book,
                     size: 72,
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'No tasks yet',
+                    'No journal entries yet',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Tap + to add your first task',
+                    'Tap + to write your first entry',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
@@ -94,12 +105,14 @@ class _TaskListState extends State<TaskList> {
             );
           }
 
-          final List<Task> filteredTasks = tasks.tasks.where((task) {
+          final List<Journal> filteredEntries = journal.entries.where((entry) {
             return filterTags.isEmpty ||
-                filterTags.any((tagID) => tasks.getTags(task).contains(tagID));
+                filterTags.any(
+                  (tagID) => journal.getTags(entry).contains(tagID),
+                );
           }).toList();
 
-          if (filteredTasks.isEmpty) {
+          if (filteredEntries.isEmpty) {
             return Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -111,7 +124,7 @@ class _TaskListState extends State<TaskList> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'No tasks match the selected filters',
+                    'No entries match the selected filters',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
@@ -122,18 +135,18 @@ class _TaskListState extends State<TaskList> {
           }
 
           return ListView.separated(
-            itemCount: filteredTasks.length,
+            itemCount: filteredEntries.length,
             separatorBuilder: (_, _) => const Divider(height: 1),
             itemBuilder: (context, index) {
-              final task = filteredTasks[index];
+              final entry = filteredEntries[index];
               return ListTile(
-                title: Text(task.name),
-                subtitle: Text(task.description),
+                title: Text(entry.title),
+                subtitle: Text(_formatDate(entry.dateWritten)),
                 onTap: () async {
                   await Navigator.push<bool>(
                     context,
                     MaterialPageRoute<bool>(
-                      builder: (context) => TaskInfo(taskID: task.id),
+                      builder: (context) => JournalView(entryID: entry.id),
                     ),
                   );
                 },

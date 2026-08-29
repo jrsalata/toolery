@@ -3,12 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_quill/flutter_quill.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:toolery/forms/breathing/main.dart';
+import 'package:toolery/forms/journal/main.dart';
 import 'package:toolery/forms/task/main.dart';
+import 'package:toolery/notifiers/journal.dart';
 import 'package:toolery/notifiers/task.dart';
 import 'package:toolery/notifiers/tag.dart';
 import 'package:toolery/notifiers/breathing.dart';
 import 'package:toolery/notifiers/affirmation.dart';
+import 'package:toolery/repositories/journal.dart';
 import 'package:toolery/repositories/task.dart';
 import 'package:toolery/repositories/tag.dart';
 import 'package:toolery/repositories/breathing.dart';
@@ -23,6 +28,7 @@ void main() {
   TagRepository tagRepo = SqliteTagRepository();
   BreathingRepository breathingRepo = SqliteBreathingRepository();
   AffirmationRepository affirmationRepo = SqliteAffirmationRepository();
+  JournalRepository journalRepo = SqliteJournalRepository();
   runApp(
     MultiProvider(
       providers: [
@@ -36,6 +42,9 @@ void main() {
         ),
         ChangeNotifierProvider(
           create: (_) => AffirmationNotifier(repository: affirmationRepo),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => JournalNotifier(repository: journalRepo),
         ),
       ],
       child: const Main(),
@@ -85,6 +94,12 @@ class _MainState extends State<Main> {
             ),
             themeMode: settings.darkMode ? ThemeMode.dark : ThemeMode.light,
             home: child,
+            localizationsDelegates: const [
+              GlobalMaterialLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              FlutterQuillLocalizations.delegate,
+            ],
           ),
           child: const MainPage(),
         );
@@ -136,18 +151,23 @@ class _MainPageState extends State<MainPage> {
         // NOTE: body and destinations must be in the same order to navigate
         body: [
           WelcomePage(),
-          BreathingPage(),
+          JournalPage(),
           TaskPage(),
+          BreathingPage(),
           SettingsPage(packageInfo: _packageInfo),
         ][currentDestination],
         bottomNavigationBar: NavigationBar(
           destinations: [
             NavigationDestination(icon: Icon(Icons.home), label: "Menu"),
-            NavigationDestination(icon: Icon(Icons.air), label: "Breathing"),
+            NavigationDestination(
+              icon: Icon(Icons.menu_book),
+              label: "Journal",
+            ),
             NavigationDestination(
               icon: Icon(Icons.task_alt_rounded),
               label: "Tasks",
             ),
+            NavigationDestination(icon: Icon(Icons.air), label: "Breathing"),
             NavigationDestination(
               icon: Icon(Icons.settings),
               label: "Settings",

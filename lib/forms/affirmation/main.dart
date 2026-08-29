@@ -11,6 +11,7 @@ class AffirmationPage extends StatelessWidget {
       appBar: AppBar(title: const Text('Affirmations')),
       body: const AffirmationListView(),
       floatingActionButton: FloatingActionButton.extended(
+        tooltip: 'Create affirmation list',
         onPressed: () async {
           await Navigator.push<bool>(
             context,

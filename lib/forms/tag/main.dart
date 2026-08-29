@@ -10,6 +10,7 @@ class TagPage extends StatelessWidget {
       appBar: AppBar(title: const Text('Configure Tags')),
       body: const TagList(),
       floatingActionButton: FloatingActionButton.extended(
+        tooltip: 'Create tag',
         onPressed: () async {
           await Navigator.push<bool>(
             context,

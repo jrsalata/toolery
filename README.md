@@ -23,6 +23,11 @@ Contributions are welcome!
 
 TODO: Make contributions and build/run guide.
 
+## Accessibility
+
+See the project accessibility review and recommendations in
+[`docs/accessibility_review.md`](docs/accessibility_review.md).
+
 ## Credit
 
 ### App Icon
