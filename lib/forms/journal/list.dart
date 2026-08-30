@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:toolery/accessibility/contrast.dart';
 import 'package:toolery/forms/journal/view.dart';
 import 'package:toolery/models/journal.dart';
 import 'package:toolery/models/tag.dart';
@@ -47,14 +48,10 @@ class _JournalListState extends State<JournalList> {
                     selectedColor: tag.color,
                     label: Text(tag.name),
                     labelStyle: TextStyle(
-                      color: tag.color.computeLuminance() > 0.5
-                          ? Colors.black
-                          : Colors.white,
+                      color: highContrastTextColor(tag.color),
                     ),
                     showCheckmark: true,
-                    checkmarkColor: tag.color.computeLuminance() > 0.5
-                        ? Colors.black
-                        : Colors.white,
+                    checkmarkColor: highContrastTextColor(tag.color),
                     onSelected: (bool selected) {
                       setState(() {
                         if (selected) {
