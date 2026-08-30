@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:toolery/accessibility/contrast.dart';
 import 'package:toolery/forms/journal/view.dart';
 import 'package:toolery/models/journal.dart';
-import 'package:toolery/models/tag.dart';
 import 'package:toolery/notifiers/journal.dart';
 import 'package:toolery/notifiers/tag.dart';
+import 'package:toolery/widgets/tag_filter_chips.dart';
 
 class JournalList extends StatefulWidget {
   const JournalList({super.key});
@@ -34,37 +33,10 @@ class _JournalListState extends State<JournalList> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (tags.tags.isNotEmpty) const Divider(),
-            Wrap(
-              alignment: WrapAlignment.center,
-              runAlignment: WrapAlignment.center,
-              spacing: 6,
-              runSpacing: 6,
-              children: [
-                const SizedBox(width: 6, height: 6),
-                for (Tag tag in tags.tags)
-                  FilterChip(
-                    selected: filterTags.contains(tag.id),
-                    backgroundColor: tag.color,
-                    selectedColor: tag.color,
-                    label: Text(tag.name),
-                    labelStyle: TextStyle(
-                      color: highContrastTextColor(tag.color),
-                    ),
-                    showCheckmark: true,
-                    checkmarkColor: highContrastTextColor(tag.color),
-                    onSelected: (bool selected) {
-                      setState(() {
-                        if (selected) {
-                          if (!filterTags.contains(tag.id)) {
-                            filterTags.add(tag.id);
-                          }
-                        } else {
-                          filterTags.remove(tag.id);
-                        }
-                      });
-                    },
-                  ),
-              ],
+            TagFilterChips(
+              tags: tags.tags,
+              selectedTagIds: filterTags,
+              onChanged: (updated) => setState(() => filterTags = updated),
             ),
             if (tags.tags.isNotEmpty) const Divider(),
             Expanded(child: child ?? const SizedBox.shrink()),
