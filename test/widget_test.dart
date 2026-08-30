@@ -8,13 +8,22 @@ import 'package:toolery/notifiers/journal.dart';
 import 'package:toolery/notifiers/tag.dart';
 import 'package:toolery/notifiers/task.dart';
 import 'package:toolery/settings.dart';
+import 'package:toolery/theme/app_theme.dart';
 import 'package:toolery/welcome_page.dart';
 
 import 'helpers/mock_repositories.dart';
 
 /// Wraps a [child] widget with all the [Provider]s required by the app,
 /// using in-memory fake repositories so no platform channels are needed.
-Widget buildTestApp(Widget child) {
+///
+/// [platform] is threaded through [buildAppTheme] rather than set via
+/// `debugDefaultTargetPlatformOverride`, so there is no global to reset and
+/// nothing can leak between tests. It defaults to Android, which keeps every
+/// pre-existing assertion byte-identical.
+Widget buildTestApp(
+  Widget child, {
+  TargetPlatform platform = TargetPlatform.android,
+}) {
   return MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => SettingsNotifier()),
@@ -35,7 +44,15 @@ Widget buildTestApp(Widget child) {
         create: (_) => JournalNotifier(repository: FakeJournalRepository()),
       ),
     ],
-    child: MaterialApp(home: child),
+    child: MaterialApp(
+      theme: buildAppTheme(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(SettingsNotifier.defaultCustomThemeColor),
+        ),
+        platform: platform,
+      ),
+      home: child,
+    ),
   );
 }
 
