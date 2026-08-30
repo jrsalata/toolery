@@ -136,4 +136,4 @@ jobs:
           disable-animations: true
           script: |
             adb shell pm clear software.salata.toolery.debug || true
-            flutter test integration_test --reporter expanded
+            flutter test integration_test/all_test.dart --reporter expanded

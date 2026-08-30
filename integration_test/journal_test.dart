@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'helpers/app_harness.dart';
 import 'helpers/finders.dart';
 
-void main() {
+void journalTests() {
   registerAppHarnessTearDown();
 
   Future<void> openJournal(WidgetTester tester) async {
@@ -106,3 +106,8 @@ void main() {
     });
   });
 }
+
+/// Lets this file run standalone during development, e.g.
+/// `flutter test integration_test/journal_test.dart -d <device-id>`.
+/// The full suite runs these grouped in `all_test.dart` instead.
+void main() => journalTests();

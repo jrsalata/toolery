@@ -5,7 +5,7 @@ import 'helpers/app_harness.dart';
 import 'helpers/finders.dart';
 import 'helpers/seed.dart';
 
-void main() {
+void breathingTests() {
   registerAppHarnessTearDown();
 
   Future<void> openBreathing(
@@ -130,3 +130,8 @@ void main() {
     });
   });
 }
+
+/// Lets this file run standalone during development, e.g.
+/// `flutter test integration_test/breathing_test.dart -d <device-id>`.
+/// The full suite runs these grouped in `all_test.dart` instead.
+void main() => breathingTests();

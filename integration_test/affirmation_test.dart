@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'helpers/app_harness.dart';
 
-void main() {
+void affirmationTests() {
   registerAppHarnessTearDown();
 
   Future<void> openAffirmations(WidgetTester tester) async {
@@ -136,3 +136,8 @@ void main() {
     });
   });
 }
+
+/// Lets this file run standalone during development, e.g.
+/// `flutter test integration_test/affirmation_test.dart -d <device-id>`.
+/// The full suite runs these grouped in `all_test.dart` instead.
+void main() => affirmationTests();

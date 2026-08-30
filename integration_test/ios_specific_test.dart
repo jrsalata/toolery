@@ -11,10 +11,9 @@ import 'helpers/finders.dart';
 /// never assert on (see the tooltip/[findTab] convention in
 /// `integration_test/helpers/finders.dart`).
 ///
-/// `flutter test integration_test` globs this directory on both platforms,
-/// so the whole group is skipped outright on Android rather than filtered
-/// per test.
-void main() {
+/// The group below is skipped outright on Android via `skip: !Platform.isIOS`
+/// rather than filtered per test.
+void iosSpecificTests() {
   registerAppHarnessTearDown();
 
   group('iOS chrome', () {
@@ -103,3 +102,8 @@ void main() {
     });
   }, skip: !Platform.isIOS);
 }
+
+/// Lets this file run standalone during development, e.g.
+/// `flutter test integration_test/ios_specific_test.dart -d <UDID>`.
+/// The full suite runs these grouped in `all_test.dart` instead.
+void main() => iosSpecificTests();
