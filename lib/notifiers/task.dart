@@ -50,8 +50,11 @@ class TaskNotifier extends ChangeNotifier {
   /// Persists [t] and returns the saved copy (with its database-assigned id).
   ///
   /// [tasks] is refreshed and listeners are notified after insertion.
-  Future<Task> create(Task t) async {
+  Future<Task> create(Task t, {List<int>? tagIDs}) async {
     final Task created = await repository.insertTask(t);
+    if (tagIDs != null && tagIDs.isNotEmpty) {
+      await _applyTagDiff(created.id, const <int>[], tagIDs);
+    }
     await loadAll();
     return created;
   }
@@ -64,8 +67,16 @@ class TaskNotifier extends ChangeNotifier {
 
   /// Overwrites the stored task that matches [t.id] with updated field values,
   /// then refreshes [tasks].
-  Future<void> update(Task t) async {
+  ///
+  /// If [tagIDs] is given, tags are diffed against the current set and
+  /// applied before the same reload, so a save that touches both the task
+  /// and its tags produces one notifyListeners cycle instead of two (see
+  /// [setTags]).
+  Future<void> update(Task t, {List<int>? tagIDs}) async {
     await repository.updateTask(t);
+    if (tagIDs != null) {
+      await _applyTagDiff(t.id, getTags(t), tagIDs);
+    }
     await loadAll();
   }
 
@@ -93,23 +104,32 @@ class TaskNotifier extends ChangeNotifier {
   /// Only the diff is applied (adds missing tags, removes stale ones) to
   /// minimise database writes. [tasks] is refreshed once after all changes.
   Future<void> setTags(Task task, List<int> tagIDs) async {
-    List<int> currentTags = getTags(task);
+    await _applyTagDiff(task.id, getTags(task), tagIDs);
+    await loadAll();
+  }
+
+  /// Applies the add/remove calls needed to take [taskID] from [currentTags]
+  /// to [tagIDs], without reloading. Callers reload once, after their own
+  /// entity write, so a save that touches both the task and its tags
+  /// produces a single notifyListeners cycle instead of two.
+  Future<void> _applyTagDiff(
+    int taskID,
+    List<int> currentTags,
+    List<int> tagIDs,
+  ) async {
     final Set<int> currentTagSet = currentTags.toSet();
     final Set<int> tagIdSet = tagIDs.toSet();
 
-    // note we are calling the repository version
-    // so we avoid constantly calling loadAll()
     for (int tagID in currentTags) {
       if (!tagIdSet.contains(tagID)) {
-        await repository.removeTag(task.id, tagID);
+        await repository.removeTag(taskID, tagID);
       }
     }
     for (int tagID in tagIDs) {
       if (!currentTagSet.contains(tagID)) {
-        await repository.addTag(task.id, tagID);
+        await repository.addTag(taskID, tagID);
       }
     }
-    await loadAll();
   }
 
   /// Returns the task with the given [id] directly from the repository.

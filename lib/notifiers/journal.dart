@@ -49,9 +49,15 @@ class JournalNotifier extends ChangeNotifier {
 
   /// Persists [entry] and returns the saved copy (with its database-assigned id).
   ///
-  /// [entries] is refreshed and listeners are notified after insertion.
-  Future<Journal> create(Journal entry) async {
+  /// If [tagIDs] is given, those tags are attached before the reload, so
+  /// creation and tagging land in a single [loadAll]/notifyListeners cycle
+  /// instead of two separate ones (which left a gap a slow test environment
+  /// could observe as "settled" mid-save — see [setTags]).
+  Future<Journal> create(Journal entry, {List<int>? tagIDs}) async {
     final Journal created = await repository.insertEntry(entry);
+    if (tagIDs != null && tagIDs.isNotEmpty) {
+      await _applyTagDiff(created.id, const <int>[], tagIDs);
+    }
     await loadAll();
     return created;
   }
@@ -64,8 +70,14 @@ class JournalNotifier extends ChangeNotifier {
 
   /// Overwrites the stored entry that matches [entry.id] with updated field values,
   /// then refreshes [entries].
-  Future<void> update(Journal entry) async {
+  ///
+  /// If [tagIDs] is given, tags are diffed against the current set and
+  /// applied before the same reload (see [create] for why this matters).
+  Future<void> update(Journal entry, {List<int>? tagIDs}) async {
     await repository.updateEntry(entry);
+    if (tagIDs != null) {
+      await _applyTagDiff(entry.id, getTags(entry), tagIDs);
+    }
     await loadAll();
   }
 
@@ -93,21 +105,32 @@ class JournalNotifier extends ChangeNotifier {
   /// Only the diff is applied (adds missing tags, removes stale ones) to
   /// minimise database writes. [entries] is refreshed once after all changes.
   Future<void> setTags(Journal entry, List<int> tagIDs) async {
-    List<int> currentTags = getTags(entry);
+    await _applyTagDiff(entry.id, getTags(entry), tagIDs);
+    await loadAll();
+  }
+
+  /// Applies the add/remove calls needed to take [entryID] from [currentTags]
+  /// to [tagIDs], without reloading. Callers reload once, after their own
+  /// entity write, so a save that touches both the entity and its tags
+  /// produces a single notifyListeners cycle instead of two.
+  Future<void> _applyTagDiff(
+    int entryID,
+    List<int> currentTags,
+    List<int> tagIDs,
+  ) async {
     final Set<int> currentTagSet = currentTags.toSet();
     final Set<int> tagIdSet = tagIDs.toSet();
 
     for (int tagID in currentTags) {
       if (!tagIdSet.contains(tagID)) {
-        await repository.removeTag(entry.id, tagID);
+        await repository.removeTag(entryID, tagID);
       }
     }
     for (int tagID in tagIDs) {
       if (!currentTagSet.contains(tagID)) {
-        await repository.addTag(entry.id, tagID);
+        await repository.addTag(entryID, tagID);
       }
     }
-    await loadAll();
   }
 
   /// Returns the entry with the given [id] directly from the repository.

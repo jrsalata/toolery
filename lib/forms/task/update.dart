@@ -64,8 +64,7 @@ class _UpdateTaskState extends State<UpdateTask> {
         description: descriptionController.text,
         task: activityController.text,
       );
-      await taskNotifier.update(updatedTask);
-      await taskNotifier.setTags(_task, _tagIDs);
+      await taskNotifier.update(updatedTask, tagIDs: _tagIDs);
       if (mounted) {
         Navigator.pop(context, true);
       }

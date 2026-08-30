@@ -49,10 +49,7 @@ class _CreateTaskState extends State<CreateTask> {
         description: descriptionController.text,
         task: activityController.text,
       );
-      final created = await taskNotifier.create(newTask);
-      if (_tagIDs.isNotEmpty) {
-        await taskNotifier.setTags(created, _tagIDs);
-      }
+      await taskNotifier.create(newTask, tagIDs: _tagIDs);
       if (mounted) {
         Navigator.pop(context, true);
       }

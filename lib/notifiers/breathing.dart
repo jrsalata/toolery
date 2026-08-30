@@ -51,8 +51,11 @@ class BreathingNotifier extends ChangeNotifier {
   /// Persists [t] and returns the saved copy (with its database-assigned id).
   ///
   /// [breathings] is refreshed and listeners are notified after insertion.
-  Future<Breathing> create(Breathing t) async {
+  Future<Breathing> create(Breathing t, {List<int>? tagIDs}) async {
     final Breathing created = await repository.insertBreathing(t);
+    if (tagIDs != null && tagIDs.isNotEmpty) {
+      await _applyTagDiff(created.id, const <int>[], tagIDs);
+    }
     await loadAll();
     return created;
   }
@@ -66,8 +69,16 @@ class BreathingNotifier extends ChangeNotifier {
 
   /// Overwrites the stored exercise that matches [t.id] with updated field
   /// values, then refreshes [breathings].
-  Future<void> update(Breathing t) async {
+  ///
+  /// If [tagIDs] is given, tags are diffed against the current set and
+  /// applied before the same reload, so a save that touches both the
+  /// exercise and its tags produces one notifyListeners cycle instead of two
+  /// (see [setTags]).
+  Future<void> update(Breathing t, {List<int>? tagIDs}) async {
     await repository.updateBreathing(t);
+    if (tagIDs != null) {
+      await _applyTagDiff(t.id, getTags(t), tagIDs);
+    }
     await loadAll();
   }
 
@@ -96,23 +107,33 @@ class BreathingNotifier extends ChangeNotifier {
   /// Only the diff is applied (adds missing tags, removes stale ones) to
   /// minimise database writes. [breathings] is refreshed once after all changes.
   Future<void> setTags(Breathing breathing, List<int> tagIDs) async {
-    List<int> currentTags = getTags(breathing);
+    await _applyTagDiff(breathing.id, getTags(breathing), tagIDs);
+    await loadAll();
+  }
+
+  /// Applies the add/remove calls needed to take [breathingID] from
+  /// [currentTags] to [tagIDs], without reloading. Callers reload once,
+  /// after their own entity write, so a save that touches both the
+  /// exercise and its tags produces a single notifyListeners cycle instead
+  /// of two.
+  Future<void> _applyTagDiff(
+    int breathingID,
+    List<int> currentTags,
+    List<int> tagIDs,
+  ) async {
     final Set<int> currentTagSet = currentTags.toSet();
     final Set<int> tagIdSet = tagIDs.toSet();
 
-    // note we are calling the repository version
-    // so we avoid constantly calling loadAll()
     for (int tagID in currentTags) {
       if (!tagIdSet.contains(tagID)) {
-        await repository.removeTag(breathing.id, tagID);
+        await repository.removeTag(breathingID, tagID);
       }
     }
     for (int tagID in tagIDs) {
       if (!currentTagSet.contains(tagID)) {
-        await repository.addTag(breathing.id, tagID);
+        await repository.addTag(breathingID, tagID);
       }
     }
-    await loadAll();
   }
 
   /// Returns the breathing exercise with the given [id] directly from the

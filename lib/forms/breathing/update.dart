@@ -81,8 +81,7 @@ class _UpdateBreathingState extends State<UpdateBreathing> {
         holdOut: _parseOrZero(holdOutController),
         reps: _parseOrZero(repsController),
       );
-      await breathingNotifier.update(updatedBreathing);
-      await breathingNotifier.setTags(_breathing, _tagIDs);
+      await breathingNotifier.update(updatedBreathing, tagIDs: _tagIDs);
       if (mounted) {
         Navigator.pop(context, true);
       }
