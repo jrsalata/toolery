@@ -6,6 +6,7 @@ import 'package:toolery/models/task.dart';
 import 'package:toolery/notifiers/tag.dart';
 import 'package:toolery/notifiers/task.dart';
 import 'package:toolery/widgets/adaptive/adaptive_menu.dart';
+import 'package:toolery/widgets/async_page.dart';
 import 'package:toolery/widgets/confirm_dialog.dart';
 import 'package:toolery/widgets/tag_action.dart';
 
@@ -36,29 +37,13 @@ class TaskInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final taskNotifier = context.watch<TaskNotifier>();
-    return FutureBuilder<Task>(
+    return AsyncPage<Task>(
       future: taskNotifier.getById(taskID),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState != ConnectionState.done) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator.adaptive()),
-          );
-        }
-        if (snapshot.hasError) {
-          return Scaffold(
-            appBar: AppBar(title: const Text('Task')),
-            body: Center(child: Text('Error loading task: ${snapshot.error}')),
-          );
-        }
-        final Task? task = snapshot.data;
+      fallbackTitle: 'Task',
+      errorMessage: (error) => 'Error loading task: $error',
+      missingMessage: 'Task not found',
+      builder: (context, task) {
         final tagNotifier = context.watch<TagNotifier>();
-        if (task == null) {
-          return Scaffold(
-            appBar: AppBar(title: const Text('Task')),
-            body: const Center(child: Text('Task not found')),
-          );
-        }
-
         final List<int> tagIds = taskNotifier.getTags(task);
         final tags = tagNotifier.tags
             .where((t) => tagIds.contains(t.id))

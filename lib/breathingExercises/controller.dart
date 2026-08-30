@@ -211,7 +211,7 @@ class ExerciseController extends ChangeNotifier {
       notifyListeners();
     });
 
-    if (breathingVibrate) HapticFeedback.vibrate();
+    if (breathingVibrate) _hapticForPhase(phase.type);
 
     if (breathingSounds) _playForPhase(phase);
 
@@ -254,7 +254,31 @@ class ExerciseController extends ChangeNotifier {
     phaseIndex = 0;
     displayScale = minScale;
     notifyListeners();
-    if (breathingVibrate) HapticFeedback.vibrate();
+    if (breathingVibrate) _hapticForPhase(null);
+  }
+
+  /// Fires the phase-boundary haptic.
+  ///
+  /// `HapticFeedback.vibrate()` is a coarse buzz on iOS, which is the wrong
+  /// texture for an app whose whole point is calm pacing — so iOS gets the
+  /// impact generators instead: a light tap entering a breath, a firmer one
+  /// for a hold boundary or the end of the exercise. Android keeps the
+  /// existing vibrate. Branching on [defaultTargetPlatform] rather than a
+  /// `BuildContext` because the controller has none, and because this is
+  /// genuinely platform-specific *behaviour*, not styling.
+  void _hapticForPhase(PhaseType? type) {
+    if (defaultTargetPlatform != TargetPlatform.iOS) {
+      HapticFeedback.vibrate();
+      return;
+    }
+    switch (type) {
+      case PhaseType.inhale:
+      case PhaseType.exhale:
+        HapticFeedback.lightImpact();
+      case PhaseType.hold:
+      case null:
+        HapticFeedback.mediumImpact();
+    }
   }
 
   @override

@@ -9,6 +9,7 @@ import 'package:toolery/models/tag.dart';
 import 'package:toolery/notifiers/journal.dart';
 import 'package:toolery/notifiers/tag.dart';
 import 'package:toolery/widgets/adaptive/adaptive_menu.dart';
+import 'package:toolery/widgets/async_page.dart';
 import 'package:toolery/widgets/confirm_dialog.dart';
 import 'package:toolery/widgets/tag_action.dart';
 
@@ -102,23 +103,24 @@ class _JournalViewState extends State<JournalView> {
   @override
   Widget build(BuildContext context) {
     if (_loading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator.adaptive()),
+      return const AsyncPagePlaceholder(
+        title: 'Journal',
+        body: CircularProgressIndicator.adaptive(),
       );
     }
 
     if (_error != null) {
-      return Scaffold(
-        appBar: AppBar(title: const Text('Journal')),
-        body: Center(child: Text('Error loading entry: $_error')),
+      return AsyncPagePlaceholder(
+        title: 'Journal',
+        body: Text('Error loading entry: $_error'),
       );
     }
 
     final entry = _entry;
     if (entry == null) {
-      return Scaffold(
-        appBar: AppBar(title: const Text('Journal')),
-        body: const Center(child: Text('Entry not found')),
+      return const AsyncPagePlaceholder(
+        title: 'Journal',
+        body: Text('Entry not found'),
       );
     }
 

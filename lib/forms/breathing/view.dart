@@ -7,6 +7,7 @@ import 'package:toolery/models/tag.dart';
 import 'package:toolery/notifiers/breathing.dart';
 import 'package:toolery/notifiers/tag.dart';
 import 'package:toolery/widgets/adaptive/adaptive_menu.dart';
+import 'package:toolery/widgets/async_page.dart';
 import 'package:toolery/widgets/confirm_dialog.dart';
 import 'package:toolery/widgets/tag_action.dart';
 
@@ -37,31 +38,14 @@ class BreathingInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final breathingNotifier = context.watch<BreathingNotifier>();
-    return FutureBuilder<Breathing>(
+    return AsyncPage<Breathing>(
       future: breathingNotifier.getById(breathingID),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState != ConnectionState.done) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator.adaptive()),
-          );
-        }
-        if (snapshot.hasError) {
-          return Scaffold(
-            appBar: AppBar(title: const Text('Breathing')),
-            body: Center(
-              child: Text('Error loading exercise: ${snapshot.error}'),
-            ),
-          );
-        }
-        final Breathing breathing = snapshot.data!;
+      fallbackTitle: 'Breathing',
+      errorMessage: (error) => 'Error loading exercise: $error',
+      missingMessage: 'Breathing Exercise not found',
+      isMissing: (breathing) => breathing.id == -1,
+      builder: (context, breathing) {
         final tagNotifier = context.watch<TagNotifier>();
-        if (breathing.id == -1) {
-          return Scaffold(
-            appBar: AppBar(title: const Text('Breathing')),
-            body: const Center(child: Text('Breathing Exercise not found')),
-          );
-        }
-
         final List<int> tagIds = breathingNotifier.getTags(breathing);
         final tags = tagNotifier.tags
             .where((t) => tagIds.contains(t.id))
