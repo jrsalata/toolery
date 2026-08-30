@@ -117,6 +117,14 @@ class _UpdateBreathingState extends State<UpdateBreathing> {
   Widget build(BuildContext context) {
     return UnsavedChangesGuard(
       isDirty: _isDirty,
+      watch: [
+        nameController,
+        countInController,
+        holdInController,
+        countOutController,
+        holdOutController,
+        repsController,
+      ],
       child: Scaffold(
         appBar: EditorAppBar(
           title: 'Edit ${_breathing.name}',

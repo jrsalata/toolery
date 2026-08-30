@@ -145,43 +145,41 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        // NOTE: body and destinations must be in the same order to navigate
-        body: [
-          const WelcomePage(),
-          const JournalPage(),
-          const TaskPage(),
-          const BreathingPage(),
-          SettingsPage(packageInfo: _packageInfo),
-        ][currentDestination],
-        bottomNavigationBar: NavigationBar(
-          destinations: [
-            const NavigationDestination(icon: Icon(Icons.home), label: 'Menu'),
-            const NavigationDestination(
-              icon: Icon(Icons.menu_book),
-              label: 'Journal',
-            ),
-            const NavigationDestination(
-              icon: Icon(Icons.task_alt_rounded),
-              label: 'Tasks',
-            ),
-            const NavigationDestination(
-              icon: Icon(Icons.air),
-              label: 'Breathing',
-            ),
-            const NavigationDestination(
-              icon: Icon(Icons.settings),
-              label: 'Settings',
-            ),
-          ],
-          onDestinationSelected: (int index) {
-            setState(() {
-              currentDestination = index;
-            });
-          },
-          selectedIndex: currentDestination,
-        ),
+    return Scaffold(
+      // NOTE: body and destinations must be in the same order to navigate
+      body: [
+        const WelcomePage(),
+        const JournalPage(),
+        const TaskPage(),
+        const BreathingPage(),
+        SettingsPage(packageInfo: _packageInfo),
+      ][currentDestination],
+      bottomNavigationBar: NavigationBar(
+        destinations: [
+          const NavigationDestination(icon: Icon(Icons.home), label: 'Menu'),
+          const NavigationDestination(
+            icon: Icon(Icons.menu_book),
+            label: 'Journal',
+          ),
+          const NavigationDestination(
+            icon: Icon(Icons.task_alt_rounded),
+            label: 'Tasks',
+          ),
+          const NavigationDestination(
+            icon: Icon(Icons.air),
+            label: 'Breathing',
+          ),
+          const NavigationDestination(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
+        ],
+        onDestinationSelected: (int index) {
+          setState(() {
+            currentDestination = index;
+          });
+        },
+        selectedIndex: currentDestination,
       ),
     );
   }

@@ -100,6 +100,7 @@ class _UpdateTaskState extends State<UpdateTask> {
   Widget build(BuildContext context) {
     return UnsavedChangesGuard(
       isDirty: _isDirty,
+      watch: [nameController, descriptionController, activityController],
       child: Scaffold(
         appBar: EditorAppBar(
           title: 'Edit ${_task.name}',
