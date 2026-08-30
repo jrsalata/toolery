@@ -7,6 +7,7 @@ import 'package:toolery/breathingExercises/visualizer.dart';
 import 'package:toolery/models/breathing.dart';
 import 'package:toolery/notifiers/breathing.dart';
 import 'package:toolery/settings.dart';
+import 'package:toolery/widgets/async_page.dart';
 
 /// Full-screen view for running a single guided breathing exercise.
 ///
@@ -33,30 +34,13 @@ class ExerciseView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final breathingNotifier = context.watch<BreathingNotifier>();
-    return FutureBuilder<Breathing>(
+    return AsyncPage<Breathing>(
       future: breathingNotifier.getById(breathingID),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState != ConnectionState.done) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator.adaptive()),
-          );
-        }
-        if (snapshot.hasError) {
-          return Scaffold(
-            appBar: AppBar(title: const Text('Breathing')),
-            body: Center(
-              child: Text('Error loading exercise: ${snapshot.error}'),
-            ),
-          );
-        }
-        final Breathing breathing = snapshot.data!;
-        if (breathing.id == -1) {
-          return Scaffold(
-            appBar: AppBar(title: const Text('Breathing')),
-            body: const Center(child: Text('Breathing Exercise not found')),
-          );
-        }
-
+      fallbackTitle: 'Breathing',
+      errorMessage: (error) => 'Error loading exercise: $error',
+      missingMessage: 'Breathing Exercise not found',
+      isMissing: (breathing) => breathing.id == -1,
+      builder: (context, breathing) {
         final settings = context.read<SettingsNotifier>();
 
         return ChangeNotifierProvider<ExerciseController>(
