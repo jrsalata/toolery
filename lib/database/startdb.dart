@@ -4,8 +4,45 @@ import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+const String _defaultDatabaseName = 'toolery.db';
+
 Database? _database;
 Future<Database>? _databaseFuture;
+
+/// Test-only override of the database filename.
+///
+/// Integration tests point the whole app at a throwaway file so a failed run
+/// cannot poison the device's real `toolery.db`. Null in production, which
+/// keeps the shipped path byte-identical.
+@visibleForTesting
+String? databaseNameOverride;
+
+/// Closes and forgets the cached database so the next [getDatabase] reopens.
+///
+/// The cache is module-level, so without this every test in a run would
+/// share one connection and one accumulated data set. Callers must not hold
+/// a live repository (which captures the handle in its constructor) across
+/// this call.
+@visibleForTesting
+Future<void> resetDatabaseForTesting({String? name}) async {
+  final Database? open = _database;
+  _database = null;
+  _databaseFuture = null;
+  await open?.close();
+  databaseNameOverride = name;
+}
+
+/// Deletes the file behind the current (possibly overridden) name, so the
+/// next open re-runs `onCreate` and its demo seed.
+@visibleForTesting
+Future<void> deleteDatabaseFileForTesting() async {
+  await deleteDatabase(
+    join(
+      await getDatabasesPath(),
+      databaseNameOverride ?? _defaultDatabaseName,
+    ),
+  );
+}
 
 Future<Database> getDatabase() async {
   // Return cached database if already initialized
@@ -28,7 +65,10 @@ Future<Database> _initDatabase() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   return openDatabase(
-    join(await getDatabasesPath(), 'toolery.db'),
+    join(
+      await getDatabasesPath(),
+      databaseNameOverride ?? _defaultDatabaseName,
+    ),
     onCreate: (db, version) async {
       await db.execute(
         'CREATE TABLE task (id INTEGER PRIMARY KEY, name TEXT, description TEXT, task TEXT )',

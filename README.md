@@ -22,6 +22,49 @@ It is currently in a closed testing period. If you are interested, please email 
 Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for the build/run guide,
 coding checks, and how releases are versioned.
 
+### Testing
+
+**Unit and Widget Tests**: Run the test suite with:
+
+```bash
+flutter test
+```
+
+**Integration Tests**: Full end-to-end tests drive the real app on a device or emulator. These test SQLite persistence, shared_preferences, tab navigation, and platform-specific UI (FABs vs. nav-bar actions on iOS).
+
+**Android (emulator)**:
+
+```bash
+flutter devices  # find your emulator device ID
+flutter test integration_test -d <device-id>
+```
+
+**iOS (simulator)**:
+
+```bash
+open -a Simulator
+flutter devices  # find your simulator UDID
+flutter test integration_test -d <UDID>
+```
+
+To run a specific test file:
+
+```bash
+flutter test integration_test/welcome_test.dart -d <device-id>
+```
+
+To wipe app state between runs:
+
+```bash
+# Android
+adb shell pm clear software.salata.toolery.debug
+
+# iOS
+xcrun simctl uninstall booted software.salata.toolery
+```
+
+Integration tests live in `integration_test/` and cover ~48 scenarios: welcome dialogs, CRUD for all features (tasks, journal, breathing, affirmations, tags), settings, filtering, and iOS-specific chrome (Cupertino controls, back-swipe). The `ios_specific_test.dart` file is skipped on Android.
+
 ## License
 
 Toolery's code is licensed under the [MIT License](LICENSE). The app icon and sound effects are
