@@ -111,23 +111,6 @@ class SettingsPage extends StatelessWidget {
 
   const SettingsPage({super.key, required this.packageInfo});
 
-  Future<void> _exportData(BuildContext context) async {
-    final String filePath;
-    try {
-      filePath = await DataService.exportData();
-    } catch (e) {
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Export failed: $e')));
-      return;
-    }
-    if (!context.mounted) return;
-    await SharePlus.instance.share(
-      ShareParams(files: [XFile(filePath)], subject: 'Toolery Data Export'),
-    );
-  }
-
   Future<void> _importData(BuildContext context) async {
     final confirmed = await confirmDestructive(
       context,
@@ -221,16 +204,7 @@ class SettingsPage extends StatelessWidget {
                   ),
                 ),
               ),
-              Card(
-                child: ListTile(
-                  title: const Text('Export Data'),
-                  subtitle: const Text(
-                    'Save all your data as a ZIP of CSV files',
-                  ),
-                  trailing: const Icon(Icons.upload),
-                  onTap: () => _exportData(context),
-                ),
-              ),
+              const Card(child: _ExportDataTile()),
               Card(
                 child: ListTile(
                   title: const Text('Import Data'),
@@ -279,6 +253,44 @@ class SettingsPage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _ExportDataTile extends StatelessWidget {
+  const _ExportDataTile();
+
+  Future<void> _exportData(BuildContext context) async {
+    final String filePath;
+    try {
+      filePath = await DataService.exportData();
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Export failed: $e')));
+      return;
+    }
+    if (!context.mounted) return;
+    final box = context.findRenderObject() as RenderBox?;
+    await SharePlus.instance.share(
+      ShareParams(
+        files: [XFile(filePath)],
+        subject: 'Toolery Data Export',
+        sharePositionOrigin: box != null
+            ? box.localToGlobal(Offset.zero) & box.size
+            : null,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: const Text('Export Data'),
+      subtitle: const Text('Save all your data as a ZIP of CSV files'),
+      trailing: const Icon(Icons.upload),
+      onTap: () => _exportData(context),
     );
   }
 }
