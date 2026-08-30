@@ -73,7 +73,7 @@ void journalTests() {
 
       await tester.tap(quillBody());
       await tester.enterText(quillBody(), 'an unsaved change');
-      await tester.pumpAndSettle();
+      await pumpUntilQuillBodyContains(tester, 'an unsaved change');
 
       await tester.pageBack();
       await tester.pumpAndSettle();

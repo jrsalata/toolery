@@ -104,6 +104,25 @@ Future<void> pumpUntilSaved(
   await tester.pumpAndSettle();
 }
 
+/// Waits for the Quill body's [EditableText] to actually contain [text].
+///
+/// `tester.enterText` on the Quill body goes through the real text input
+/// pipeline rather than a plain `TextEditingController` assignment, so on a
+/// slow CI emulator the edit can still be in flight when the next step
+/// fires. A `pageBack()` that runs before it lands sees a clean
+/// `UnsavedChangesGuard` and pops straight through instead of raising the
+/// discard-changes prompt. See [pumpUntilCondition].
+Future<void> pumpUntilQuillBodyContains(
+  WidgetTester tester,
+  String text, {
+  Duration timeout = const Duration(seconds: 20),
+}) => pumpUntilCondition(
+  tester,
+  () => tester.widget<EditableText>(quillBody()).controller.text.contains(text),
+  'quill body to contain "$text"',
+  timeout: timeout,
+);
+
 /// Pumps real frames until [finder] matches nothing.
 ///
 /// The disappearance counterpart to [pumpUntil], for asserting that a delete
