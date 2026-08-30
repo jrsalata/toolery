@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:toolery/models/task.dart';
 import 'package:toolery/repositories/task.dart';
@@ -30,9 +32,21 @@ class TaskNotifier extends ChangeNotifier {
     _init();
   }
 
+  final Completer<void> _loaded = Completer<void>();
+
+  /// Completes once the first [loadAll] has landed, mirroring
+  /// [TaskRepository.ready] one layer up.
+  ///
+  /// The initial load runs off-frame — SQLite I/O schedules no frames — so a
+  /// widget test's `pumpAndSettle()` can report the tree settled while
+  /// [tasks] is still empty. Awaiting this is the only way to know the data
+  /// is actually in hand.
+  Future<void> get loaded => _loaded.future;
+
   Future<void> _init() async {
     await repository.ready;
     await loadAll();
+    if (!_loaded.isCompleted) _loaded.complete();
   }
 
   /// Fetches all tasks from the repository and refreshes [tasks].

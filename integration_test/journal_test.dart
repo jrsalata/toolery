@@ -21,7 +21,7 @@ void journalTests() {
       await tester.tap(quillTitle());
       await tester.enterText(quillTitle(), 'IT view entry');
       await tester.tap(find.byTooltip('Save'));
-      await tester.pumpAndSettle();
+      await pumpUntil(tester, find.text('IT view entry'));
 
       await tester.tap(find.text('IT view entry'));
       await tester.pumpAndSettle();
@@ -38,7 +38,7 @@ void journalTests() {
       await tester.tap(quillTitle());
       await tester.enterText(quillTitle(), 'IT edit entry');
       await tester.tap(find.byTooltip('Save'));
-      await tester.pumpAndSettle();
+      await pumpUntil(tester, find.text('IT edit entry'));
 
       await tester.tap(find.text('IT edit entry'));
       await tester.pumpAndSettle();
@@ -48,7 +48,7 @@ void journalTests() {
       await tester.tap(quillTitle());
       await tester.enterText(quillTitle(), 'IT edited entry');
       await tester.tap(find.byTooltip('Save'));
-      await tester.pumpAndSettle();
+      await pumpUntil(tester, find.text('IT edited entry'));
 
       // JournalView reloads after Update pops.
       expect(find.text('IT edited entry'), findsOneWidget);
@@ -64,7 +64,7 @@ void journalTests() {
       await tester.tap(quillTitle());
       await tester.enterText(quillTitle(), 'IT guard entry');
       await tester.tap(find.byTooltip('Save'));
-      await tester.pumpAndSettle();
+      await pumpUntil(tester, find.text('IT guard entry'));
 
       await tester.tap(find.text('IT guard entry'));
       await tester.pumpAndSettle();
@@ -89,7 +89,7 @@ void journalTests() {
       await tester.tap(quillTitle());
       await tester.enterText(quillTitle(), 'IT delete entry');
       await tester.tap(find.byTooltip('Save'));
-      await tester.pumpAndSettle();
+      await pumpUntil(tester, find.text('IT delete entry'));
 
       await tester.tap(find.text('IT delete entry'));
       await tester.pumpAndSettle();
@@ -98,7 +98,7 @@ void journalTests() {
       await tester.tap(find.text('Delete'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Delete').last);
-      await tester.pumpAndSettle();
+      await pumpUntilGone(tester, find.text('IT delete entry'));
 
       // Deleting from JournalView pops straight to the list.
       expect(find.text('IT delete entry'), findsNothing);
