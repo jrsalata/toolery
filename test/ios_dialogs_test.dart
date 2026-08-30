@@ -124,6 +124,10 @@ void main() {
       await tester.pumpWidget(_settingsApp(platform));
       await tester.pump();
 
+      // Scroll down to make the About button visible
+      await tester.drag(find.byType(ListView), const Offset(0, -500));
+      await tester.pumpAndSettle();
+
       await tester.tap(find.text('About'));
       await tester.pumpAndSettle();
 
