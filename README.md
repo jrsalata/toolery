@@ -32,26 +32,30 @@ flutter test
 
 **Integration Tests**: Full end-to-end tests drive the real app on a device or emulator. These test SQLite persistence, shared_preferences, tab navigation, and platform-specific UI (FABs vs. nav-bar actions on iOS).
 
-**Android (emulator)**:
+Each file under `integration_test/` (`affirmation_test.dart`, `breathing_test.dart`, etc.) exposes its test group as a named function (e.g. `affirmationTests()`) and also has its own thin `void main()` so it can run standalone. [`all_test.dart`](integration_test/all_test.dart) imports every one of those functions and runs them together in a single `main()`, so the full suite launches the app once instead of once per file -- this is what CI and a full local run use.
+
+**Full suite, Android (emulator)**:
 
 ```bash
 flutter devices  # find your emulator device ID
-flutter test integration_test -d <device-id>
+flutter test integration_test/all_test.dart -d <device-id>
 ```
 
-**iOS (simulator)**:
+**Full suite, iOS (simulator)**:
 
 ```bash
 open -a Simulator
 flutter devices  # find your simulator UDID
-flutter test integration_test -d <UDID>
+flutter test integration_test/all_test.dart -d <UDID>
 ```
 
-To run a specific test file:
+**A single file, for fast iteration during development**: run just the file you're working on to skip the rest of the suite. Each file still launches its own app instance, but you avoid waiting on the other ~40 scenarios.
 
 ```bash
 flutter test integration_test/welcome_test.dart -d <device-id>
 ```
+
+When adding a new test file, give it a named function and a `void main() => yourFileTests();` wrapper (following the existing files), then wire it into `all_test.dart` so it's covered by the full suite and CI.
 
 To wipe app state between runs:
 
@@ -63,7 +67,7 @@ adb shell pm clear software.salata.toolery.debug
 xcrun simctl uninstall booted software.salata.toolery
 ```
 
-Integration tests live in `integration_test/` and cover ~48 scenarios: welcome dialogs, CRUD for all features (tasks, journal, breathing, affirmations, tags), settings, filtering, and iOS-specific chrome (Cupertino controls, back-swipe). The `ios_specific_test.dart` file is skipped on Android.
+Integration tests live in `integration_test/` and cover ~48 scenarios: welcome dialogs, CRUD for all features (tasks, journal, breathing, affirmations, tags), settings, filtering, and iOS-specific chrome (Cupertino controls, back-swipe). The `ios_specific_test.dart` group is skipped on Android at runtime (`skip: !Platform.isIOS`).
 
 ## License
 

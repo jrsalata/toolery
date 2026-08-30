@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'helpers/app_harness.dart';
 import 'helpers/finders.dart';
 
-void main() {
+void settingsTests() {
   registerAppHarnessTearDown();
 
   Future<void> openSettings(WidgetTester tester) async {
@@ -130,3 +130,8 @@ void main() {
     });
   });
 }
+
+/// Lets this file run standalone during development, e.g.
+/// `flutter test integration_test/settings_test.dart -d <device-id>`.
+/// The full suite runs these grouped in `all_test.dart` instead.
+void main() => settingsTests();

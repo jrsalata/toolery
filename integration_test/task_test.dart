@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'helpers/app_harness.dart';
 import 'helpers/finders.dart';
 
-void main() {
+void taskTests() {
   registerAppHarnessTearDown();
 
   Future<void> openTasks(WidgetTester tester) async {
@@ -117,3 +117,8 @@ void main() {
     });
   });
 }
+
+/// Lets this file run standalone during development, e.g.
+/// `flutter test integration_test/task_test.dart -d <device-id>`.
+/// The full suite runs these grouped in `all_test.dart` instead.
+void main() => taskTests();
