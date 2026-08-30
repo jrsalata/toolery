@@ -85,6 +85,12 @@ class AffirmationListView extends StatelessWidget {
                               text,
                               style: Theme.of(context).textTheme.bodyLarge,
                             ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(ctx),
+                                child: const Text('Close'),
+                              ),
+                            ],
                           ),
                         );
                       } else if (context.mounted) {

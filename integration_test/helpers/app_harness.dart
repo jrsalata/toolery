@@ -7,12 +7,6 @@ import 'package:toolery/main.dart';
 
 import 'seed.dart';
 
-// Every integration_test entrypoint needs this binding initialized exactly
-// once; importing this helper file is enough to trigger it.
-// ignore: unused_element
-final IntegrationTestWidgetsFlutterBinding _binding =
-    IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-
 /// Boots the real app (the same [buildToolery] tree `main()` runs) against a
 /// throwaway database seeded to [seed].
 ///
@@ -29,6 +23,11 @@ Future<void> launchApp(
   Map<String, Object> prefs = const <String, Object>{},
   Seed seed = const Seed.demo(),
 }) async {
+  // Every integration_test entrypoint needs this binding initialized
+  // exactly once; the call is idempotent, so it's safe to make on every
+  // launchApp invocation.
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+
   SharedPreferences.setMockInitialValues(<String, Object>{
     'returningUser': returningUser,
     // Emulators have no audio and no haptics; the futures cost time and can

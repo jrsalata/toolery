@@ -109,7 +109,7 @@ void main() {
       // from the list, so only the title is asserted.
       expect(find.text('Morning Affirmations'), findsWidgets);
 
-      await tester.tapAt(const Offset(20, 20)); // dismiss
+      await tester.tap(find.text('Close'));
       await tester.pumpAndSettle();
     });
 
