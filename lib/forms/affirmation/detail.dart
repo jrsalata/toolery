@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:toolery/models/affirmation_item.dart';
 import 'package:toolery/models/affirmation_list.dart';
 import 'package:toolery/notifiers/affirmation.dart';
+import 'package:toolery/widgets/adaptive/adaptive_dialog.dart';
 import 'package:toolery/widgets/adaptive/adaptive_scaffold.dart';
 import 'package:toolery/widgets/confirm_dialog.dart';
 
@@ -183,19 +184,23 @@ class _AffirmationItemDialogState extends State<_AffirmationItemDialog> {
       title: Text(
         widget.existing == null ? 'Add Affirmation' : 'Edit Affirmation',
       ),
-      content: Form(
-        key: _formKey,
-        child: TextFormField(
-          controller: _controller,
-          autofocus: true,
-          decoration: const InputDecoration(
-            labelText: 'Affirmation',
-            hintText: 'ex) I am not a burden',
+      // TextFormField needs a Material ancestor that CupertinoAlertDialog
+      // does not provide.
+      content: AdaptiveDialogContent(
+        child: Form(
+          key: _formKey,
+          child: TextFormField(
+            controller: _controller,
+            autofocus: true,
+            decoration: const InputDecoration(
+              labelText: 'Affirmation',
+              hintText: 'ex) I am not a burden',
+            ),
+            minLines: 1,
+            maxLines: 4,
+            validator: (v) =>
+                (v == null || v.trim().isEmpty) ? 'Please enter text' : null,
           ),
-          minLines: 1,
-          maxLines: 4,
-          validator: (v) =>
-              (v == null || v.trim().isEmpty) ? 'Please enter text' : null,
         ),
       ),
       actions: [

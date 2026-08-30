@@ -1,4 +1,8 @@
-import 'package:flutter/cupertino.dart' show CupertinoSlidingSegmentedControl;
+import 'package:flutter/cupertino.dart'
+    show
+        CupertinoAlertDialog,
+        CupertinoDialogAction,
+        CupertinoSlidingSegmentedControl;
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
@@ -187,6 +191,64 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
+  static const List<String> _credits = [
+    'Created by John Salata',
+    'App icon created by Morgan Roberts',
+  ];
+
+  /// Shows the about box.
+  ///
+  /// Deliberately not showAdaptiveAboutDialog: on iOS that packs the name,
+  /// version, legalese *and* children into CupertinoAlertDialog's scrollable
+  /// content area, which clips. The credits ended up laid out below the fold
+  /// with no visible affordance, so they simply read as missing. iOS gets a
+  /// compact dialog laid out here instead; Android keeps the stock one, which
+  /// was already correct.
+  void _showAbout(BuildContext context) {
+    if (!isCupertino(context)) {
+      showAboutDialog(
+        context: context,
+        applicationName: packageInfo.appName,
+        applicationVersion: packageInfo.version,
+        children: [for (final line in _credits) Text(line)],
+      );
+      return;
+    }
+
+    showAdaptiveDialog<void>(
+      context: context,
+      builder: (dialogContext) => CupertinoAlertDialog(
+        title: Text(packageInfo.appName),
+        content: Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Version ${packageInfo.version}'),
+              const SizedBox(height: 8),
+              for (final line in _credits) Text(line),
+            ],
+          ),
+        ),
+        actions: [
+          CupertinoDialogAction(
+            onPressed: () => showLicensePage(
+              context: dialogContext,
+              applicationName: packageInfo.appName,
+              applicationVersion: packageInfo.version,
+            ),
+            child: const Text('View Licenses'),
+          ),
+          CupertinoDialogAction(
+            isDefaultAction: true,
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final Uri sourceCodeLink = Uri.parse('https://github.com/jrsalata/toolery');
@@ -266,15 +328,7 @@ class SettingsPage extends StatelessWidget {
               Card(
                 child: ListTile(
                   title: const Text('About'),
-                  onTap: () => showAdaptiveAboutDialog(
-                    context: context,
-                    applicationName: packageInfo.appName,
-                    applicationVersion: packageInfo.version,
-                    children: [
-                      const Text('Created by John Salata'),
-                      const Text('App icon created by Morgan Roberts'),
-                    ],
-                  ),
+                  onTap: () => _showAbout(context),
                 ),
               ),
             ],
