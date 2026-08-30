@@ -36,12 +36,12 @@ Future<void> showAccessibleColorPickerDialog({
   required ValueChanged<Color> onColorChanged,
   String title = 'Select Color',
 }) async {
-  await showDialog<void>(
+  await showAdaptiveDialog<void>(
     context: context,
     barrierDismissible: true,
     builder: (BuildContext dialogContext) {
       final pickerColorArgb = pickerColor.toARGB32();
-      return AlertDialog(
+      return AlertDialog.adaptive(
         title: Text(title),
         content: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 360),

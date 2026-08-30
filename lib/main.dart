@@ -1,5 +1,6 @@
 // System imports
 import 'package:dynamic_color/dynamic_color.dart';
+import 'package:flutter/cupertino.dart' show CupertinoIcons;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -23,6 +24,7 @@ import 'package:toolery/repositories/task.dart';
 import 'package:toolery/settings.dart';
 import 'package:toolery/theme/app_theme.dart';
 import 'package:toolery/welcome_page.dart';
+import 'package:toolery/widgets/adaptive/adaptive_scaffold.dart';
 
 void main() {
   TaskRepository taskRepo = SqliteTaskRepository();
@@ -143,7 +145,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AdaptiveTabShell(
       // NOTE: body and destinations must be in the same order to navigate
       body: [
         const WelcomePage(),
@@ -152,33 +154,39 @@ class _MainPageState extends State<MainPage> {
         const BreathingPage(),
         SettingsPage(packageInfo: _packageInfo),
       ][currentDestination],
-      bottomNavigationBar: NavigationBar(
-        destinations: [
-          const NavigationDestination(icon: Icon(Icons.home), label: 'Menu'),
-          const NavigationDestination(
-            icon: Icon(Icons.menu_book),
-            label: 'Journal',
-          ),
-          const NavigationDestination(
-            icon: Icon(Icons.task_alt_rounded),
-            label: 'Tasks',
-          ),
-          const NavigationDestination(
-            icon: Icon(Icons.air),
-            label: 'Breathing',
-          ),
-          const NavigationDestination(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-        ],
-        onDestinationSelected: (int index) {
-          setState(() {
-            currentDestination = index;
-          });
-        },
-        selectedIndex: currentDestination,
-      ),
+      destinations: const [
+        AdaptiveTabDestination(
+          label: 'Menu',
+          icon: Icons.home,
+          cupertinoIcon: CupertinoIcons.house,
+        ),
+        AdaptiveTabDestination(
+          label: 'Journal',
+          icon: Icons.menu_book,
+          cupertinoIcon: CupertinoIcons.book,
+        ),
+        AdaptiveTabDestination(
+          label: 'Tasks',
+          icon: Icons.task_alt_rounded,
+          cupertinoIcon: CupertinoIcons.checkmark_circle,
+        ),
+        AdaptiveTabDestination(
+          label: 'Breathing',
+          icon: Icons.air,
+          cupertinoIcon: CupertinoIcons.wind,
+        ),
+        AdaptiveTabDestination(
+          label: 'Settings',
+          icon: Icons.settings,
+          cupertinoIcon: CupertinoIcons.settings,
+        ),
+      ],
+      onDestinationSelected: (int index) {
+        setState(() {
+          currentDestination = index;
+        });
+      },
+      selectedIndex: currentDestination,
     );
   }
 }

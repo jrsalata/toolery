@@ -21,11 +21,11 @@ class _WelcomePageState extends State<WelcomePage> {
 
     // Show Welcome
     if (!mounted) return;
-    await showDialog(
+    await showAdaptiveDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
+        return AlertDialog.adaptive(
           title: const Text('Welcome'),
           content: const Text(
             "Welcome to toolery! This is your personal toolkit made by you, for you! Everything is stored locally on your device so it is as private as your phone is. There is no subscription, cost, ads, or collected user data for this app. I'm going to briefly explain everything so you can make the most of your toolbox!",
@@ -41,11 +41,11 @@ class _WelcomePageState extends State<WelcomePage> {
     );
 
     if (!mounted) return;
-    await showDialog(
+    await showAdaptiveDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
+        return AlertDialog.adaptive(
           title: const Text('Tasks'),
           content: const Text(
             'Tasks are meant to be things you can do when you need help. They can be a reminder, a journaling activity, a mindset. Whatever you think will help you in the moment!',
@@ -61,11 +61,11 @@ class _WelcomePageState extends State<WelcomePage> {
     );
 
     if (!mounted) return;
-    await showDialog(
+    await showAdaptiveDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
+        return AlertDialog.adaptive(
           title: const Text('Breathing Exercises'),
           content: const Text(
             'Breathing exercises are exactly what they sound like! Guided breathing can be a great way to ground yourself. Make whatever helps you best!',
@@ -81,11 +81,11 @@ class _WelcomePageState extends State<WelcomePage> {
     );
 
     if (!mounted) return;
-    await showDialog(
+    await showAdaptiveDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
+        return AlertDialog.adaptive(
           title: const Text('Tags'),
           content: const Text(
             'Tags can be configured in the settings page. They are a way to label your tasks and breathing exercises so you can quickly find what you need! Like everything else, it is completely customizable',
@@ -101,10 +101,10 @@ class _WelcomePageState extends State<WelcomePage> {
     );
 
     if (!mounted) return;
-    await showDialog(
+    await showAdaptiveDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
+        return AlertDialog.adaptive(
           title: const Text('One Last Reminder'),
           content: const Text(
             'While your toolbox is a great place to go to in moments of crisis, if you feel like you want to hurt yourself or someone else, please reach out to a local hotline or your nearest hospital. Some resources will be listed in the settings tab.',
@@ -136,8 +136,10 @@ class _WelcomePageState extends State<WelcomePage> {
                 _showIntroDialogs(settings);
               });
             }
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+            // A ListView, not a Column: at large system text sizes the four
+            // cards are taller than the screen, and a Column would overflow
+            // rather than scroll.
+            return ListView(
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(

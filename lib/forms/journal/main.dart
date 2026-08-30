@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:toolery/forms/journal/create.dart';
 import 'package:toolery/forms/journal/list.dart';
+import 'package:toolery/widgets/adaptive/adaptive_scaffold.dart';
 
 class JournalPage extends StatelessWidget {
   const JournalPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Journal')),
+    return AdaptivePage(
+      title: 'Journal',
       body: const JournalList(),
-      floatingActionButton: FloatingActionButton.extended(
+      primaryAction: AdaptivePrimaryAction(
+        label: 'Entry',
+        tooltip: 'Create journal entry',
         onPressed: () async {
           await Navigator.push<bool>(
             context,
@@ -19,8 +22,6 @@ class JournalPage extends StatelessWidget {
             ),
           );
         },
-        label: const Text('Entry'),
-        icon: const Icon(Icons.add),
       ),
     );
   }

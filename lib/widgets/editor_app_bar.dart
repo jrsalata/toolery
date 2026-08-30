@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:toolery/widgets/adaptive/adaptive_menu.dart';
 
 /// Shared AppBar for create/edit screens: an optional tag picker action,
 /// a save checkmark, and (when editing) a styled overflow menu holding
@@ -24,7 +25,6 @@ class EditorAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
     return AppBar(
       title: Text(title),
       actions: [
@@ -34,17 +34,14 @@ class EditorAppBar extends StatelessWidget implements PreferredSizeWidget {
           tooltip: 'Save',
           onPressed: onSave,
         ),
-        if (onDelete != null)
-          PopupMenuButton<void>(
-            tooltip: 'More',
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                onTap: onDelete,
-                child: ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: Icon(Icons.delete_outline, color: cs.error),
-                  title: Text('Delete', style: TextStyle(color: cs.error)),
-                ),
+        if (onDelete case final onDelete?)
+          AdaptiveOverflowMenu(
+            items: [
+              AdaptiveMenuItem(
+                label: 'Delete',
+                icon: Icons.delete_outline,
+                isDestructive: true,
+                onSelected: onDelete,
               ),
             ],
           ),

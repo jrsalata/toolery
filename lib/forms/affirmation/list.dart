@@ -77,9 +77,9 @@ class AffirmationListView extends StatelessWidget {
                       await notifier.loadItemsForList(list.id);
                       final text = await notifier.randomAffirmation(list.id);
                       if (text.isNotEmpty && context.mounted) {
-                        await showDialog<void>(
+                        await showAdaptiveDialog<void>(
                           context: context,
-                          builder: (ctx) => AlertDialog(
+                          builder: (ctx) => AlertDialog.adaptive(
                             title: Text(list.name),
                             content: Text(
                               text,
