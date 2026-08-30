@@ -96,6 +96,33 @@ void main() {
       expect(find.text('mindfulness'), findsOneWidget);
     });
 
+    testWidgets('assigns multiple tags to a task without dropping earlier '
+        'selections', (tester) async {
+      await launchApp(tester);
+      await tester.tap(findTab('Tasks'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Drink water'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('Edit'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byTooltip('Tags'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(FilterChip, 'mindfulness'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(FilterChip, 'stress'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Done'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byTooltip('Save'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('mindfulness'), findsOneWidget);
+      expect(find.text('stress'), findsOneWidget);
+    });
+
     testWidgets('filters the task list by tag', (tester) async {
       await launchApp(tester);
       await tester.tap(findTab('Tasks'));

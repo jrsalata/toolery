@@ -24,13 +24,30 @@ class TagChip extends StatelessWidget {
 /// AppBar action for picking tags: a badge icon showing the current
 /// selection count that opens a modal bottom sheet of [FilterChip]s.
 ///
-/// The parent owns [tagIDs]; this widget is stateless and always reflects
-/// the parent's state, so the badge and the sheet can't drift out of sync.
-class TagAction extends StatelessWidget {
+/// The parent owns [tagIDs]; this widget mirrors it into local state so the
+/// open sheet keeps working off a live value even while the parent rebuilds
+/// around it, and re-mirrors via [didUpdateWidget] if the parent changes
+/// [tagIDs] out from under it.
+class TagAction extends StatefulWidget {
   const TagAction({super.key, required this.tagIDs, required this.onChanged});
 
   final List<int> tagIDs;
   final ValueChanged<List<int>> onChanged;
+
+  @override
+  State<TagAction> createState() => _TagActionState();
+}
+
+class _TagActionState extends State<TagAction> {
+  late List<int> _tagIDs = List.of(widget.tagIDs);
+
+  @override
+  void didUpdateWidget(TagAction oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.tagIDs != oldWidget.tagIDs) {
+      _tagIDs = List.of(widget.tagIDs);
+    }
+  }
 
   Future<void> _showTagSheet(BuildContext context) async {
     await showModalBottomSheet<void>(
@@ -55,10 +72,10 @@ class TagAction extends StatelessWidget {
                       builder: (context, tagNotifier, _) {
                         return TagFilterChips(
                           tags: tagNotifier.tags,
-                          selectedTagIds: tagIDs,
+                          selectedTagIds: _tagIDs,
                           onChanged: (updated) {
-                            setSheetState(() {});
-                            onChanged(updated);
+                            setSheetState(() => _tagIDs = updated);
+                            widget.onChanged(updated);
                           },
                         );
                       },
@@ -85,8 +102,8 @@ class TagAction extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       icon: Badge(
-        isLabelVisible: tagIDs.isNotEmpty,
-        label: Text('${tagIDs.length}'),
+        isLabelVisible: _tagIDs.isNotEmpty,
+        label: Text('${_tagIDs.length}'),
         child: const Icon(Icons.label_outline),
       ),
       tooltip: 'Tags',

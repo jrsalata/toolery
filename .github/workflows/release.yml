@@ -57,7 +57,7 @@ jobs:
         run: |
           version="${{ steps.check.outputs.version }}"
           notes="$(awk -v ver="$version" '
-            $0 ~ "^## "ver"([^0-9.]|$)" { found=1; next }
+            $0 ~ "^## \\[?"ver"\\]?([^0-9.]|$)" { found=1; next }
             found && /^## / { exit }
             found { print }
           ' CHANGELOG.md)"
