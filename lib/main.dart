@@ -1,5 +1,6 @@
 // System imports
 import 'package:dynamic_color/dynamic_color.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_quill/flutter_quill.dart';
@@ -20,6 +21,7 @@ import 'package:toolery/repositories/tag.dart';
 import 'package:toolery/repositories/task.dart';
 // Page imports
 import 'package:toolery/settings.dart';
+import 'package:toolery/theme/app_theme.dart';
 import 'package:toolery/welcome_page.dart';
 
 void main() {
@@ -67,31 +69,27 @@ class _MainState extends State<Main> {
         return Consumer<SettingsNotifier>(
           builder: (context, settings, child) => MaterialApp(
             title: 'Toolery',
-            theme: ThemeData(
-              useMaterial3: true,
-              colorScheme: settings.materialTheme
-                  ? (lightDynamic?.harmonized() ??
-                        ColorScheme.fromSeed(
-                          seedColor: Color(settings.customTheme),
-                        ))
-                  : ColorScheme.fromSeed(
-                      seedColor: Color(settings.customTheme),
-                    ),
+            theme: buildAppTheme(
+              colorScheme: appColorScheme(
+                useSystemAccent: settings.materialTheme,
+                customThemeColor: settings.customTheme,
+                dynamicScheme: lightDynamic,
+                brightness: Brightness.light,
+                platform: defaultTargetPlatform,
+              ),
+              platform: defaultTargetPlatform,
             ),
-            darkTheme: ThemeData(
-              useMaterial3: true,
-              colorScheme: settings.materialTheme
-                  ? (darkDynamic?.harmonized() ??
-                        ColorScheme.fromSeed(
-                          seedColor: Color(settings.customTheme),
-                          brightness: Brightness.dark,
-                        ))
-                  : ColorScheme.fromSeed(
-                      seedColor: Color(settings.customTheme),
-                      brightness: Brightness.dark,
-                    ),
+            darkTheme: buildAppTheme(
+              colorScheme: appColorScheme(
+                useSystemAccent: settings.materialTheme,
+                customThemeColor: settings.customTheme,
+                dynamicScheme: darkDynamic,
+                brightness: Brightness.dark,
+                platform: defaultTargetPlatform,
+              ),
+              platform: defaultTargetPlatform,
             ),
-            themeMode: settings.darkMode ? ThemeMode.dark : ThemeMode.light,
+            themeMode: settings.themeMode,
             home: child,
             localizationsDelegates: const [
               GlobalMaterialLocalizations.delegate,

@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:toolery/accessibility/contrast.dart';
 import 'package:toolery/models/tag.dart';
 import 'package:toolery/notifiers/tag.dart';
-
-/// Readable label/checkmark color for text drawn on top of [tagColor].
-Color tagLabelColor(Color tagColor) {
-  return tagColor.computeLuminance() > 0.5 ? Colors.black : Colors.white;
-}
 
 /// A read-only chip for displaying a tag, used on detail/view screens.
 class TagChip extends StatelessWidget {
@@ -18,7 +14,7 @@ class TagChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Chip(
       label: Text(tag.name),
-      labelStyle: TextStyle(color: tagLabelColor(tag.color)),
+      labelStyle: TextStyle(color: highContrastTextColor(tag.color)),
       backgroundColor: tag.color,
     );
   }
@@ -67,10 +63,12 @@ class TagAction extends StatelessWidget {
                                 selectedColor: tag.color,
                                 label: Text(tag.name),
                                 labelStyle: TextStyle(
-                                  color: tagLabelColor(tag.color),
+                                  color: highContrastTextColor(tag.color),
                                 ),
                                 showCheckmark: true,
-                                checkmarkColor: tagLabelColor(tag.color),
+                                checkmarkColor: highContrastTextColor(
+                                  tag.color,
+                                ),
                                 onSelected: (bool selected) {
                                   final updated = List<int>.from(tagIDs);
                                   if (selected) {

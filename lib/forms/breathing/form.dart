@@ -72,7 +72,6 @@ class _BreathingFormState extends State<BreathingForm> {
           decoration: const InputDecoration(
             labelText: 'Breathing Exercise Name',
             hintText: 'Enter the name of your exercise',
-            border: OutlineInputBorder(),
           ),
           validator: (value) {
             if (value == null || value.isEmpty) {
@@ -87,7 +86,6 @@ class _BreathingFormState extends State<BreathingForm> {
           decoration: const InputDecoration(
             labelText: 'Count In',
             hintText: 'Seconds for inhale',
-            border: OutlineInputBorder(),
           ),
           keyboardType: TextInputType.number,
           validator: (v) => _validateInt(v, 'Count In'),
@@ -98,7 +96,6 @@ class _BreathingFormState extends State<BreathingForm> {
           decoration: const InputDecoration(
             labelText: 'Hold In',
             hintText: 'Seconds to hold after an inhale',
-            border: OutlineInputBorder(),
           ),
           keyboardType: TextInputType.number,
           validator: (v) => _validateInt(v, 'Hold In'),
@@ -109,7 +106,6 @@ class _BreathingFormState extends State<BreathingForm> {
           decoration: const InputDecoration(
             labelText: 'Count Out',
             hintText: 'Seconds for exhale',
-            border: OutlineInputBorder(),
           ),
           keyboardType: TextInputType.number,
           validator: (v) => _validateInt(v, 'Count Out'),
@@ -120,7 +116,6 @@ class _BreathingFormState extends State<BreathingForm> {
           decoration: const InputDecoration(
             labelText: 'Hold Out',
             hintText: 'Seconds to hold after an exhale',
-            border: OutlineInputBorder(),
           ),
           keyboardType: TextInputType.number,
           validator: (v) => _validateInt(v, 'Hold Out'),
@@ -131,7 +126,6 @@ class _BreathingFormState extends State<BreathingForm> {
           decoration: const InputDecoration(
             labelText: 'Repetitions',
             hintText: 'Number of reps',
-            border: OutlineInputBorder(),
           ),
           keyboardType: TextInputType.number,
           validator: (v) => _validateInt(v, 'Repetitions'),

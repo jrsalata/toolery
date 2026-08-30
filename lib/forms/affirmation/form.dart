@@ -42,10 +42,7 @@ class _AffirmationListFormState extends State<AffirmationListForm> {
           TextFormField(
             autofocus: true,
             controller: nameController,
-            decoration: const InputDecoration(
-              labelText: 'List Name',
-              border: OutlineInputBorder(),
-            ),
+            decoration: const InputDecoration(labelText: 'List Name'),
             validator: (value) {
               if (value == null || value.isEmpty) return 'Please give a name';
               return null;

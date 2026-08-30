@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart' show CupertinoSlidingSegmentedControl;
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +11,7 @@ import 'package:toolery/notifiers/affirmation.dart';
 import 'package:toolery/notifiers/breathing.dart';
 import 'package:toolery/notifiers/tag.dart';
 import 'package:toolery/notifiers/task.dart';
+import 'package:toolery/widgets/adaptive/platform.dart';
 import 'package:toolery/widgets/confirm_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -20,9 +22,10 @@ import 'package:url_launcher/url_launcher.dart';
 /// `context.watch<SettingsNotifier>()`.
 ///
 /// **Available preferences**
-/// - [darkMode] – use the dark colour scheme.
-/// - [materialTheme] – use dynamic Material You colours derived from the
-///   device wallpaper instead of [customTheme].
+/// - [themeMode] – follow the system appearance, or force light/dark.
+/// - [materialTheme] – use the platform's own accent as the seed colour
+///   instead of [customTheme]: dynamic Material You colours from the wallpaper
+///   on Android, the iOS system blue on iOS.
 /// - [countUp] – breathing exercise timer counts up from 0 (when `true`) or
 ///   down from the phase duration (when `false`).
 /// - [breathingVibrate] – trigger haptic feedback at the start of each phase.
@@ -33,8 +36,12 @@ import 'package:url_launcher/url_launcher.dart';
 class SettingsNotifier with ChangeNotifier {
   static const int defaultCustomThemeColor = 0xFF673AB7;
 
-  bool darkMode = false;
+  ThemeMode themeMode = ThemeMode.system;
   bool materialTheme = true;
+
+  /// Kept so existing callers and tests that only care about "is it dark"
+  /// keep working after the move to a three-way [themeMode].
+  bool get darkMode => themeMode == ThemeMode.dark;
   bool countUp = true;
   bool breathingVibrate = true;
   bool breathingSounds = true;
@@ -47,7 +54,7 @@ class SettingsNotifier with ChangeNotifier {
 
   Future<void> _loadPrefs() async {
     final prefs = await SharedPreferences.getInstance();
-    darkMode = prefs.getBool('enableDarkMode') ?? true;
+    themeMode = await _loadThemeMode(prefs);
     materialTheme = prefs.getBool('useMaterialTheme') ?? true;
     customTheme = prefs.getInt('customThemeColor') ?? defaultCustomThemeColor;
     countUp = prefs.getBool('countUp') ?? true;
@@ -56,6 +63,25 @@ class SettingsNotifier with ChangeNotifier {
     returningUser = prefs.getBool('returningUser') ?? false;
 
     notifyListeners();
+  }
+
+  /// Reads [themeMode], migrating once from the legacy `enableDarkMode` bool.
+  ///
+  /// A user who never expressed a preference lands on [ThemeMode.system],
+  /// which is what iOS users expect; one who did keeps the mode they chose.
+  Future<ThemeMode> _loadThemeMode(SharedPreferences prefs) async {
+    final stored = prefs.getString('themeMode');
+    if (stored != null) {
+      return ThemeMode.values.firstWhere(
+        (m) => m.name == stored,
+        orElse: () => ThemeMode.system,
+      );
+    }
+    final legacy = prefs.getBool('enableDarkMode');
+    if (legacy == null) return ThemeMode.system;
+    final migrated = legacy ? ThemeMode.dark : ThemeMode.light;
+    await prefs.setString('themeMode', migrated.name);
+    return migrated;
   }
 
   Future<void> _setBoolPrefs(String setting, bool value) async {
@@ -70,9 +96,15 @@ class SettingsNotifier with ChangeNotifier {
     notifyListeners();
   }
 
-  void changeDarkMode(bool value) {
-    darkMode = value;
-    _setBoolPrefs('enableDarkMode', value);
+  Future<void> _setStringPrefs(String setting, String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(setting, value);
+    notifyListeners();
+  }
+
+  void changeThemeMode(ThemeMode value) {
+    themeMode = value;
+    _setStringPrefs('themeMode', value.name);
   }
 
   void changeMaterialTheme(bool value) {
@@ -164,18 +196,14 @@ class SettingsPage extends StatelessWidget {
         child: Consumer<SettingsNotifier>(
           builder: (context, settings, child) => ListView(
             children: [
+              Card(child: _ThemeModeTile(settings: settings)),
               Card(
-                child: SwitchListTile(
-                  title: const Text('Enable Dark mode?'),
-                  value: settings.darkMode,
-                  onChanged: ((bool value) {
-                    settings.changeDarkMode(value);
-                  }),
-                ),
-              ),
-              Card(
-                child: SwitchListTile(
-                  title: const Text('Use System Theme Color?'),
+                child: SwitchListTile.adaptive(
+                  title: Text(
+                    isCupertino(context)
+                        ? 'Use iOS accent colour?'
+                        : 'Use System Theme Color?',
+                  ),
                   value: settings.materialTheme,
                   onChanged: ((bool value) {
                     settings.changeMaterialTheme(value);
@@ -197,7 +225,7 @@ class SettingsPage extends StatelessWidget {
               Card(
                 child: ListTile(
                   title: const Text('Configure Tags'),
-                  trailing: const Icon(Icons.more_vert),
+                  trailing: Icon(Icons.adaptive.more),
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const TagPage()),
@@ -238,7 +266,7 @@ class SettingsPage extends StatelessWidget {
               Card(
                 child: ListTile(
                   title: const Text('About'),
-                  onTap: () => showAboutDialog(
+                  onTap: () => showAdaptiveAboutDialog(
                     context: context,
                     applicationName: packageInfo.appName,
                     applicationVersion: packageInfo.version,
@@ -251,6 +279,61 @@ class SettingsPage extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Three-way Light / Dark / System appearance picker.
+///
+/// One of the few places a genuine platform branch earns its keep: iOS has a
+/// sliding segmented control with no Material equivalent, and vice versa.
+class _ThemeModeTile extends StatelessWidget {
+  const _ThemeModeTile({required this.settings});
+
+  final SettingsNotifier settings;
+
+  static const Map<ThemeMode, String> _labels = {
+    ThemeMode.system: 'System',
+    ThemeMode.light: 'Light',
+    ThemeMode.dark: 'Dark',
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: const Text('Appearance'),
+      subtitle: Padding(
+        padding: const EdgeInsets.only(top: 8),
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: isCupertino(context)
+              ? CupertinoSlidingSegmentedControl<ThemeMode>(
+                  groupValue: settings.themeMode,
+                  children: {
+                    for (final entry in _labels.entries)
+                      entry.key: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Text(entry.value),
+                      ),
+                  },
+                  onValueChanged: (mode) {
+                    if (mode != null) settings.changeThemeMode(mode);
+                  },
+                )
+              : SegmentedButton<ThemeMode>(
+                  segments: [
+                    for (final entry in _labels.entries)
+                      ButtonSegment<ThemeMode>(
+                        value: entry.key,
+                        label: Text(entry.value),
+                      ),
+                  ],
+                  selected: {settings.themeMode},
+                  onSelectionChanged: (selection) =>
+                      settings.changeThemeMode(selection.first),
+                ),
         ),
       ),
     );

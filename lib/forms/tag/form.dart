@@ -48,7 +48,6 @@ class _TagFormState extends State<TagForm> {
             decoration: const InputDecoration(
               labelText: 'Tag Name',
               hintText: 'Give your tag a name',
-              border: OutlineInputBorder(),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
