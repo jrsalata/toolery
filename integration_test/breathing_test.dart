@@ -38,7 +38,7 @@ void breathingTests() {
       await tester.enterText(find.byType(TextFormField).at(4), '0');
       await tester.enterText(find.byType(TextFormField).at(5), '3');
       await tester.tap(find.byTooltip('Save'));
-      await pumpUntil(tester, find.text('IT exercise'));
+      await pumpUntilSaved(tester);
 
       expect(find.text('IT exercise'), findsOneWidget);
     });
@@ -74,7 +74,7 @@ void breathingTests() {
         'Renamed triangle',
       );
       await tester.tap(find.byTooltip('Save'));
-      await pumpUntil(tester, find.text('Renamed triangle'));
+      await pumpUntilSaved(tester);
       expect(find.text('Renamed triangle'), findsWidgets);
 
       await tester.tap(find.byTooltip('More'));

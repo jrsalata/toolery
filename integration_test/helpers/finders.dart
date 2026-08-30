@@ -79,6 +79,31 @@ Future<void> pumpUntil(
   timeout: timeout,
 );
 
+/// Waits for a save to land by watching the editor close, then settles.
+///
+/// The editor pops only after `_save()` has finished both its write and the
+/// reload behind it, so the save affordance disappearing is the signal that
+/// the database work is done.
+///
+/// Do NOT wait on the saved text instead: that text is already on screen in
+/// the field it was just typed into, so the finder matches immediately and
+/// waits for nothing — which is worse than `pumpAndSettle`, not better.
+///
+/// [editor] overrides what is watched for dialogs, which have no `Save`
+/// tooltip — pass the field the dialog owns.
+Future<void> pumpUntilSaved(
+  WidgetTester tester, {
+  Finder? editor,
+  Duration timeout = const Duration(seconds: 20),
+}) async {
+  await pumpUntilGone(
+    tester,
+    editor ?? find.byTooltip('Save'),
+    timeout: timeout,
+  );
+  await tester.pumpAndSettle();
+}
+
 /// Pumps real frames until [finder] matches nothing.
 ///
 /// The disappearance counterpart to [pumpUntil], for asserting that a delete
