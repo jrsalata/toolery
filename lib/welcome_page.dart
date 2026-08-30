@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:toolery/forms/affirmation/main.dart';
 import 'package:toolery/forms/breathing/main.dart';
@@ -15,10 +16,23 @@ class WelcomePage extends StatefulWidget {
 
 class _WelcomePageState extends State<WelcomePage> {
   bool _dialogsShown = false;
+  PackageInfo? _packageInfo;
+
+  @override
+  void initState() {
+    super.initState();
+    _initPackageInfo();
+  }
+
+  Future<void> _initPackageInfo() async {
+    final info = await PackageInfo.fromPlatform();
+    if (!mounted) return;
+    setState(() {
+      _packageInfo = info;
+    });
+  }
 
   Future<void> _showIntroDialogs(SettingsNotifier settings) async {
-    if (!mounted) return;
-
     // Show Welcome
     if (!mounted) return;
     await showAdaptiveDialog(
@@ -123,6 +137,50 @@ class _WelcomePageState extends State<WelcomePage> {
     );
   }
 
+  Future<void> _showUpdateDialog(
+    SettingsNotifier settings,
+    String version,
+  ) async {
+    if (!mounted) return;
+    await showAdaptiveDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog.adaptive(
+          title: Text('New v$version update!'),
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "It's been a while since I've worked on this project, but I'm excited to release a major update! New features include:",
+              ),
+              SizedBox(height: 12),
+              Text('• Journaling! Create your own journal entries.'),
+              Text('• UI improvements. Overall cleaner and more intuitive.'),
+              Text(
+                '• Import/Export data. Useful to own your data or make custom sheets',
+              ),
+              Text('• Lots of behind-the-scenes changes.'),
+              SizedBox(height: 12),
+              Text(
+                'As always, please let me know what you think at toolery@salata.software!\nStay curious :)',
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                settings.changeLastSeenChangelogVersion(version);
+              },
+              child: const Text('Great!'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -130,10 +188,19 @@ class _WelcomePageState extends State<WelcomePage> {
       body: Center(
         child: Consumer<SettingsNotifier>(
           builder: (context, settings, child) {
-            if (!settings.returningUser && !_dialogsShown) {
+            final version = _packageInfo?.version;
+            if (version != null && !settings.returningUser && !_dialogsShown) {
+              _dialogsShown = true;
+              WidgetsBinding.instance.addPostFrameCallback((_) async {
+                await _showIntroDialogs(settings);
+                await _showUpdateDialog(settings, version);
+              });
+            } else if (version != null &&
+                settings.lastSeenChangelogVersion != version &&
+                !_dialogsShown) {
               _dialogsShown = true;
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                _showIntroDialogs(settings);
+                _showUpdateDialog(settings, version);
               });
             }
             // A ListView, not a Column: at large system text sizes the four

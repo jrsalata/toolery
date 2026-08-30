@@ -35,6 +35,8 @@ import 'package:url_launcher/url_launcher.dart';
 /// - [breathingVibrate] – trigger haptic feedback at the start of each phase.
 /// - [breathingSounds] – play audio cues at the start of each phase.
 /// - [returningUser] – skip the first-launch intro dialogs.
+/// - [lastSeenChangelogVersion] – app version the user last saw the "what's
+///   new" dialog for; re-shown when it differs from the running version.
 /// - [customTheme] – ARGB colour integer used as the seed for the app's colour
 ///   scheme when [materialTheme] is `false`.
 class SettingsNotifier with ChangeNotifier {
@@ -50,6 +52,7 @@ class SettingsNotifier with ChangeNotifier {
   bool breathingVibrate = true;
   bool breathingSounds = true;
   bool returningUser = true;
+  String? lastSeenChangelogVersion;
   int customTheme = defaultCustomThemeColor;
 
   SettingsNotifier() {
@@ -65,6 +68,7 @@ class SettingsNotifier with ChangeNotifier {
     breathingVibrate = prefs.getBool('breathingVibrate') ?? true;
     breathingSounds = prefs.getBool('breathingSounds') ?? true;
     returningUser = prefs.getBool('returningUser') ?? false;
+    lastSeenChangelogVersion = prefs.getString('lastSeenChangelogVersion');
 
     notifyListeners();
   }
@@ -140,6 +144,11 @@ class SettingsNotifier with ChangeNotifier {
     returningUser = value;
     _setBoolPrefs('returningUser', value);
   }
+
+  void changeLastSeenChangelogVersion(String version) {
+    lastSeenChangelogVersion = version;
+    _setStringPrefs('lastSeenChangelogVersion', version);
+  }
 }
 
 class SettingsPage extends StatelessWidget {
@@ -194,6 +203,7 @@ class SettingsPage extends StatelessWidget {
   static const List<String> _credits = [
     'Created by John Salata',
     'App icon created by Morgan Roberts',
+    'Feedback welcome at toolery@salata.software',
   ];
 
   /// Shows the about box.
@@ -317,6 +327,28 @@ class SettingsPage extends StatelessWidget {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text('Could not open source code link.'),
+                          ),
+                        );
+                      }
+                    }
+                  },
+                ),
+              ),
+              Card(
+                child: ListTile(
+                  title: const Text('Send Feedback'),
+                  onTap: () async {
+                    final mailtoUri = Uri(
+                      scheme: 'mailto',
+                      path: 'toolery@salata.software',
+                    );
+                    final launched = await launchUrl(mailtoUri);
+                    if (!launched) {
+                      debugPrint('Could not launch $mailtoUri');
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Could not open email client.'),
                           ),
                         );
                       }
