@@ -190,7 +190,6 @@ class _AffirmationItemDialogState extends State<_AffirmationItemDialog> {
           decoration: const InputDecoration(
             labelText: 'Affirmation',
             hintText: 'ex) I am not a burden',
-            border: OutlineInputBorder(),
           ),
           minLines: 1,
           maxLines: 4,

@@ -160,7 +160,6 @@ class _JournalFormState extends State<JournalForm> {
                         decoration: const InputDecoration(
                           labelText: 'Title',
                           hintText: 'Give this entry a title',
-                          border: OutlineInputBorder(),
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {

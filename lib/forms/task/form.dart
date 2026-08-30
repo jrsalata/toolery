@@ -50,7 +50,6 @@ class _TaskFormState extends State<TaskForm> {
           decoration: const InputDecoration(
             labelText: 'Task Name',
             hintText: 'Enter the name of a task',
-            border: OutlineInputBorder(),
           ),
           validator: (value) {
             if (value == null || value.isEmpty) {
@@ -66,7 +65,6 @@ class _TaskFormState extends State<TaskForm> {
           decoration: const InputDecoration(
             labelText: 'Description',
             hintText: 'Provide a brief description of the task',
-            border: OutlineInputBorder(),
           ),
           maxLines: 2,
           minLines: 1,
@@ -84,7 +82,6 @@ class _TaskFormState extends State<TaskForm> {
           decoration: const InputDecoration(
             labelText: 'Activity',
             hintText: 'Provide step-by-step instructions',
-            border: OutlineInputBorder(),
           ),
           keyboardType: TextInputType.multiline,
           maxLines: null,
