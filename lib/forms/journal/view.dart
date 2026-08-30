@@ -8,6 +8,7 @@ import 'package:toolery/models/journal.dart';
 import 'package:toolery/models/tag.dart';
 import 'package:toolery/notifiers/journal.dart';
 import 'package:toolery/notifiers/tag.dart';
+import 'package:toolery/widgets/adaptive/adaptive_menu.dart';
 import 'package:toolery/widgets/confirm_dialog.dart';
 import 'package:toolery/widgets/tag_action.dart';
 
@@ -101,7 +102,9 @@ class _JournalViewState extends State<JournalView> {
   @override
   Widget build(BuildContext context) {
     if (_loading) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator.adaptive()),
+      );
     }
 
     if (_error != null) {
@@ -142,24 +145,13 @@ class _JournalViewState extends State<JournalView> {
               await _loadEntry();
             },
           ),
-          PopupMenuButton<void>(
-            tooltip: 'More',
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                onTap: () => _delete(entry),
-                child: ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: Icon(
-                    Icons.delete_outline,
-                    color: Theme.of(context).colorScheme.error,
-                  ),
-                  title: Text(
-                    'Delete',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
-                    ),
-                  ),
-                ),
+          AdaptiveOverflowMenu(
+            items: [
+              AdaptiveMenuItem(
+                label: 'Delete',
+                icon: Icons.delete_outline,
+                isDestructive: true,
+                onSelected: () => _delete(entry),
               ),
             ],
           ),

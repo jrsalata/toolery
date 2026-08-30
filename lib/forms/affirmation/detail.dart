@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:toolery/models/affirmation_item.dart';
 import 'package:toolery/models/affirmation_list.dart';
 import 'package:toolery/notifiers/affirmation.dart';
+import 'package:toolery/widgets/adaptive/adaptive_scaffold.dart';
 import 'package:toolery/widgets/confirm_dialog.dart';
 
 /// Full-page view of all items in one affirmation list.
@@ -30,7 +31,7 @@ class _AffirmationDetailPageState extends State<AffirmationDetailPage> {
   Future<void> _showItemDialog({AffirmationItem? existing}) async {
     final notifier = context.read<AffirmationNotifier>();
 
-    await showDialog<void>(
+    await showAdaptiveDialog<void>(
       context: context,
       builder: (context) => _AffirmationItemDialog(
         existing: existing,
@@ -57,8 +58,13 @@ class _AffirmationDetailPageState extends State<AffirmationDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(widget.list.name)),
+    return AdaptivePage(
+      title: widget.list.name,
+      primaryAction: AdaptivePrimaryAction(
+        label: 'Add',
+        tooltip: 'Add affirmation',
+        onPressed: () => _showItemDialog(),
+      ),
       body: Consumer<AffirmationNotifier>(
         builder: (context, notifier, _) {
           final listItems = notifier.items[widget.list.id] ?? [];
@@ -117,11 +123,6 @@ class _AffirmationDetailPageState extends State<AffirmationDetailPage> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _showItemDialog(),
-        icon: const Icon(Icons.add),
-        label: const Text('Add'),
-      ),
     );
   }
 }
@@ -178,7 +179,7 @@ class _AffirmationItemDialogState extends State<_AffirmationItemDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
+    return AlertDialog.adaptive(
       title: Text(
         widget.existing == null ? 'Add Affirmation' : 'Edit Affirmation',
       ),

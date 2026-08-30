@@ -6,6 +6,7 @@ import 'package:toolery/models/breathing.dart';
 import 'package:toolery/models/tag.dart';
 import 'package:toolery/notifiers/breathing.dart';
 import 'package:toolery/notifiers/tag.dart';
+import 'package:toolery/widgets/adaptive/adaptive_menu.dart';
 import 'package:toolery/widgets/confirm_dialog.dart';
 import 'package:toolery/widgets/tag_action.dart';
 
@@ -41,7 +42,7 @@ class BreathingInfo extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
+            body: Center(child: CircularProgressIndicator.adaptive()),
           );
         }
         if (snapshot.hasError) {
@@ -83,24 +84,13 @@ class BreathingInfo extends StatelessWidget {
                   );
                 },
               ),
-              PopupMenuButton<void>(
-                tooltip: 'More',
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    onTap: () => _delete(context, breathing),
-                    child: ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      leading: Icon(
-                        Icons.delete_outline,
-                        color: Theme.of(context).colorScheme.error,
-                      ),
-                      title: Text(
-                        'Delete',
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.error,
-                        ),
-                      ),
-                    ),
+              AdaptiveOverflowMenu(
+                items: [
+                  AdaptiveMenuItem(
+                    label: 'Delete',
+                    icon: Icons.delete_outline,
+                    isDestructive: true,
+                    onSelected: () => _delete(context, breathing),
                   ),
                 ],
               ),

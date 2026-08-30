@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:toolery/forms/tag/create.dart';
 import 'package:toolery/forms/tag/list.dart';
+import 'package:toolery/widgets/adaptive/adaptive_scaffold.dart';
 
 class TagPage extends StatelessWidget {
   const TagPage({super.key});
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Configure Tags')),
+    return AdaptivePage(
+      title: 'Configure Tags',
       body: const TagList(),
-      floatingActionButton: FloatingActionButton.extended(
+      primaryAction: AdaptivePrimaryAction(
+        label: 'Tags',
         tooltip: 'Create tag',
         onPressed: () async {
           await Navigator.push<bool>(
@@ -17,8 +19,6 @@ class TagPage extends StatelessWidget {
             MaterialPageRoute<bool>(builder: (context) => const CreateTag()),
           );
         },
-        label: const Text('Tags'),
-        icon: const Icon(Icons.add),
       ),
     );
   }
