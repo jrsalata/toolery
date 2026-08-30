@@ -27,31 +27,47 @@ import 'package:toolery/welcome_page.dart';
 import 'package:toolery/widgets/adaptive/adaptive_scaffold.dart';
 
 void main() {
-  TaskRepository taskRepo = SqliteTaskRepository();
-  TagRepository tagRepo = SqliteTagRepository();
-  BreathingRepository breathingRepo = SqliteBreathingRepository();
-  AffirmationRepository affirmationRepo = SqliteAffirmationRepository();
-  JournalRepository journalRepo = SqliteJournalRepository();
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => SettingsNotifier()),
-        ChangeNotifierProvider(
-          create: (_) => TaskNotifier(repository: taskRepo),
-        ),
-        ChangeNotifierProvider(create: (_) => TagNotifier(repository: tagRepo)),
-        ChangeNotifierProvider(
-          create: (_) => BreathingNotifier(repository: breathingRepo),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => AffirmationNotifier(repository: affirmationRepo),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => JournalNotifier(repository: journalRepo),
-        ),
-      ],
-      child: const Main(),
-    ),
+  runApp(buildToolery());
+}
+
+/// The app's widget tree, with its repositories injectable.
+///
+/// [main] and the integration-test harness both go through here, so tests
+/// drive the same provider graph and the same [Main]/[MaterialApp] the user
+/// gets rather than a hand-assembled copy. Every repository defaults to its
+/// SQLite implementation, which keeps [main] a one-liner and lets a test
+/// override only what it cares about.
+Widget buildToolery({
+  TaskRepository? taskRepository,
+  TagRepository? tagRepository,
+  BreathingRepository? breathingRepository,
+  AffirmationRepository? affirmationRepository,
+  JournalRepository? journalRepository,
+}) {
+  final TaskRepository taskRepo = taskRepository ?? SqliteTaskRepository();
+  final TagRepository tagRepo = tagRepository ?? SqliteTagRepository();
+  final BreathingRepository breathingRepo =
+      breathingRepository ?? SqliteBreathingRepository();
+  final AffirmationRepository affirmationRepo =
+      affirmationRepository ?? SqliteAffirmationRepository();
+  final JournalRepository journalRepo =
+      journalRepository ?? SqliteJournalRepository();
+  return MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => SettingsNotifier()),
+      ChangeNotifierProvider(create: (_) => TaskNotifier(repository: taskRepo)),
+      ChangeNotifierProvider(create: (_) => TagNotifier(repository: tagRepo)),
+      ChangeNotifierProvider(
+        create: (_) => BreathingNotifier(repository: breathingRepo),
+      ),
+      ChangeNotifierProvider(
+        create: (_) => AffirmationNotifier(repository: affirmationRepo),
+      ),
+      ChangeNotifierProvider(
+        create: (_) => JournalNotifier(repository: journalRepo),
+      ),
+    ],
+    child: const Main(),
   );
 }
 
