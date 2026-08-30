@@ -67,6 +67,7 @@ class _CreateTaskState extends State<CreateTask> {
   Widget build(BuildContext context) {
     return UnsavedChangesGuard(
       isDirty: _isDirty,
+      watch: [nameController, descriptionController, activityController],
       child: Scaffold(
         appBar: EditorAppBar(
           title: 'Create New Task',

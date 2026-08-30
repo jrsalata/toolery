@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:toolery/forms/journal/form.dart';
 import 'package:toolery/models/journal.dart';
 import 'package:toolery/notifiers/journal.dart';
+import 'package:toolery/widgets/unsaved_changes.dart';
 
 class CreateJournal extends StatefulWidget {
   const CreateJournal({super.key});
@@ -21,7 +22,16 @@ class _CreateJournalState extends State<CreateJournal> {
     text: DateFormat('EEEE, MMM d').format(DateTime.now()),
   );
   final _quillController = QuillController.basic();
+  late final String _initialTitle;
+  late final String _initialContent;
   List<int> _tagIDs = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _initialTitle = _titleController.text;
+    _initialContent = _encodedContent();
+  }
 
   @override
   void dispose() {
@@ -30,9 +40,20 @@ class _CreateJournalState extends State<CreateJournal> {
     super.dispose();
   }
 
+  /// Encoded so it compares by value — the raw delta is a list of maps, which
+  /// Dart compares by identity, making every fresh `toJson()` look different.
+  String _encodedContent() =>
+      jsonEncode(_quillController.document.toDelta().toJson());
+
+  bool _isDirty() {
+    return _titleController.text != _initialTitle ||
+        _encodedContent() != _initialContent ||
+        _tagIDs.isNotEmpty;
+  }
+
   Future<void> _save() async {
     if (_formKey.currentState!.validate()) {
-      final content = jsonEncode(_quillController.document.toDelta().toJson());
+      final content = _encodedContent();
       final entry = Journal(
         id: -1,
         title: _titleController.text,
@@ -56,15 +77,19 @@ class _CreateJournalState extends State<CreateJournal> {
 
   @override
   Widget build(BuildContext context) {
-    return JournalForm(
-      formKey: _formKey,
-      appBarTitle: 'New Journal Entry',
-      titleController: _titleController,
-      titleAutofocus: false,
-      quillController: _quillController,
-      initialTagIDs: _tagIDs,
-      onTagIDsChanged: (tagIDs) => _tagIDs = tagIDs,
-      onSave: _save,
+    return UnsavedChangesGuard(
+      isDirty: _isDirty,
+      watch: [_titleController, _quillController],
+      child: JournalForm(
+        formKey: _formKey,
+        appBarTitle: 'New Journal Entry',
+        titleController: _titleController,
+        titleAutofocus: false,
+        quillController: _quillController,
+        initialTagIDs: _tagIDs,
+        onTagIDsChanged: (tagIDs) => setState(() => _tagIDs = tagIDs),
+        onSave: _save,
+      ),
     );
   }
 }

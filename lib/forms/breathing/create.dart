@@ -81,6 +81,14 @@ class _CreateBreathingState extends State<CreateBreathing> {
   Widget build(BuildContext context) {
     return UnsavedChangesGuard(
       isDirty: _isDirty,
+      watch: [
+        nameController,
+        countInController,
+        holdInController,
+        countOutController,
+        holdOutController,
+        repsController,
+      ],
       child: Scaffold(
         appBar: EditorAppBar(
           title: 'Create New Breathing Exercise',

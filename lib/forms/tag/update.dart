@@ -86,6 +86,7 @@ class _UpdateTagState extends State<UpdateTag> {
   Widget build(BuildContext context) {
     return UnsavedChangesGuard(
       isDirty: _isDirty,
+      watch: [nameController, colorController],
       child: Scaffold(
         appBar: EditorAppBar(
           title: 'Edit ${_tag.name}',

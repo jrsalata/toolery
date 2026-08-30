@@ -59,6 +59,7 @@ class _CreateTagState extends State<CreateTag> {
   Widget build(BuildContext context) {
     return UnsavedChangesGuard(
       isDirty: _isDirty,
+      watch: [nameController, colorController],
       child: Scaffold(
         appBar: EditorAppBar(title: 'Create New Tag', onSave: _save),
         body: SingleChildScrollView(
