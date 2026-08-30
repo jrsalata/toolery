@@ -37,3 +37,28 @@ jobs:
 
       - name: Run tests
         run: flutter test
+
+  # Catches what an ubuntu runner cannot: a pod that will not resolve at the
+  # deployment target, a plist key that breaks the build, a plugin that lost
+  # iOS support. macOS runners bill at 10x, so this runs on pull requests
+  # only -- pushes to main have already passed it on the PR.
+  ios-build:
+    runs-on: macos-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.47.2
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      # --no-codesign avoids needing certificates in CI.
+      - name: Build iOS (simulator, unsigned)
+        run: flutter build ios --no-codesign --simulator
