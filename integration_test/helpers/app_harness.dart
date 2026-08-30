@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
@@ -24,10 +25,16 @@ import 'seed.dart';
 ///
 /// [returningUser] defaults to `true` so most tests skip the five-dialog
 /// welcome gauntlet; pass `false` to exercise it directly.
+///
+/// `lastSeenChangelogVersion` defaults to the app's own current version, so
+/// most tests also skip the changelog dialog it would otherwise trigger on
+/// every launch. Tests exercising that dialog specifically should override
+/// it via [prefs] — pass an explicit `null` to simulate a user who has never
+/// recorded a value (e.g. one upgrading from a build that predates it).
 Future<void> launchApp(
   WidgetTester tester, {
   bool returningUser = true,
-  Map<String, Object> prefs = const <String, Object>{},
+  Map<String, Object?> prefs = const <String, Object?>{},
   Seed seed = const Seed.demo(),
 }) async {
   // Every integration_test entrypoint needs this binding initialized
@@ -35,14 +42,19 @@ Future<void> launchApp(
   // launchApp invocation.
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  SharedPreferences.setMockInitialValues(<String, Object>{
+  final PackageInfo info = await PackageInfo.fromPlatform();
+
+  final Map<String, Object?> values = <String, Object?>{
     'returningUser': returningUser,
+    'lastSeenChangelogVersion': info.version,
     // Emulators have no audio and no haptics; the futures cost time and can
     // throw on a bare AVD. Tests that assert on these settings override them.
     'breathingSounds': false,
     'breathingVibrate': false,
     ...prefs,
-  });
+  }..removeWhere((_, value) => value == null);
+
+  SharedPreferences.setMockInitialValues(values.cast<String, Object>());
 
   await resetDatabaseForTesting(name: 'toolery_it.db');
   await deleteDatabaseFileForTesting();
