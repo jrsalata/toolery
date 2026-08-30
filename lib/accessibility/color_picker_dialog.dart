@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:toolery/accessibility/contrast.dart';
+import 'package:toolery/widgets/adaptive/adaptive_dialog.dart';
 
 const List<Color> accessibleColorPalette = <Color>[
   Colors.red,
@@ -43,19 +44,23 @@ Future<void> showAccessibleColorPickerDialog({
       final pickerColorArgb = pickerColor.toARGB32();
       return AlertDialog.adaptive(
         title: Text(title),
-        content: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 360),
-          child: Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              for (final color in accessibleColorPalette)
-                _ColorSwatchButton(
-                  color: color,
-                  selected: color.toARGB32() == pickerColorArgb,
-                  onTap: () => onColorChanged(color),
-                ),
-            ],
+        // The swatches use InkWell, which needs a Material ancestor that
+        // CupertinoAlertDialog does not provide.
+        content: AdaptiveDialogContent(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 360),
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final color in accessibleColorPalette)
+                  _ColorSwatchButton(
+                    color: color,
+                    selected: color.toARGB32() == pickerColorArgb,
+                    onTap: () => onColorChanged(color),
+                  ),
+              ],
+            ),
           ),
         ),
         actions: [
