@@ -27,7 +27,7 @@ void taskTests() {
       );
       await tester.enterText(find.byType(TextFormField).at(2), 'Do the thing');
       await tester.tap(find.byTooltip('Save'));
-      await tester.pumpAndSettle();
+      await pumpUntil(tester, find.text('IT new task'));
 
       expect(find.text('IT new task'), findsOneWidget);
     });
@@ -55,7 +55,7 @@ void taskTests() {
 
       await tester.enterText(find.byType(TextFormField).first, 'Hydrate well');
       await tester.tap(find.byTooltip('Save'));
-      await tester.pumpAndSettle();
+      await pumpUntil(tester, find.text('Hydrate well'));
 
       // Back at the (reloaded) detail page.
       expect(find.text('Hydrate well'), findsWidgets);
@@ -75,7 +75,7 @@ void taskTests() {
       await tester.tap(find.text('Delete'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Delete').last); // confirm dialog
-      await tester.pumpAndSettle();
+      await pumpUntilGone(tester, find.text('Drink water'));
 
       expect(find.text('Drink water'), findsNothing);
     });

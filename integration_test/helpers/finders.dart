@@ -32,22 +32,64 @@ Finder quillTitle() => find.byType(EditableText).first;
 /// body is the last EditableText on the page; the title field is the first."
 Finder quillBody() => find.byType(EditableText).last;
 
-/// Polls for [finder] with real frames, for screens that never settle.
+/// Pumps real frames until [condition] holds, failing after [timeout].
 ///
-/// `pumpAndSettle` is unusable on the breathing exercise screen: a 1-second
-/// `Timer.periodic` (see `ExerciseController._startPhase`) plus an
-/// `AnimatedContainer` keep frames scheduled for the exercise's whole
-/// duration, so it either times out or blocks for however long the exercise
-/// runs. This pumps small, fixed frames instead and checks after each one.
-Future<void> pumpUntil(
+/// Two situations make `pumpAndSettle` the wrong tool, and both need this:
+///
+/// 1. Screens that never settle. The breathing exercise screen keeps frames
+///    scheduled for the exercise's whole duration (a 1-second
+///    `Timer.periodic` in `ExerciseController._startPhase` plus an
+///    `AnimatedContainer`), so `pumpAndSettle` either times out or blocks for
+///    however long the exercise runs.
+///
+/// 2. Screens waiting on data. `pumpAndSettle` waits for scheduled *frames*,
+///    but the notifiers do their SQLite work off-frame — a query in flight
+///    schedules nothing. So `pumpAndSettle` happily reports "settled" on a
+///    list that is still empty because its load has not come back yet. That
+///    gap is invisible on a fast device and wide open on a CI emulator.
+///
+/// Pumping small fixed frames and re-checking after each one covers both: it
+/// waits exactly as long as the device needs, and no longer.
+Future<void> pumpUntilCondition(
   WidgetTester tester,
-  Finder finder, {
+  bool Function() condition,
+  String description, {
   Duration timeout = const Duration(seconds: 20),
 }) async {
   final DateTime deadline = DateTime.now().add(timeout);
   while (DateTime.now().isBefore(deadline)) {
     await tester.pump(const Duration(milliseconds: 100));
-    if (finder.evaluate().isNotEmpty) return;
+    if (condition()) return;
   }
-  fail('Timed out waiting for: $finder');
+  fail('Timed out waiting for: $description');
 }
+
+/// Pumps real frames until [finder] matches at least one widget.
+///
+/// Use instead of `pumpAndSettle` before asserting on (or tapping) anything
+/// that arrives from the database. See [pumpUntilCondition].
+Future<void> pumpUntil(
+  WidgetTester tester,
+  Finder finder, {
+  Duration timeout = const Duration(seconds: 20),
+}) => pumpUntilCondition(
+  tester,
+  () => finder.evaluate().isNotEmpty,
+  '$finder',
+  timeout: timeout,
+);
+
+/// Pumps real frames until [finder] matches nothing.
+///
+/// The disappearance counterpart to [pumpUntil], for asserting that a delete
+/// actually landed rather than that its reload had not finished yet.
+Future<void> pumpUntilGone(
+  WidgetTester tester,
+  Finder finder, {
+  Duration timeout = const Duration(seconds: 20),
+}) => pumpUntilCondition(
+  tester,
+  () => finder.evaluate().isEmpty,
+  '$finder to disappear',
+  timeout: timeout,
+);

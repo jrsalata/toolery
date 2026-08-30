@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'helpers/app_harness.dart';
+import 'helpers/finders.dart';
 
 void affirmationTests() {
   registerAppHarnessTearDown();
@@ -47,7 +48,7 @@ void affirmationTests() {
           matching: find.byType(FilledButton),
         ),
       );
-      await tester.pumpAndSettle();
+      await pumpUntil(tester, find.text('IT new affirmation'));
 
       expect(find.text('IT new affirmation'), findsOneWidget);
     });
@@ -69,7 +70,7 @@ void affirmationTests() {
         'I can do hard things, always',
       );
       await tester.tap(find.text('Save'));
-      await tester.pumpAndSettle();
+      await pumpUntil(tester, find.text('I can do hard things, always'));
 
       expect(find.text('I can do hard things, always'), findsOneWidget);
     });
@@ -86,7 +87,7 @@ void affirmationTests() {
       );
       await tester.pumpAndSettle();
       await tester.tap(find.text('Delete').last);
-      await tester.pumpAndSettle();
+      await pumpUntilGone(tester, find.text('My feelings are valid'));
 
       expect(find.text('My feelings are valid'), findsNothing);
     });
@@ -106,7 +107,10 @@ void affirmationTests() {
       await tester.pumpAndSettle();
 
       // The dialog title is deterministic; its body text is randomly picked
-      // from the list, so only the title is asserted.
+      // from the list, so only the title is asserted. The title also appears
+      // on the list tile behind the dialog, so wait on the dialog's own
+      // Close action rather than the title to know it is actually up.
+      await pumpUntil(tester, find.text('Close'));
       expect(find.text('Morning Affirmations'), findsWidgets);
 
       await tester.tap(find.text('Close'));
@@ -120,7 +124,7 @@ void affirmationTests() {
       await tester.pumpAndSettle();
       await tester.enterText(find.byType(TextFormField), 'IT temp list');
       await tester.tap(find.text('Add List'));
-      await tester.pumpAndSettle();
+      await pumpUntil(tester, find.text('IT temp list'));
 
       expect(find.text('IT temp list'), findsOneWidget);
 
@@ -130,7 +134,7 @@ void affirmationTests() {
       );
       await tester.pumpAndSettle();
       await tester.tap(find.text('Delete').last);
-      await tester.pumpAndSettle();
+      await pumpUntilGone(tester, find.text('IT temp list'));
 
       expect(find.text('IT temp list'), findsNothing);
     });
