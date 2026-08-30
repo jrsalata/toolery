@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:toolery/accessibility/contrast.dart';
 import 'package:toolery/models/tag.dart';
 import 'package:toolery/notifiers/tag.dart';
+import 'package:toolery/widgets/tag_filter_chips.dart';
 
 /// A read-only chip for displaying a tag, used on detail/view screens.
 class TagChip extends StatelessWidget {
@@ -52,37 +53,13 @@ class TagAction extends StatelessWidget {
                     const SizedBox(height: 12),
                     Consumer<TagNotifier>(
                       builder: (context, tagNotifier, _) {
-                        return Wrap(
-                          spacing: 6,
-                          runSpacing: 6,
-                          children: [
-                            for (Tag tag in tagNotifier.tags)
-                              FilterChip(
-                                selected: tagIDs.contains(tag.id),
-                                backgroundColor: tag.color,
-                                selectedColor: tag.color,
-                                label: Text(tag.name),
-                                labelStyle: TextStyle(
-                                  color: highContrastTextColor(tag.color),
-                                ),
-                                showCheckmark: true,
-                                checkmarkColor: highContrastTextColor(
-                                  tag.color,
-                                ),
-                                onSelected: (bool selected) {
-                                  final updated = List<int>.from(tagIDs);
-                                  if (selected) {
-                                    if (!updated.contains(tag.id)) {
-                                      updated.add(tag.id);
-                                    }
-                                  } else {
-                                    updated.remove(tag.id);
-                                  }
-                                  setSheetState(() {});
-                                  onChanged(updated);
-                                },
-                              ),
-                          ],
+                        return TagFilterChips(
+                          tags: tagNotifier.tags,
+                          selectedTagIds: tagIDs,
+                          onChanged: (updated) {
+                            setSheetState(() {});
+                            onChanged(updated);
+                          },
                         );
                       },
                     ),
