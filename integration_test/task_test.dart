@@ -27,7 +27,7 @@ void taskTests() {
       );
       await tester.enterText(find.byType(TextFormField).at(2), 'Do the thing');
       await tester.tap(find.byTooltip('Save'));
-      await pumpUntil(tester, find.text('IT new task'));
+      await pumpUntilSaved(tester);
 
       expect(find.text('IT new task'), findsOneWidget);
     });
@@ -55,7 +55,7 @@ void taskTests() {
 
       await tester.enterText(find.byType(TextFormField).first, 'Hydrate well');
       await tester.tap(find.byTooltip('Save'));
-      await pumpUntil(tester, find.text('Hydrate well'));
+      await pumpUntilSaved(tester);
 
       // Back at the (reloaded) detail page.
       expect(find.text('Hydrate well'), findsWidgets);

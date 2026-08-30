@@ -48,7 +48,9 @@ void affirmationTests() {
           matching: find.byType(FilledButton),
         ),
       );
-      await pumpUntil(tester, find.text('IT new affirmation'));
+      // The dialog owns the only text field on this page; its removal is the
+      // signal that the add completed and the dialog popped.
+      await pumpUntilSaved(tester, editor: find.byType(TextFormField));
 
       expect(find.text('IT new affirmation'), findsOneWidget);
     });
@@ -70,7 +72,7 @@ void affirmationTests() {
         'I can do hard things, always',
       );
       await tester.tap(find.text('Save'));
-      await pumpUntil(tester, find.text('I can do hard things, always'));
+      await pumpUntilSaved(tester, editor: find.byType(TextFormField));
 
       expect(find.text('I can do hard things, always'), findsOneWidget);
     });
@@ -124,7 +126,7 @@ void affirmationTests() {
       await tester.pumpAndSettle();
       await tester.enterText(find.byType(TextFormField), 'IT temp list');
       await tester.tap(find.text('Add List'));
-      await pumpUntil(tester, find.text('IT temp list'));
+      await pumpUntilSaved(tester, editor: find.byType(TextFormField));
 
       expect(find.text('IT temp list'), findsOneWidget);
 

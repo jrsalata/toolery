@@ -41,7 +41,7 @@ void tagTests() {
       await tester.pumpAndSettle();
 
       await tester.tap(find.byTooltip('Save'));
-      await pumpUntil(tester, find.text('IT tag'));
+      await pumpUntilSaved(tester);
 
       expect(find.text('IT tag'), findsOneWidget);
     });
@@ -53,7 +53,7 @@ void tagTests() {
       await tester.pumpAndSettle();
       await tester.enterText(find.byType(TextFormField), 'mindfulness-renamed');
       await tester.tap(find.byTooltip('Save'));
-      await pumpUntil(tester, find.text('mindfulness-renamed'));
+      await pumpUntilSaved(tester);
 
       expect(find.text('mindfulness-renamed'), findsOneWidget);
     });
@@ -91,7 +91,7 @@ void tagTests() {
       await tester.pumpAndSettle();
 
       await tester.tap(find.byTooltip('Save'));
-      await pumpUntil(tester, find.text('mindfulness'));
+      await pumpUntilSaved(tester);
 
       expect(find.text('mindfulness'), findsOneWidget);
     });
@@ -117,8 +117,7 @@ void tagTests() {
       await tester.pumpAndSettle();
 
       await tester.tap(find.byTooltip('Save'));
-      await pumpUntil(tester, find.text('mindfulness'));
-      await pumpUntil(tester, find.text('stress'));
+      await pumpUntilSaved(tester);
 
       expect(find.text('mindfulness'), findsOneWidget);
       expect(find.text('stress'), findsOneWidget);
