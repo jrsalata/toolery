@@ -73,8 +73,7 @@ class _UpdateJournalState extends State<UpdateJournal> {
         content: content,
       );
       final journalNotifier = context.read<JournalNotifier>();
-      await journalNotifier.update(updated);
-      await journalNotifier.setTags(updated, _tagIDs);
+      await journalNotifier.update(updated, tagIDs: _tagIDs);
       if (mounted) {
         Navigator.pop(context, true);
       }

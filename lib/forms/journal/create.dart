@@ -61,10 +61,7 @@ class _CreateJournalState extends State<CreateJournal> {
         content: content,
       );
       final journalNotifier = context.read<JournalNotifier>();
-      final created = await journalNotifier.create(entry);
-      if (_tagIDs.isNotEmpty) {
-        await journalNotifier.setTags(created, _tagIDs);
-      }
+      await journalNotifier.create(entry, tagIDs: _tagIDs);
       if (mounted) {
         Navigator.pop(context, true);
       }

@@ -63,10 +63,7 @@ class _CreateBreathingState extends State<CreateBreathing> {
         holdOut: _parseOrZero(holdOutController),
         reps: _parseOrZero(repsController),
       );
-      final created = await breathingNotifier.create(newBreathing);
-      if (_tagIDs.isNotEmpty) {
-        await breathingNotifier.setTags(created, _tagIDs);
-      }
+      await breathingNotifier.create(newBreathing, tagIDs: _tagIDs);
       if (mounted) {
         Navigator.pop(context, true);
       }
