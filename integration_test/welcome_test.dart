@@ -128,10 +128,7 @@ void welcomeTests() {
         await launchApp(tester, prefs: {'lastSeenChangelogVersion': null});
 
         final info = await PackageInfo.fromPlatform();
-        await pumpUntil(
-          tester,
-          find.text('New v${info.version} update!'),
-        );
+        await pumpUntil(tester, find.text('New v${info.version} update!'));
         expect(find.text('New v${info.version} update!'), findsOneWidget);
       },
     );
@@ -145,10 +142,7 @@ void welcomeTests() {
         );
 
         final info = await PackageInfo.fromPlatform();
-        await pumpUntil(
-          tester,
-          find.text('New v${info.version} update!'),
-        );
+        await pumpUntil(tester, find.text('New v${info.version} update!'));
         expect(find.text('New v${info.version} update!'), findsOneWidget);
       },
     );
